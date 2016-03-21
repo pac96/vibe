@@ -1,0 +1,33 @@
+BACON
+
+
+KNOWN BUGS:
+The only known bugs are in the GUI. The Actor and Movie pages, though started, do not work, so users cannot click on Actors or Movies to see their pages. Additionally, the database sadly cannot be updated from the GUI.
+
+DESIGN:
+The project is divided into two packages: the bacon package and the grpah package. In the Bacon package, the program starts in Main, where the gui is launched if the --gui flag is specified. An InputHandler is created, which takes in the arguments from the command line, creates an instance of Dijkstras and takes the path returned, formats ain appropriately, and returns it to Main, where it is printed.
+Connections to the Database are handled by the DatabaseHandler, which I modelled after JJ's example from class. It has a static method that returns the connection to the database passed in as a String.
+The Dijkstra class in the graph package takes in two elements and runs Dijkstras algorithm to find the shortest distance between them. I wrote it to be generic, so it takes in instances of the interface Nodeable, which dictates that its implementing classes can do the basic things nodes can do, which Dijkstras requires. The Actor class implements Nodeable, so Actors can be treated as nodes. It also works with Edges, which store an instance of the interface Edgeable as well as the Nodeable the edge came from and goes to. Movies implement Edgeable.
+Both Actor and Movie also implement the interface Entity, which allows them both to be stored in the IDCache. The IDCache stores a HashMap of all previously seen IDs and the corresponding Movie/Actor. Before any new Movie or Actor is instantiated, I check the cache to make sure this Actor/Movie doesn't already exist.
+When getName() or getMovie/Actor() is called on either an Actor or Movie, it queries the database for this information. The call to the database isn't made until this information is necessary, cutting down on the time spent talking to the database.
+In addition to the code for this project, I copied over two packages of autocorrect code for the gui to use.
+
+RUNTIME/SPACE OPTIMIZATIONS:
+To optimize runtime, I separated calls to the database for getName() and getMovie/Actor(). This is helpful because the getting the name is relatively fast, but getting a list of actors or movies is fairly slow. This way, a user can get a name without having to wait for the list of actors to come, too.
+Another small runtime optimization I made was adding a "visited" flag to Nodeables being run through Dijkstras. A Nodeable is visited when it is removed from the Priority Queue, so we know that its distance will not change. Then, if we ever see it again, we check that it is visited and do not bother doing uncessary calculations.
+A space optimization I made is to store a cache of Movies and Actors as a HashMap mapping the ID to the Actor or Movie. This way, only of any movie or actor is ever stored in memory, which improves on space, and fewer calls are made to the database, which improves runtime.
+
+
+RUNNING THE TESTS:
+System tests are located in bacon/tests and can be run by cs032_system_tester_slow ./run ./tests/*
+
+COMMAND LINE:
+I did not change any of the specification of the command line. Without the --gui flag, the command line args are <actor1> <actor2> <path to db>. With the --gui flag, the only necessary argument is <path to database>.
+
+DESIGN QUESTIONS:
+Because the graph code exists in a package that doesn't know about the database or actors, it would be fairly easy for others to add new graph algorithms. However, the constraints on valid edges would have to be changed, because currently edges are only valid if they fit the first initial constraint. Additionally, it would be nice to have a Node class that holds an object, rather than a long interface Nodeable.
+
+When searching for the shortest path between actors, I would also have to store a "date" in the edges (which contain the movies) and only search down edges that have a date later than the edge just passed through. 
+
+CHECKSTYLE:
+A few checkstyle errors I didn't quite understand, so did not fix. The import order one cannot be fixed because Eclipse puts the imports back in order every time I save. I left javadoc comments off of the Nodeable and Edgeable interfaces because these would be redundant with the comments included in the Actor and Movie class.

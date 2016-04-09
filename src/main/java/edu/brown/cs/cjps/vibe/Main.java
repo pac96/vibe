@@ -96,6 +96,7 @@ public final class Main {
 
       // Setup Spark Routes
       Spark.get("/vibe", new FrontHandler(), freeMarker);
+      Spark.get("/login", new LoginHandler(), freeMarker);
   }
 
   /**
@@ -108,6 +109,19 @@ public final class Main {
       public ModelAndView handle(Request req, Response res) {
           Map<String, Object> variables = ImmutableMap.of("title", "Vibe");
           return new ModelAndView(variables, "vibe.ftl");
+      }
+  }
+  
+  /**
+   * Handles creating the GUI for processing login requests
+   * @author cjps
+   *
+   */
+  private class LoginHandler implements TemplateViewRoute {
+      @Override
+      public ModelAndView handle(Request req, Response res) {
+          Map<String, Object> variables = ImmutableMap.of("title", "Vibe");
+          return new ModelAndView(variables, "login.ftl");
       }
   }
 

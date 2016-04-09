@@ -15,12 +15,11 @@
   </head>
 
   <body>
-  <div class="container-fluid main-content">
     ${content}
-  </div>
   
     <script src="js/jquery-2.1.1.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/login.js"</script>
   </body>
 
 </html>

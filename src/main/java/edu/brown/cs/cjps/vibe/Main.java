@@ -17,6 +17,7 @@ import spark.ExceptionHandler;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
+import spark.Route;
 import spark.Spark;
 import spark.SparkBase;
 import spark.TemplateViewRoute;
@@ -26,6 +27,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.SettableFuture;
+import com.google.gson.Gson;
 import com.wrapper.spotify.Api;
 import com.wrapper.spotify.models.AuthorizationCodeCredentials;
 
@@ -55,6 +57,8 @@ public final class Main {
 	private Main(String[] args) {
 		this.args = args;
 	}
+	
+    private final static Gson GSON = new Gson();
 
 	/**
 	 * Runs the program.
@@ -103,7 +107,7 @@ public final class Main {
 
 		// Setup Spark Routes
 		Spark.get("/vibe", new FrontHandler(), freeMarker);
-		Spark.get("/login", new LoginHandler(), freeMarker);
+		Spark.get("/login", new LoginHandler());
 		Spark.get("/playlists", new PlaylistPageHandler(), freeMarker);
 	}
 
@@ -127,9 +131,9 @@ public final class Main {
 	 * @author cjps
 	 *
 	 */
-	private class LoginHandler implements TemplateViewRoute {
+	private class LoginHandler implements Route {
 		@Override
-		public ModelAndView handle(Request req, Response res) {
+		public Object handle(Request req, Response res) {
 			Map<String, Object> variables = ImmutableMap.of("title", "Vibe");
 			final String clientId = "bfd53bc39d2c46f081fa7951a5a88ea8";
 			final String clientSecret = "9b79b8ae6c2a453588a6be84ca9de659";
@@ -142,15 +146,18 @@ public final class Main {
 			/*
 			 * Set the necessary scopes that the application will need from the
 			 * user
+			 * 
+			 * Can read the user's email and modify public and private playlists
 			 */
-			final List<String> scopes = Arrays.asList("user-read-private",
-					"user-read-email");
+			final List<String> scopes = Arrays
+					.asList("user-read-email", "playlist-modify-public", 
+					"playlist-modify-private");
 
 			/*
 			 * Set a state. This is used to prevent cross site request
 			 * forgeries.
 			 */
-			final String state = "someExpectedStateString";
+			final String state = "readytogo";
 
 			String authorizeURL = api.createAuthorizeURL(scopes, state);
 
@@ -216,7 +223,9 @@ public final class Main {
 
 						}
 					});
-			return new ModelAndView(variables, "login.ftl");
+			
+			
+			return GSON.toJson(authorizeURL);
 		}
 	}
 

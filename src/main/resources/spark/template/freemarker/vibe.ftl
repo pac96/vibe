@@ -6,7 +6,7 @@
 		</h1>
 
 		<div class="spotify">
-			<a href="/login"><button type="button" class="btn btn-default">Sign In with Spotify</button></a>
+			<a id="loginLink"><button type="button" class="btn btn-default">Sign In with Spotify</button></a>
 		</div>
 	</div>
 </div>

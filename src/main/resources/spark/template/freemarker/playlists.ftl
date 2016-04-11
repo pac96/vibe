@@ -1,7 +1,7 @@
 <#assign content>
 
 <div>
-	Redirect to playlist page
+	We are now on the playlist page!
 </div>
 
 </#assign>

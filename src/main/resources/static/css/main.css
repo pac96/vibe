@@ -4,19 +4,6 @@ html, body {
   width: 100%;
 }
 
-.outer {
-  display: table;
-  width: 100%;
-  height: auto;
-  text-align: center;
-}
-
-.vcenter {
-  /*align-self: center;*/
-  display: table-cell;
-  vertical-align: middle;
-}
-
 h1 {
   text-align: center;
   text-transform: uppercase;

@@ -12,9 +12,9 @@ var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
-var client_id = '03ffe0cac0a0401aa6673c3cf6d02ced'; // Your client id
-var client_secret = 'a57c43efb9644574a96d6623fb8bfbc2'; // Your client secret
-var redirect_uri = 'http://localhost:4567/vibe'; // Your redirect uri
+var client_id = 'bfd53bc39d2c46f081fa7951a5a88ea8'; // Your client id
+var client_secret = '9b79b8ae6c2a453588a6be84ca9de659'; // Your client secret
+var redirect_uri = 'http://localhost:4567/playlists'; // Your redirect uri
 
 /**
  * Generates a random string containing numbers and letters
@@ -35,7 +35,7 @@ var stateKey = 'spotify_auth_state';
 
 var app = express();
 
-app.use(express.static(__dirname + '/public'))
+app.use(express.static(__dirname /*+ '/public'*/))
    .use(cookieParser());
 
 app.get('/login', function(req, res) {
@@ -55,7 +55,7 @@ app.get('/login', function(req, res) {
     }));
 });
 
-app.get('/callback', function(req, res) {
+app.get('/playlists', function(req, res) {
 
   // your application requests refresh and access tokens
   // after checking the state parameter
@@ -142,4 +142,4 @@ app.get('/refresh_token', function(req, res) {
 });
 
 // console.log('Listening on 8888');
-// app.listen(8888);
+app.listen(4567);

@@ -72,6 +72,12 @@
       <artifactId>sqlite-jdbc</artifactId>
       <version>3.8.7</version>
     </dependency>
+
+    <dependency>
+      <groupId>se.michaelthelin.spotify</groupId>
+      <artifactId>spotify-web-api-java</artifactId>
+      <version>1.5.0</version>
+    </dependency>
   </dependencies>
 
   <build>

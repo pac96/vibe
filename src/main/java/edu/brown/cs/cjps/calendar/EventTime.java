@@ -44,5 +44,16 @@ public int getHour() {
   return hour;
 }
 
+@Override
+public boolean equals(Object o) {
+  if (!(o  instanceof EventTime)) {
+    return false;
+  } else {
+    EventTime other = (EventTime) o;
+    return (this.isAM == other.isAM)
+        && (this.getHour() == other.getHour());
+  }
+}
+
 
 }

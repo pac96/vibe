@@ -92,5 +92,4 @@ public class Day implements Collection<CalendarEvent> {
     return null;
   }
   
-  //Add an event
 }

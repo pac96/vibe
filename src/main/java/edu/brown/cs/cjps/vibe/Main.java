@@ -3,6 +3,7 @@
  */
 package edu.brown.cs.cjps.vibe;
 
+import edu.brown.cs.cjps.music.PlaylistGenerator;
 
 /**
  * Main class just accepts the arguments and creates an InputHandler to deal
@@ -35,6 +36,7 @@ public final class Main {
   private void run() {
 
     System.out.println("Hello World");
+    new PlaylistGenerator();
   }
 
 }

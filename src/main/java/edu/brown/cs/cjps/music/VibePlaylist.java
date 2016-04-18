@@ -1,5 +1,5 @@
 package edu.brown.cs.cjps.music;
 
-public class Playlist {
+public class VibePlaylist {
 
 }

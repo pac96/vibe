@@ -67,7 +67,6 @@
         <!-- Page Content -->
         <div id="page-content-wrapper">
             <div class="container-fluid">
-                <body background="/Users/Chelse/Desktop/Vibe/images/river.jpg"> 
                      <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
                 <li class="dropdown">

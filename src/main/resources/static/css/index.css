@@ -6,6 +6,9 @@
 
 /* Toggle Styles */
 
+body{
+	background-image:url("/images/river.jpg");
+}
 
 #wrapper {
     padding-left: 0;

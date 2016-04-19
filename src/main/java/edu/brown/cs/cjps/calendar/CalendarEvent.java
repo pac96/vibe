@@ -21,8 +21,8 @@ public class CalendarEvent {
     return end;
   }
   
-  public void setStart(int newStart, boolean amOrPm) {
-    start.update(newStart, amOrPm);
+  public void setStart(int newHour,int newMinute, boolean amOrPm) {
+    start.update(newHour, newMinute, amOrPm);
     
     if (start.compareTo(end) < 0) {
       System.out.println("The start time cannot occur after the end time");
@@ -30,8 +30,8 @@ public class CalendarEvent {
     }
   }
   
-  public void setEnd(int newEnd, boolean amOrPm) {
-    end.update(newEnd, amOrPm);
+  public void setEnd(int newHour,int newMinute, boolean amOrPm) {
+    end.update(newHour, newMinute, amOrPm);
     
     if (end.compareTo(start) < 0) {
       System.out.println("The start time cannot occur after the end time");

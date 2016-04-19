@@ -4,24 +4,34 @@ package edu.brown.cs.cjps.calendar;
  * of the time, and a boolean representing AM or PM.*/
 public class EventTime implements Comparable<EventTime> {
 
-    //Integer representing the hour
+    //Integer representing the hour of the event.
     private int hour;
     
-    //Boolean Representing AM (true) or PM (false)
-    private boolean isAM;
+    //Integer representing the minute the event occurs.
+    private int minute;
     
-  public EventTime(int hour , boolean amOrPm) {
-    this.hour = hour;
-    this.isAM = amOrPm;
-  }
+    //Boolean Representing AM (true) or PM (false) for the event time.
+    private boolean isAM;
   
-  public void update(int hour, boolean amOrPm) {
-    if (hour < 0 || hour > 12) {
+  //Constructor for an event time.
+  public EventTime(int hour , int minute, boolean amOrPm) {
+    if ( hour < 0 || hour > 12 || minute < 0 || minute > 59) {
       throw new IllegalArgumentException();
     }
     
     this.hour = hour;
+    this.minute = minute;
     this.isAM = amOrPm;
+  }
+  
+  public void update(int _hour, int _minute, boolean _amOrPm) {
+    if (hour < 0 || hour > 12 || minute < 0 || minute > 60) {
+      throw new IllegalArgumentException();
+    }
+    
+    this.hour = _hour;
+    this.isAM = _amOrPm;
+    this.minute = _minute;
   }
 
   @Override
@@ -38,10 +48,17 @@ public class EventTime implements Comparable<EventTime> {
   }
   
   /**
- * @return the hour
+ * @return the hour.
  */
 public int getHour() {
   return hour;
+}
+
+/** 
+ *@return the minute.
+ * */
+public int getMinute() {
+  return minute;
 }
 
 @Override

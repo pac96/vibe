@@ -5,49 +5,72 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.commons.collections.MultiMap;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 /**A class to represent a user's day.*/
 
 public class Day implements Collection<CalendarEvent> {
   
-  //A map from event times to the events that occur at that time
-  HashMap<EventTime , Set<CalendarEvent>> timesToEvents = new HashMap<>();
+  //A map from event times to the events that start at that time.
+  Multimap<EventTime , CalendarEvent> timesToEvents = HashMultimap.create();
   
-  public Day() {}
-
-  @Override
-  public boolean add(CalendarEvent arg0) {
-    // TODO Auto-generated method stub
-    return false;
+  //Empty constructor for a day objects.
+  public Day(){};
+  
+  //Constructor for a Day that takes a Collection of calendar events.
+  public Day(Collection<CalendarEvent> schedule) {
+    addAll(schedule);
   }
 
   @Override
-  public boolean addAll(Collection<? extends CalendarEvent> arg0) {
-    // TODO Auto-generated method stub
+  public boolean add(CalendarEvent evnt) {
+    EventTime start = evnt.getStart();
+    if (!contains(evnt)) {
+      return timesToEvents.put(start, evnt);
+    } else {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean addAll(Collection<? extends CalendarEvent> events) {
+    for (CalendarEvent c : events) {
+      add(c);
+    }
     return false;
   }
 
   @Override
   public void clear() {
-    // TODO Auto-generated method stub
-    
+    timesToEvents.clear();   
   }
 
   @Override
-  public boolean contains(Object arg0) {
-    // TODO Auto-generated method stub
-    return false;
+  public boolean contains(Object event) {
+    if (!(event instanceof CalendarEvent)) {
+      return false;
+    } else {
+      CalendarEvent cEvent = (CalendarEvent) event;
+      return timesToEvents.get(cEvent.getStart()).contains(event);
+    }
   }
 
   @Override
   public boolean containsAll(Collection<?> arg0) {
-    // TODO Auto-generated method stub
-    return false;
+    for (Object c : arg0) {
+      if (!contains(c)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Override
   public boolean isEmpty() {
-    // TODO Auto-generated method stub
-    return false;
+    return timesToEvents.isEmpty();
   }
 
   @Override
@@ -58,13 +81,17 @@ public class Day implements Collection<CalendarEvent> {
 
   @Override
   public boolean remove(Object arg0) {
-    // TODO Auto-generated method stub
-    return false;
+    if (!(arg0 instanceof CalendarEvent)) {
+      return false;
+    } else {
+      CalendarEvent evnt = (CalendarEvent) arg0;
+      return timesToEvents.remove(evnt.getStart(), evnt);
+    }
+
   }
 
   @Override
   public boolean removeAll(Collection<?> arg0) {
-    // TODO Auto-generated method stub
     return false;
   }
 
@@ -75,14 +102,13 @@ public class Day implements Collection<CalendarEvent> {
   }
 
   @Override
-  public int size() {
-    // TODO Auto-generated method stub
-    return 0;
+  public int size() {    
+    return timesToEvents.values().size();
   }
 
   @Override
   public Object[] toArray() {
-    // TODO Auto-generated method stub
+    // TODO Return an array of Pairs 
     return null;
   }
 

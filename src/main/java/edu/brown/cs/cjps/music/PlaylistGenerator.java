@@ -1,5 +1,6 @@
 package edu.brown.cs.cjps.music;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.echonest.api.v4.Artist;
@@ -9,6 +10,7 @@ import com.echonest.api.v4.Playlist;
 import com.echonest.api.v4.PlaylistParams;
 import com.echonest.api.v4.PlaylistParams.PlaylistType;
 import com.echonest.api.v4.Song;
+import com.echonest.api.v4.Track;
 
 public class PlaylistGenerator {
 
@@ -136,7 +138,7 @@ public class PlaylistGenerator {
     System.out.printf("   A loc : %s\n", song.getArtistLocation());
   }
 
-  public void playlistTest() throws EchoNestException {
+  public List<String> playlistTest() throws EchoNestException {
     EchoNestAPI en = new EchoNestAPI(API_KEY);
     PlaylistParams params = new PlaylistParams();
     params.addIDSpace("spotify-WW");
@@ -146,14 +148,13 @@ public class PlaylistGenerator {
     params.setLimit(true);
 
     Playlist playlist = en.createStaticPlaylist(params);
-
+    List<String> tracks = new ArrayList<>();
     for (Song song : playlist.getSongs()) {
       System.out.println(song);
-      // Track track = song.getTrack("spotify-WW");
-      // System.out.println(track.getForeignID() + " " + song.getTitle() +
-      // " by "
-      // + song.getArtistName());
+      Track track = song.getTrack("spotify-WW");
+      tracks.add(track.getID());
     }
+    return tracks;
   }
 
 }

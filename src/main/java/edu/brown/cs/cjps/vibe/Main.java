@@ -31,7 +31,7 @@ import com.google.gson.Gson;
 import com.wrapper.spotify.Api;
 import com.wrapper.spotify.models.AuthorizationCodeCredentials;
 
-import edu.brown.cs.cjps.music.PlaylistGenerator;
+import edu.brown.cs.cjps.music.PlaylistHQ;
 import freemarker.template.Configuration;
 
 /**
@@ -67,7 +67,9 @@ public final class Main {
   private void run() {
 
     System.out.println("Hello World");
-    new PlaylistGenerator();
+    // new PlaylistGenerator();
+    PlaylistHQ hq = new PlaylistHQ();
+    hq.generateFromTag("Party");
     OptionParser parser = new OptionParser();
     parser.accepts("gui");
     OptionSet options = parser.parse(args);

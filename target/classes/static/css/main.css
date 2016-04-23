@@ -2,6 +2,7 @@ html, body {
   color: black;
   height: 100%;
   width: 100%;
+  background-image:url("/images/river.jpg");
 }
 
 h1 {
@@ -19,7 +20,7 @@ h1 span {
   text-align: center;
 }
 
-.spotify button {
+/*.spotify button {
   font-weight: bold;
   background-color: #8CFC99;
 }
@@ -32,4 +33,15 @@ h1 span {
 .spotify button a:visited {
   text-decoration: none;
   color: black;
+}*/
+
+/* Playlist Page */
+#calendar { /* References the div col */
+  border-right: 1px solid black;
+
+}
+
+iframe {
+  width: 1000px ;
+  height: 600px;
 }

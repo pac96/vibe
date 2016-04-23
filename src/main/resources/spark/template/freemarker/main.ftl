@@ -8,9 +8,8 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" href="css/html5bp.css">
+    <link rel="stylesheet" href="css/playlists.css">
     <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
 
     <script src="js/jquery-2.1.1.js"></script>
 
@@ -21,6 +20,9 @@
   <body>
     ${content}
   
+
+    <!-- jQuery -->
+    <!-- Bootstrap Core JavaScript -->
     <script src="js/login.js"</script>
     <script src="js/main.js"></script>
   </body>

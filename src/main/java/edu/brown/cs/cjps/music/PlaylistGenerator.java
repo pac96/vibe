@@ -5,8 +5,10 @@ import java.util.List;
 import com.echonest.api.v4.Artist;
 import com.echonest.api.v4.EchoNestAPI;
 import com.echonest.api.v4.EchoNestException;
+import com.echonest.api.v4.Playlist;
+import com.echonest.api.v4.PlaylistParams;
+import com.echonest.api.v4.PlaylistParams.PlaylistType;
 import com.echonest.api.v4.Song;
-import com.echonest.api.v4.SongParams;
 
 public class PlaylistGenerator {
 
@@ -16,27 +18,85 @@ public class PlaylistGenerator {
   public PlaylistGenerator() {
     _echoNest = new EchoNestAPI(API_KEY);
 
-    this.testConnection();
-    // this.makePlaylist();
-    SongParams p = new SongParams();
-    p.setArtist("Michael Jackson");
+    // try {
+    // //this.playlistTest();
+    // } catch (EchoNestException e) {
+    // // TODO Auto-generated catch block
+    // e.printStackTrace();
+    // }
 
-    List<Song> songs = null;
-    try {
-      songs = _echoNest.searchSongs(p);
-    } catch (EchoNestException e1) {
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
+  }
+
+  public List<Song> makePlaylist(Settings s) {
+    PlaylistParams params = new PlaylistParams();
+    params.addIDSpace("spotify-WW");
+    params.setType(PlaylistType.ARTIST_RADIO);
+
+    // this.getArtistsByGenre(s.getGenres());
+
+    // TODO: Gengre radio isn't real, so need to add artists who are the genre,
+    // perhaps?
+    // MOOD
+    params.addMood(s.getMood());
+    // Energy
+    float minE = s.getEnergy() - 0.2f;
+    float maxE = s.getEnergy() + 0.2f;
+    if (minE < 0) {
+      minE = 0;
     }
-    try {
+    if (maxE > 1) {
+      maxE = 1f;
+    }
+    params.setMinEnergy(minE);
+    params.setMaxEnergy(maxE);
 
-      this.dumpSong(songs.get(0));
+    // HOTNESS
+    float minH = s.getHotness() - 0.2f;
+    float maxH = s.getHotness() + 0.2f;
+    if (minH < 0) {
+      minH = 0;
+    }
+    if (maxH > 1) {
+      maxH = 1f;
+    }
+    // TODO: Nothing makes min hotness happy
+
+    params.includeArtistHotttnesss();
+    // params.setArtistMinHotttnesss(0.0f);
+    params.setArtistMaxHotttnesss(maxH);
+    params.addArtist("The Beatles");
+    params.addArtist("The Rolling Stones");
+    params.addArtist("Pink Floyd");
+    params.addArtist("Queen");
+    params.addArtist("Led Zepplin");
+
+    params.includeTracks(); // IDK what this does but it was in the demo
+    params.setLimit(true); // see above
+    params.setResults(10);
+
+    Playlist playlist = null;
+    try {
+      playlist = _echoNest.createStaticPlaylist(params);
     } catch (EchoNestException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-
+    return playlist.getSongs();
   }
+
+  // public List<Artist> getArtistsByGenre(List<String> genres) {
+  // ArtistParams params = new ArtistParams();
+  // // params.addGenre();
+  // List<Artist> l = null;
+  // try {
+  // l = _echoNest.suggestArtists("rock");
+  // } catch (EchoNestException e) {
+  // // TODO Auto-generated catch block
+  // e.printStackTrace();
+  // }
+  // System.out.println(l);
+  // return l;
+  // }
 
   public void testConnection() {
 
@@ -62,63 +122,7 @@ public class PlaylistGenerator {
 
     }
 
-    // // Oldest Top artist test
-    // List<Artist> artists100 = null;
-    // try {
-    // artists100 = _echoNest.topHotArtists(1);
-    // } catch (EchoNestException e1) {
-    // // TODO Auto-generated catch block
-    // e1.printStackTrace();
-    // }
-    //
-    // Collections.sort(artists100, new Comparator<Artist>() {
-    // @Override
-    // public int compare(Artist t1, Artist t2) {
-    // try {
-    // Long y1 = t1.getYearsActive().getRange()[0];
-    // Long y2 = t2.getYearsActive().getRange()[0];
-    // int i1 = y1 != null ? y1.intValue() : 0;
-    // int i2 = y2 != null ? y2.intValue() : 0;
-    // return i1 - i2;
-    // } catch (EchoNestException e) {
-    // return 0;
-    // }
-    // }
-    // });
-    //
-    // for (Artist artist : artists100) {
-    // YearsActive ya;
-    // try {
-    // ya = artist.getYearsActive();
-    // Long earliest = ya.getRange()[0];
-    // System.out.println(earliest + " " + artist.getName());
-    // } catch (EchoNestException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    //
-    // }
-
   }
-
-  // public List<Song> makePlaylist() {
-  // BasicPlaylistParams params = new BasicPlaylistParams();
-  // params.addArtist("Weezer");
-  // params.setType(BasicPlaylistParams.PlaylistType.ARTIST_RADIO);
-  // params.setResults(10);
-  // Playlist playlist = null;
-  // try {
-  // playlist = _echoNest.createBasicPlaylist(params);
-  // } catch (EchoNestException e) {
-  // System.out.println("ERROR: could not create playlist");
-  // e.printStackTrace();
-  // }
-  //
-  // for (Song song : playlist.getSongs()) {
-  // System.out.println(song.toString());
-  // }
-  // return playlist.getSongs();
-  // }
 
   public void dumpSong(Song song) throws EchoNestException {
     System.out.printf("%s\n", song.getTitle());
@@ -131,4 +135,25 @@ public class PlaylistGenerator {
     System.out.printf("   A fam : %.3f\n", song.getArtistFamiliarity());
     System.out.printf("   A loc : %s\n", song.getArtistLocation());
   }
+
+  public void playlistTest() throws EchoNestException {
+    EchoNestAPI en = new EchoNestAPI(API_KEY);
+    PlaylistParams params = new PlaylistParams();
+    params.addIDSpace("spotify-WW");
+    params.setType(PlaylistParams.PlaylistType.ARTIST_RADIO);
+    params.addArtist("Michael Jackson");
+    params.includeTracks();
+    params.setLimit(true);
+
+    Playlist playlist = en.createStaticPlaylist(params);
+
+    for (Song song : playlist.getSongs()) {
+      System.out.println(song);
+      // Track track = song.getTrack("spotify-WW");
+      // System.out.println(track.getForeignID() + " " + song.getTitle() +
+      // " by "
+      // + song.getArtistName());
+    }
+  }
+
 }

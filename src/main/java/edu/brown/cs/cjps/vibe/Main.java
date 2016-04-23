@@ -15,6 +15,7 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import spark.ExceptionHandler;
 import spark.ModelAndView;
+import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -24,12 +25,11 @@ import spark.TemplateViewRoute;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.SettableFuture;
 import com.google.gson.Gson;
 import com.wrapper.spotify.Api;
+import com.wrapper.spotify.exceptions.WebApiException;
 import com.wrapper.spotify.models.AuthorizationCodeCredentials;
+import com.wrapper.spotify.models.User;
 
 import freemarker.template.Configuration;
 
@@ -51,24 +51,59 @@ public final class Main {
 	public static void main(String[] args) {
 		new Main(args).run();
 	}
-
+	/**
+	 * Arguments to the command line.
+	 */
 	private String[] args;
+	/**
+	 * The user's clientID.
+	 */
+	private String clientID;
+	/**
+	 * The secret key for the application.
+	 */
+	private String clientSecret;
+	/**
+	 * The redirection URI for after Spotify authenticates a user.
+	 */
+	private String redirectURI;
+	/**
+	 * An instance variable for the Spotify API.
+	 */
+	private Api api;
+	/**
+	 * Google's GSON instance variable that helps with sending and retrieving
+	 * front-end and back-end requests.
+	 */
+    private final static Gson GSON = new Gson();
+//    private final boolean madeRequest = false;
 
+    /**
+     * Constructor for our Main class.
+     * @param args - the command line arguments
+     */
 	private Main(String[] args) {
 		this.args = args;
 	}
 	
-    private final static Gson GSON = new Gson();
 
 	/**
 	 * Runs the program.
 	 */
 	private void run() {
-
-		System.out.println("Hello World");
+		System.out.println("Starting Vibe...");
 		OptionParser parser = new OptionParser();
 		parser.accepts("gui");
 		OptionSet options = parser.parse(args);
+		
+		clientSecret = "9b79b8ae6c2a453588a6be84ca9de659";
+		clientID = "bfd53bc39d2c46f081fa7951a5a88ea8";
+		redirectURI = "http://localhost:4567/playlists";
+		api = Api.builder()
+				.clientId(clientID)
+				.clientSecret(clientSecret)
+				.redirectURI(redirectURI)
+				.build();
 
 		if (options.has("gui")) {
 			// Runs the GUI
@@ -109,6 +144,7 @@ public final class Main {
 		Spark.get("/vibe", new FrontHandler(), freeMarker);
 		Spark.get("/login", new LoginHandler());
 		Spark.get("/playlists", new PlaylistPageHandler(), freeMarker);
+		Spark.post("/code", new CodeHandler());
 	}
 
 	/**
@@ -134,20 +170,11 @@ public final class Main {
 	private class LoginHandler implements Route {
 		@Override
 		public Object handle(Request req, Response res) {
-			Map<String, Object> variables = ImmutableMap.of("title", "Vibe");
-			final String clientId = "bfd53bc39d2c46f081fa7951a5a88ea8";
-			final String clientSecret = "9b79b8ae6c2a453588a6be84ca9de659";
-			final String redirectURI = "http://localhost:4567/playlists";
-
-			final Api api = Api.builder().clientId(clientId)
-					.clientSecret(clientSecret).redirectURI(redirectURI)
-					.build();
-
 			/*
 			 * Set the necessary scopes that the application will need from the
 			 * user
 			 * 
-			 * Can read the user's email and modify public and private playlists
+			 * Vibe can read the user's email and modify public and private playlists
 			 */
 			final List<String> scopes = Arrays
 					.asList("user-read-email", "playlist-modify-public", 
@@ -157,75 +184,61 @@ public final class Main {
 			 * Set a state. This is used to prevent cross site request
 			 * forgeries.
 			 */
-			final String state = "readytogo";
+			final String state = "0euk0hmxnc";
+			String authorizeURL = api.createAuthorizeURL(scopes, state);	
 
-			String authorizeURL = api.createAuthorizeURL(scopes, state);
+			return GSON.toJson(authorizeURL);
+		}
+	}
+	
+	/**
+	 * Handles acquiring and utilizing the code for the user to create 
+	 * an access token
+	 * 
+	 * @author cjps
+	 *
+	 */
+	private class CodeHandler implements Route {
+		@Override
+		public Object handle(Request req, Response res) {
+			QueryParamsMap qm = req.queryMap();
 
-			/*
-			 * Continue by sending the user to the authorizeURL, which will look
-			 * something like
-			 * https://accounts.spotify.com:443/authorize?client_id
-			 * =5fe01282e44241328a84e7c5cc169165
-			 * &response_type=code&redirect_uri=
-			 * https://example.com/callback&scope
-			 * =user-read-private%20user-read-email
-			 * &state=some-state-of-my-choice
-			 */
-
-			/* Application details necessary to get an access token */
-			final String code = "<insert code>";
-
+			// Retrieve the code from the front-end to get an access token
+			String code = GSON.fromJson(qm.value("code"), String.class);
 			/*
 			 * Make a token request. Asynchronous requests are made with the
 			 * .getAsync method and synchronous requests are made with the .get
 			 * method. This holds for all type of requests.
 			 */
-			final SettableFuture<AuthorizationCodeCredentials> authorizationCodeCredentialsFuture = api
-					.authorizationCodeGrant(code).build().getAsync();
-
-			/* Add callbacks to handle success and failure */
-			Futures.addCallback(authorizationCodeCredentialsFuture,
-					new FutureCallback<AuthorizationCodeCredentials>() {
-						@Override
-						public void onSuccess(
-								AuthorizationCodeCredentials authorizationCodeCredentials) {
-							/* The tokens were retrieved successfully! */
-							System.out
-									.println("Successfully retrieved an access token! "
-											+ authorizationCodeCredentials
-													.getAccessToken());
-							System.out.println("The access token expires in "
-									+ authorizationCodeCredentials
-											.getExpiresIn() + " seconds");
-							System.out
-									.println("Luckily, I can refresh it using this refresh token! "
-											+ authorizationCodeCredentials
-													.getRefreshToken());
-
-							/*
-							 * Set the access token and refresh token so that
-							 * they are used whenever needed
-							 */
-							api.setAccessToken(authorizationCodeCredentials
-									.getAccessToken());
-							api.setRefreshToken(authorizationCodeCredentials
-									.getRefreshToken());
-						}
-
-						@Override
-						public void onFailure(Throwable throwable) {
-							/*
-							 * Let's say that the client id is invalid, or the
-							 * code has been used more than once, the request
-							 * will fail. Why it fails is written in the
-							 * throwable's message.
-							 */
-
-						}
-					});
+			AuthorizationCodeCredentials acg = null;
+			User currentUser = null;
+			String accessToken = "";
+			String refreshToken = "";
+			try {
+				acg = api.authorizationCodeGrant(code).build().get();
+//				accessToken = acg.getAccessToken();
+				refreshToken = acg.getRefreshToken();
+//				api.setAccessToken(accessToken);
+				api.setRefreshToken(refreshToken);
+				accessToken = api.refreshAccessToken().build().get().getAccessToken();
+				currentUser = api.getMe().accessToken(accessToken).build().get();
+				System.out.println("Current user acquired");
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("ERROR: issue retrieving current user");
+			}
 			
+			String display = "";
 			
-			return GSON.toJson(authorizeURL);
+			if (currentUser.getDisplayName() == null) {
+				display = currentUser.getId();
+			} else {
+				display = currentUser.getDisplayName();
+			}
+			
+			System.out.printf("User: %s\n", display);
+			
+			return display;
 		}
 	}
 

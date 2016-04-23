@@ -2,32 +2,20 @@
 // retrieved from the back-end
 
 var linkToLogin = $("#loginLink");
-var authorizeURI;
 var isPlaylistUp = true;
 var isAddEventUp = false;
 var addEventDiv = $("#addEvent");
 var playlistDiv = $("#playlist");
 hideMainContent();
 
-// Retrieve the authorizeURI from the back-end
-$.get("/login", function(responseJSON) {
-  var authorizeURI = JSON.parse(responseJSON);
-  authorizeURI += "&show_dialog=true"; // necessary for other users to login
-  linkToLogin.prop("href", authorizeURI);
-  console.log(linkToLogin.href);
-});
-
-
-
-// var clientID = "bfd53bc39d2c46f081fa7951a5a88ea8";
-
-
-// var getParams = {client_id: clientID, response_type: "code", show_dialog: "true"};
-// $.get("https://accounts.spotify.com:443/authorize", getParams, function(responseJSON) {
-//   var object = JSON.parse(responseJSON);
-//   console.log("NEW: " + object);
-//   linkToLogin.href = object;
-// });
+if (window.location.pathname === "/vibe") {
+  // Retrieve the authorizeURI from the back-end
+  $.get("/login", function(responseJSON) {
+    var authorizeURI = JSON.parse(responseJSON);
+    authorizeURI += "&show_dialog=true"; // necessary for other users to login
+    linkToLogin.prop("href", authorizeURI);
+  });  
+}
 
 
 /**
@@ -47,4 +35,3 @@ function hideMainContent() {
     isPlaylistUp = false;
   }
 }
-

@@ -72,5 +72,18 @@ public boolean equals(Object o) {
   }
 }
 
+@Override
+public String toString() {
+  StringBuilder sb = new StringBuilder();
+  sb.append(hour + ":" + minute);
+  if (isAM) {
+    sb.append("AM");
+  } else {
+    sb.append("PM");
+  }
+  
+  return sb.toString();
+}
+
 
 }

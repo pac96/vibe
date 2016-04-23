@@ -24,8 +24,11 @@ public class SpotifyConverter {
 
   public String makeSpotifyPlaylist() {
     final PlaylistCreationRequest request = api
-        .createPlaylist(user.getId(), "title").publicAccess(true).build();
-
+        .createPlaylist(user.getId(), "title")
+        .publicAccess(true)
+        .build();
+    
+    System.out.println("request: " + request.toString());
     playlistID = null;
     try {
       final Playlist playlist = request.get();
@@ -34,7 +37,7 @@ public class SpotifyConverter {
       System.out.println("You just created this playlist!");
       System.out.println("Its title is " + playlist.getName());
     } catch (Exception e) {
-      System.out.println("Something went wrong!" + e.getMessage());
+      System.out.println("P1: Something went wrong!" + e.getMessage());
       e.printStackTrace();
     }
 
@@ -48,7 +51,7 @@ public class SpotifyConverter {
     try {
       addRequest.get();
     } catch (Exception e) {
-      System.out.println("Something went wrong!" + e.getMessage());
+      System.out.println("P2: Something went wrong!" + e.getMessage());
     }
     return null;
   }

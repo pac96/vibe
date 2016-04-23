@@ -13,6 +13,7 @@ public class SpotifyConverter {
   private Api api;
   private User user;
   private List<String> trackList;
+  private String playlistID;
 
   public SpotifyConverter(Api api, User currentUser, List<String> tracks) {
     this.api = api;
@@ -25,7 +26,7 @@ public class SpotifyConverter {
     final PlaylistCreationRequest request = api
         .createPlaylist(user.getId(), "title").publicAccess(true).build();
 
-    String playlistID = null;
+    playlistID = null;
     try {
       final Playlist playlist = request.get();
       playlistID = playlist.getId();
@@ -50,6 +51,10 @@ public class SpotifyConverter {
       System.out.println("Something went wrong!" + e.getMessage());
     }
     return null;
+  }
+
+  public String getSpotifyPlaylistID() {
+    return playlistID;
   }
 
 }

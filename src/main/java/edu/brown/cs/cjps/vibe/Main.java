@@ -125,9 +125,9 @@ public final class Main {
   }
 
   // TODO: Call this method from some sort of handler
-  private void generatePlaylist() {
+  private String generatePlaylist() {
     PlaylistGenerator generator = new PlaylistGenerator();
-    List<String> tracks;
+    List<String> tracks = null;
     try {
       tracks = generator.playlistTest();
     } catch (EchoNestException e) {
@@ -136,6 +136,8 @@ public final class Main {
     }
     // Generate a playlist based on something
     SpotifyConverter spotconv = new SpotifyConverter(api, currentUser, tracks);
+    String playlistID = spotconv.getSpotifyPlaylistID();
+    return playlistID;
   }
 
   /**

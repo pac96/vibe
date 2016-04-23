@@ -1,0 +1,47 @@
+html, body {
+  color: black;
+  height: 100%;
+  width: 100%;
+  background-image:url("/images/river.jpg");
+}
+
+h1 {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+h1 span {
+  font-size: .9em;
+  text-transform: none;
+}
+
+.spotify {
+  text-align: center;
+}
+
+/*.spotify button {
+  font-weight: bold;
+  background-color: #8CFC99;
+}
+
+.spotify button:hover {
+  background-color: green;
+  color: white;
+}
+
+.spotify button a:visited {
+  text-decoration: none;
+  color: black;
+}*/
+
+/* Playlist Page */
+#calendar { /* References the div col */
+  border-right: 1px solid black;
+
+}
+
+iframe {
+  width: 1000px ;
+  height: 600px;
+}

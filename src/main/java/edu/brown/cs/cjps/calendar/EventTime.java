@@ -14,7 +14,7 @@ public class EventTime implements Comparable<EventTime> {
     private boolean isAM;
   
   //Constructor for an event time.
-  public EventTime(int hour , int minute, boolean amOrPm) {
+  public EventTime(int hour , int minute, boolean amOrPm) throws IllegalArgumentException {
     if ( hour < 0 || hour > 12 || minute < 0 || minute > 59) {
       throw new IllegalArgumentException();
     }
@@ -24,7 +24,7 @@ public class EventTime implements Comparable<EventTime> {
     this.isAM = amOrPm;
   }
   
-  public void update(int _hour, int _minute, boolean _amOrPm) {
+  public void update(int _hour, int _minute, boolean _amOrPm) throws IllegalArgumentException {
     if (hour < 0 || hour > 12 || minute < 0 || minute > 60) {
       throw new IllegalArgumentException();
     }
@@ -59,6 +59,13 @@ public int getHour() {
  * */
 public int getMinute() {
   return minute;
+}
+
+/**  
+ * @return if the time is AM or PM.
+ * */
+public boolean IsAm() {
+  return isAM;
 }
 
 @Override

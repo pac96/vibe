@@ -36,8 +36,8 @@ public class CalendarEvent {
   public void setStart(int newHour,int newMinute, boolean amOrPm) {
     start.update(newHour, newMinute, amOrPm);
     
-    if (start.compareTo(end) < 0) {
-      System.out.println("The start time cannot occur after the end time");
+    if (start.compareTo(end) > 0) {
+      System.out.println("The start time cannot occur after the end time or vice-versa");
       throw new IllegalArgumentException();
     }
   }

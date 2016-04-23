@@ -139,6 +139,7 @@ public class PlaylistGenerator {
   }
 
   public List<String> playlistTest() throws EchoNestException {
+    System.out.println("playlisttest");
     EchoNestAPI en = new EchoNestAPI(API_KEY);
     PlaylistParams params = new PlaylistParams();
     params.addIDSpace("spotify-WW");
@@ -148,13 +149,33 @@ public class PlaylistGenerator {
     params.setLimit(true);
 
     Playlist playlist = en.createStaticPlaylist(params);
+    Song testSong = playlist.getSongs().get(0);
+    System.out.println("ID is " + testSong.getID());
+    Track t = testSong.getTrack("spotify");
+    System.out.println("trak1 is " + t);
+    System.out.println(testSong.toString());
+    // System.out.println(testSong.getAnalysisURL());
+    // System.out.println(testSong.getTrackNew("spotify-WW"));
+    // System.out.println(testSong.getTrackOld("spotify-WW"));
+    // Track t = testSong.getTrack("spotify-WW");
+    // System.out.println("track is " + t);
+    // System.out.println("Audio url: " + t.getAudioUrl());
+    // System.out.println(t.getForeignID());
+    // System.out.println(t.getSongID());
+    // System.out.println(t.getID());
+    // System.out.println(t.getAnalysisURL());
+    // System.out.println(testSong);
+    // System.out.println(testSong.getForeignID());
+
     List<String> tracks = new ArrayList<>();
     for (Song song : playlist.getSongs()) {
-      System.out.println(song);
+      // System.out.println(song);
       Track track = song.getTrack("spotify-WW");
-      tracks.add(track.getID());
+      System.out.println("right before the question line");
+      // tracks.add(track.getID());
     }
+    System.out.println("The track list in PlaylistGenerator");
+    System.out.println(tracks);
     return tracks;
   }
-
 }

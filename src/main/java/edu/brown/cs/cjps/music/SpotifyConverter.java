@@ -23,16 +23,17 @@ public class SpotifyConverter {
   }
 
   public String makeSpotifyPlaylist() {
+    System.out.println("in make spotify");
     final PlaylistCreationRequest request = api
-        .createPlaylist(user.getId(), "title")
-        .publicAccess(true)
-        .build();
-    
+        .createPlaylist(user.getId(), "title").publicAccess(true).build();
+
     System.out.println("request: " + request.toString());
     playlistID = null;
     try {
       final Playlist playlist = request.get();
       playlistID = playlist.getId();
+      System.out.println(playlistID);
+      System.out.println("uri: " + playlist.getUri());
 
       System.out.println("You just created this playlist!");
       System.out.println("Its title is " + playlist.getName());
@@ -47,7 +48,7 @@ public class SpotifyConverter {
     final AddTrackToPlaylistRequest addRequest = api
         .addTracksToPlaylist(user.getId(), playlistID, trackList)
         .position(insertIndex).build();
-
+    System.out.println(trackList);
     try {
       addRequest.get();
     } catch (Exception e) {

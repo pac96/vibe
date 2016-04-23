@@ -116,7 +116,7 @@ public final class Main {
         .redirectURI(redirectURI).build();
 
     // SOME TEST STUFF
-//    this.generatePlaylist();
+    // this.generatePlaylist();
 
     // END TEST STUFF
 
@@ -128,17 +128,21 @@ public final class Main {
 
   // TODO: Call this method from some sort of handler
   private String generatePlaylist() {
+    System.out.println("in generate playlist");
     PlaylistGenerator generator = new PlaylistGenerator();
     List<String> tracks = null;
     try {
+      System.out.println("try in main");
       tracks = generator.playlistTest();
     } catch (EchoNestException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
+    System.out.println("after the try in main");
     // Generate a playlist based on something
     SpotifyConverter spotconv = new SpotifyConverter(api, currentUser, tracks);
     String playlistID = spotconv.getSpotifyPlaylistID();
+    System.out.println("through generate playlist in main");
 
     return playlistID;
   }
@@ -241,17 +245,17 @@ public final class Main {
       currentUser = null;
       String accessToken = "";
       String refreshToken = "";
-      		
-      
+
       try {
         acg = api.authorizationCodeGrant(code).build().get();
         accessToken = acg.getAccessToken();
         refreshToken = acg.getRefreshToken();
-//        System.out.println("Getme request: " + api.getMe().accessToken(accessToken).build().toString());
+        // System.out.println("Getme request: " +
+        // api.getMe().accessToken(accessToken).build().toString());
 
         api.setAccessToken(accessToken);
         api.setRefreshToken(refreshToken);
-//        System.out.println("Access token : " + acg.getAccessToken());
+        // System.out.println("Access token : " + acg.getAccessToken());
         currentUser = api.getMe().accessToken(accessToken).build().get();
       } catch (Exception e) {
         e.printStackTrace();
@@ -265,7 +269,7 @@ public final class Main {
       } else {
         display = currentUser.getDisplayName();
       }
-      
+
       generatePlaylist();
 
       System.out.printf("User: %s\n", display);

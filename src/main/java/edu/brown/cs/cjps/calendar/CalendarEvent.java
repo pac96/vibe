@@ -86,7 +86,8 @@ public class CalendarEvent {
  public Map<String, Object> toJson() {
    return ImmutableMap.of("name" , name , 
        "start", start.toJson()
-       ,"end",end.toJson());
+       ,"end",end.toJson(),
+       "id", id.toString());
  }
   
   

@@ -8,7 +8,7 @@
 <div id="wrapper">
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper">
-	    <ul class="sidebar-nav" id = "calanderEvents">
+	    <ul class="sidebar-nav" id="calanderEvents">
 	        <li class="sidebar-brand" id="date">
 	            <a href="#">
 	    	    <script>
@@ -18,56 +18,7 @@
 	            <p id="date"></p>
 	            </a>
 	        </li>
-	        <li class="eventClick">
-	            <a href="#"> 
-	            <input type='button' name='settings' value="+" class = "settings-button"/> 
-	            &nbsp
-	            7am | Running 
-	            </a>
-	            
-	        </li>
-	        <li class="eventClick">
-	            <a href="#">
-	            <input type='button' name='settings' value="+" class = "settings-button"/> 
-	            &nbsp
-	            8am | Drive to Work
-	            </a>
-	        </li>
-	        <li>
-	        	<a href="#">
-	        	<input type='button' name='settings' value="+" class = "settings-button"/> 
-	            &nbsp
-	            9am | Work
-	            </a>
-	        </li>
-	        <li>
-	        	<a href="#">
-	        	<input type='button' name='settings' value="+" class = "settings-button"/> 
-	            &nbsp
-	            5pm | Drive Home
-	            </a>
-	        </li>
-	        <li>
-	        	<a href="#">
-	        	<input type='button' name='settings' value="+" class = "settings-button"/> 
-	            &nbsp
-	            6pm | Dinner with Friends
-	            </a>
-	        </li>
-	        <li>
-	        	<a href="#">
-	        	<input type='button' name='settings' value="+" class = "settings-button"/> 
-	            &nbsp
-	            7pm | Reading
-	            </a>
-	        </li>
-	        <li>
-	        	<a href="#">
-	        	<input type='button' name='settings' value="+" class = "settings-button"/> 
-	            &nbsp
-	            9pm | Nightly Stretch
-	            </a>
-	        </li>
+	        
 	        <hr>
 	        <form id='eventForm' form method="POST" action="/newEvent">
 	            <label for='name' > <font color="white"> Event Name: </font> </label>
@@ -76,14 +27,14 @@
 	            <br>
 	            <label for='start-time' ><font color="white">Start Time:</font></label> 
 	            <input type='text' id='startTime' name='startTime' maxlength="5" class = "form-textbox-time-start"/> 
-	            &nbsp <input type="radio" id='startAP' name="time-selection-start" value="am-start" checked> <font color="white"> am </font>
-	            &nbsp <input type="radio" id='startAP' name="time-selection-start" value="pm-start"> <font color="white"> pm </font>
+	            &nbsp <input type="radio" id='startAM' name="time-selection-start" value="am-start" checked> <font color="white"> am </font>
+	            &nbsp <input type="radio" id='startPM' name="time-selection-start" value="pm-start"> <font color="white"> pm </font>
 
 	            <br><br>
 	            <label for='end-time' ><font color="white">End Time:</font></label> 
 	            <input type='text' id='endTime' name='endTime' maxlength="5" class = "form-textbox-time-end"/>
-	            &nbsp <input type="radio" id='endAP' name="time-selection-end" value="am-end" checked> <font color="white"> am </font>
-	            &nbsp <input type="radio" id='endAP' name="time-selection-end" value="pm-end"> <font color="white"> pm </font>
+	            &nbsp <input type="radio" id='endAM' name="time-selection-end" value="am-end" checked> <font color="white"> am </font>
+	            &nbsp <input type="radio" id='endPM' name="time-selection-end" value="pm-end"> <font color="white"> pm </font>
 	            
 	            <br><br>
 	            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 

@@ -1,6 +1,9 @@
 package edu.brown.cs.cjps.calendar;
 
+import java.util.Map;
 import java.util.UUID;
+
+import com.google.common.collect.ImmutableMap;
 
 /**A class to represent a calendar event.*/
 public class CalendarEvent {
@@ -76,7 +79,15 @@ public class CalendarEvent {
    return sb.toString();
  }
 
-  
+/** 
+ * JSON representation of a CalendarEvent.
+ * 
+ * */ 
+ public Map<String, Object> toJson() {
+   return ImmutableMap.of("name" , name , 
+       "start", start.toJson()
+       ,"end",end.toJson());
+ }
   
   
   

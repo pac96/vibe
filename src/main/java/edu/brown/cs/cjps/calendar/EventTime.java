@@ -1,5 +1,9 @@
 package edu.brown.cs.cjps.calendar;
 
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
+
 /**A class to represent an eventTime. It takes an integer
  * of the time, and a boolean representing AM or PM.*/
 public class EventTime implements Comparable<EventTime> {
@@ -92,5 +96,10 @@ public String toString() {
   return sb.toString();
 }
 
+public Map<String, Object> toJson() {
+  return ImmutableMap.of("hour" , hour , 
+      "minute", minute
+      ,"isAM",isAM);
+}
 
 }

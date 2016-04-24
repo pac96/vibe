@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -147,10 +148,11 @@ public final class Main {
     System.out.println("after the try in main");
     // Generate a playlist based on something
     SpotifyConverter spotconv = new SpotifyConverter();
-    String playlistID = spotconv.makeSpotifyPlaylist(api, currentUser, tracks);
+    String playlistURI = spotconv.makeSpotifyPlaylist(api, currentUser, tracks);
     System.out.println("through generate playlist in main");
+//    String playlistURI = spotconv.
 
-    return playlistID;
+    return playlistURI;
   }
 
   /**
@@ -275,12 +277,16 @@ public final class Main {
       } else {
         display = currentUser.getDisplayName();
       }
+      
+      List<String> params = new ArrayList<>();
 
-      generatePlaylist();
+      String playlistURI = generatePlaylist();
+      params.add(display);
+      params.add(playlistURI);
 
       System.out.printf("User: %s\n", display);
 
-      return display;
+      return params;
     }
   }
 

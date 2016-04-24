@@ -32,6 +32,8 @@ import com.wrapper.spotify.Api;
 import com.wrapper.spotify.models.AuthorizationCodeCredentials;
 import com.wrapper.spotify.models.User;
 
+import edu.brown.cs.cjps.calendar.CalendarEvent;
+import edu.brown.cs.cjps.calendar.EventTime;
 import edu.brown.cs.cjps.music.PlaylistGenerator;
 import edu.brown.cs.cjps.music.PlaylistHQ;
 import edu.brown.cs.cjps.music.SpotifyConverter;
@@ -187,6 +189,7 @@ public final class Main {
     Spark.get("/login", new LoginHandler());
     Spark.get("/playlists", new PlaylistPageHandler(), freeMarker);
     Spark.post("/code", new CodeHandler());
+    Spark.post("/newEvent" , new addEventHandler());
   }
 
   /**
@@ -301,6 +304,42 @@ public final class Main {
     public ModelAndView handle(Request req, Response res) {
       Map<String, Object> variables = ImmutableMap.of("title", "Vibe");
       return new ModelAndView(variables, "playlists.ftl");
+    }
+  }
+  
+  /** 
+   * 
+   * Handles adding an event to a user's calendar.
+   * 
+   * */
+  private class addEventHandler implements Route {
+    @Override
+    public Object handle(Request req, Response res) {
+      QueryParamsMap qm = req.queryMap();
+      //Parse the start time to hour and minute.
+      String startTime = qm.value("start");
+      String[] startTimeSplit = startTime.split(":");
+      Integer startHour = Integer.parseInt(startTimeSplit[0]);
+      Integer startMinute = Integer.parseInt(startTimeSplit[1]);
+      Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
+      EventTime start = new EventTime(startHour, startMinute, amOrPm);
+      
+      //Parse the end time to hour and minute.
+      String endTime = qm.value("end");
+      String[] endTimeSplit = endTime.split(":");
+      Integer endHour = Integer.parseInt(endTimeSplit[0]);
+      Integer endMinute = Integer.parseInt(endTimeSplit[1]);
+      Boolean endAMorPM = Boolean.parseBoolean(qm.value("endAMPM"));
+      EventTime end = new EventTime(endHour, endMinute, endAMorPM);
+      //Pare the name from the front end.
+      String name = qm.value("name");
+            
+      //Create a calendar event
+      CalendarEvent newEvent = new CalendarEvent(name,start, end);
+      
+      //Send the event to the frontend.
+      return newEvent.toJson();
+      
     }
   }
 

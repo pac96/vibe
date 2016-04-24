@@ -317,6 +317,9 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
+      
+      System.out.println("WE ARE ADDING AN EVENT");
+      
       //Parse the start time to hour and minute.
       String startTime = qm.value("start");
       String[] startTimeSplit = startTime.split(":");
@@ -339,7 +342,8 @@ public final class Main {
       CalendarEvent newEvent = new CalendarEvent(name,start, end);
       
       //Send the event to the frontend.
-      return newEvent.toJson();
+//      return newEvent.toJson();
+      return GSON.toJson(newEvent);
       
     }
   }

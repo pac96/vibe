@@ -11,14 +11,11 @@
 	    <ul class="sidebar-nav" id = "calanderEvents">
 	        <li class="sidebar-brand" id="date">
 	            <a href="#">
-	            
-	            <script>
-	            <p id="date"></p>
-	            var d = new Date();
-	            document.getElementById("date").innerHTML = d.toDateString();
-	            var result = d.fontcolor("white");
+	    	    <script>
+		            var d = new Date();
+		            document.getElementById("date").innerHTML = d.toDateString();
 				</script>
-				 <!-- <font color="white"> d</font> -->
+	            <p id="date"></p>
 	            </a>
 	        </li>
 	        <li class="eventClick">
@@ -104,7 +101,7 @@
 	            <a href="#" class="dropdown-toggle" id="displayname" data-toggle="dropdown"><i class="fa fa-user"></i> Username <b class="caret"></b></a>
 	            <ul class="dropdown-menu">
 	                <li>
-	                    <a href="http://localhost:4567/vibe"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+	                    <a href="http://localhost:5555/vibe"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
 	                </li>
 	            </ul>
 	        </li>
@@ -112,56 +109,8 @@
 
 	    <br>
 
-	    <h2>TODO: Display Selected Event Here</h2>
-	        <!-- <div class="table-responsive">
-	            <table class="table table-hover">
-	                <thead>
-	                    <tr>
-	                        <th>Song</th>
-	                        <th>Artist</th>
-	                        <th>Genre</th>
-	                    </tr>
-	                </thead>
-	                <tbody>
-	                    <tr>
-	                        <td>Post To Be</td>
-	                        <td>Omarion</td>
-	                        <td>RB</td>
-	                    </tr>
-	                    <tr>
-	                        <td>On the Regular</td>
-	                        <td>Shamir</td>
-	                        <td>Pop</td>
-	                    </tr>
-	                    <tr>
-	                        <td>Warm Water</td>
-	                        <td>Banks</td>
-	                        <td>RB</td>
-	                    </tr>
-	                    <tr>
-	                        <td>Oui</td>
-	                        <td>Jermiah</td>
-	                        <td>RB</td>
-	                    </tr>
-	                    <tr>
-	                        <td>Formation</td>
-	                        <td>Beyonce</td>
-	                        <td>RB</td>
-	                    </tr>
-	                    <tr>
-	                        <td>Pt.2</td>
-	                        <td>Kanye</td>
-	                        <td>Rap</td>
-	                    </tr>
-	                    <tr>
-	                        <td>Work</td>
-	                        <td>Rhianna</td>
-	                        <td>Dancehall</td>
-	                    </tr>
-	                </tbody>
-	            </table>
-	        </div> -->
-	         <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Expand Playlist View</a>
+	    <h2>Display Selected Event Here</h2>
+	    <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Expand Playlist View</a>
 	    
 		<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>
 	    </div>

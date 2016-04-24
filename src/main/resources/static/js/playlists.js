@@ -35,6 +35,8 @@ function renderCalander(event){
 		"&nbsp " +
 		event.start.hour + timePeriod + " | " + event.name +
 		"</a> </li>";
+
+	console.log("Event html string: " + eventHTMLString);
 	
 	for(var i = 0; i < eventsArray.length; i++){
 		if (eventComparator(event, eventsArray[i]) == -1){
@@ -48,7 +50,7 @@ function renderCalander(event){
 
 
 
-var eventComparator = function (eventA , eventB) {
+var eventComparator = function(eventA , eventB) {
 	var eventAStartTime = eventA.start;
 	var eventBStartTime = eventB.start;
 	
@@ -145,9 +147,9 @@ if (window.location.pathname === "/playlists") {
 		var endTime = $('#endTime').val();
 		var startAP;
 		var endAP;
-		console.log(eventName);
-		console.log(startTime);
-		console.log(endTime);
+		console.log("Event name: " + eventName);
+		console.log("Start time: " + startTime);
+		console.log("End time: " + endTime);
 		
 		if ($('#startAP').val == "am-start"){
 			startAP = true;
@@ -185,6 +187,7 @@ if (window.location.pathname === "/playlists") {
 	    	$.post("/newEvent", postParameters, function(response) {
 	    		//1. send stuff to back end and store in responseObject
 	    		var responseObject = JSON.parse(responseJSON);
+	    		console.log("Parsed json event: " +  responseObject);
 	    		//2. Make calendar event object from responseObject
 	    		var newEvent =  new CalendarEvent(responseObject);
 	    		
@@ -202,9 +205,9 @@ if (window.location.pathname === "/playlists") {
 	    
 		});
 	
-	$.post("/code", postParams, function(responseJSON) {
-		var eventRequest = $('#eventForm');
+	// $.post("/code", postParams, function(responseJSON) {
+	// 	var eventRequest = $('#eventForm');
 		
-	});
+	// });
 
 }

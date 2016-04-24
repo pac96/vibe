@@ -190,6 +190,7 @@ public final class Main {
     Spark.get("/playlists", new PlaylistPageHandler(), freeMarker);
     Spark.post("/code", new CodeHandler());
     Spark.post("/newEvent" , new addEventHandler());
+    Spark.post("/clickEvent" , new clickEventHandler());
   }
 
   /**
@@ -340,6 +341,25 @@ public final class Main {
       //Send the event to the frontend.
       return newEvent.toJson();
       
+    }
+  }
+  
+  
+  /** 
+   * 
+   * Handles adding an event to a user's calendar.
+   * 
+   * */
+  private class clickEventHandler implements Route {
+    @Override
+    public Object handle(Request req, Response res) {
+      QueryParamsMap qm = req.queryMap();
+      
+      // Retrieve the event ID
+      String eventID = qm.value("eventID");
+      String uri = hq.convertForSpotify(eventID, api, currentUser);
+      
+      return uri;
     }
   }
 

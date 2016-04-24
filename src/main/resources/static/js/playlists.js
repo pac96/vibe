@@ -29,19 +29,19 @@ function renderCalander(event){
 	
 	var eventTimeline = document.getElementById('#calanderEvents'); //.parentNode?
 	var eventHTMLString = 
-		"<li id = " + event.id + "> " +
-		"<a href="#">" +
-		"<input type='button' name='settings' value= + class = 'settings-button'/> " +
+		"<li id='" + event.id + "' class='eventClick'> " +
+		"<a href='#'>" +
+		"<input type='button' name='settings' value='+' class='settings-button'/> " +
 		"&nbsp " +
 		event.start.hour + timePeriod + " | " + event.name +
 		"</a> </li>";
 	
-	for(event e : eventsArray){
-		if (eventComparator(event,e) == -1){
+	for(var i = 0; i < eventsArray.length; i++){
+		if (eventComparator(event, eventsArray[i]) == -1){
 			continue;
 		} else {
-			var priorEvent = e;
-			eventTimeline.insertAfter(e, eventHTMLString);
+			var priorEvent = eventsArray[i];
+			eventTimeline.insertAfter(eventsArray[i], eventHTMLString);
 		}
 	}
 }
@@ -80,7 +80,7 @@ var eventComparator = function (eventA , eventB) {
 if (window.location.pathname === "/playlists") {
 	var uri = new URI(window.location.href);
 	var urlParams = uri.search(true);
-	console.log("User code: " + urlParams.code);
+	// console.log("User code: " + urlParams.code);
 
 	var codeFromURL = urlParams.code;
 	var postParams = {code: JSON.stringify(codeFromURL)};
@@ -97,7 +97,8 @@ if (window.location.pathname === "/playlists") {
 	  }
 
 	  var username = backendParams[0].slice(1, backendParams[0].length); // remove the [
-	  var playlistURI = "https://embed.spotify.com/?uri=" + backendParams[1].slice(backendParams[1].length - 1, backendParams[1].length); // remove the ]
+	  var playlistURI = "https://embed.spotify.com/?uri=" 
+	  + backendParams[1].slice(0, backendParams[1].length - 1).trim(); // remove the ]
 
 	  console.log("user: " + username);
 	  console.log("playlist: " + playlistURI);
@@ -109,15 +110,44 @@ if (window.location.pathname === "/playlists") {
 
 	$("#playlist").attr('src', playlistURI);
 	
-	});
+	}); // end code post
 
+	console.log("We got out the post");
+
+	// Handles clicking on each event and generating spotify playlist
+	$(".eventClick").on('click', function() {
+		console.log("Clicked id = " + this.id);
+		var eventID = this.id;
+		var eventClickParams = {eventID: JSON.stringify(eventID)};
+		$.post("/eventClick", eventClickParams, function(responseJSON) {
+			var eventClickResponse = responseJSON;
+
+			console.log("Event click response : " + eventClickResponse);
+
+		 	var uri = "https://embed.spotify.com/?uri=" + eventClickResponse; // remove the ]
+
+		  	console.log("Event id: " +  eventID + " | playlist: " + playlistURI);
+		});
+	})
 	
 	$("#AddNewEvent").on('click', function() {
-		var eventName = $('#eventName').val;
-		var startTime = $('#startTime').val;
-		var endTime = $('#endTime').val;
+		console.log("Adding new event...");
+
+		// necessary for some browser problems (saw on jquery's website)
+		$.valHooks.textarea = {
+		  get: function( elem ) {
+		    return elem.value.replace( /\r?\n/g, "\r\n" );
+		  }
+		};
+
+		var eventName = $('#eventName').val();
+		var startTime = $('#startTime').val();
+		var endTime = $('#endTime').val();
 		var startAP;
 		var endAP;
+		console.log(eventName);
+		console.log(startTime);
+		console.log(endTime);
 		
 		if ($('#startAP').val == "am-start"){
 			startAP = true;
@@ -168,9 +198,6 @@ if (window.location.pathname === "/playlists") {
 	    		renderCalendar(newEvent);
 	    		
 	    	});
-	    	
-	    	
-	    	
 	    }
 	    
 		});

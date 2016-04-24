@@ -59,13 +59,20 @@ public class PlaylistHQ {
     // TODO: Convert the params to a setting and pass to make playlist
   }
 
+  /**
+   * Returns the spotify uri of a specific playlist for an event
+   * @param eventID
+   * @param spotifyAPI
+   * @param spotifyUser
+   * @return
+   */
   public String convertForSpotify(String eventID, Api spotifyAPI,
       User spotifyUser) {
     VibeCache.getPlaylistCache().get(eventID);
     List<String> trackIDs = null;
     // TODO get trackids somehow
-    String id = sc.makeSpotifyPlaylist(spotifyAPI, spotifyUser, trackIDs);
-    return id;
+    String uri = sc.makeSpotifyPlaylist(spotifyAPI, spotifyUser, trackIDs);
+    return uri;
   }
 
   private Tag findTag(String eventID) {

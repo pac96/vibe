@@ -9,7 +9,7 @@
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper">
 	    <ul class="sidebar-nav" id = "calanderEvents">
-	        <li class="sidebar-brand">
+	        <li class="sidebar-brand" id="date">
 	            <a href="#">
 	            
 	            <script>
@@ -18,55 +18,55 @@
 	            document.getElementById("date").innerHTML = d.toDateString();
 	            var result = d.fontcolor("white");
 				</script>
-				 <font color="white"> d </font>
+				 <!-- <font color="white"> d</font> -->
 	            </a>
 	        </li>
-	        <li>
+	        <li class="eventClick">
 	            <a href="#"> 
-	            <input type='button' name='settings' value= + class = "settings-button"/> 
+	            <input type='button' name='settings' value="+" class = "settings-button"/> 
 	            &nbsp
 	            7am | Running 
 	            </a>
 	            
 	        </li>
-	        <li>
+	        <li class="eventClick">
 	            <a href="#">
-	            <input type='button' name='settings' value= + class = "settings-button"/> 
+	            <input type='button' name='settings' value="+" class = "settings-button"/> 
 	            &nbsp
 	            8am | Drive to Work
 	            </a>
 	        </li>
 	        <li>
 	        	<a href="#">
-	        	<input type='button' name='settings' value= + class = "settings-button"/> 
+	        	<input type='button' name='settings' value="+" class = "settings-button"/> 
 	            &nbsp
 	            9am | Work
 	            </a>
 	        </li>
 	        <li>
 	        	<a href="#">
-	        	<input type='button' name='settings' value= + class = "settings-button"/> 
+	        	<input type='button' name='settings' value="+" class = "settings-button"/> 
 	            &nbsp
 	            5pm | Drive Home
 	            </a>
 	        </li>
 	        <li>
 	        	<a href="#">
-	        	<input type='button' name='settings' value= + class = "settings-button"/> 
+	        	<input type='button' name='settings' value="+" class = "settings-button"/> 
 	            &nbsp
 	            6pm | Dinner with Friends
 	            </a>
 	        </li>
 	        <li>
 	        	<a href="#">
-	        	<input type='button' name='settings' value= + class = "settings-button"/> 
+	        	<input type='button' name='settings' value="+" class = "settings-button"/> 
 	            &nbsp
 	            7pm | Reading
 	            </a>
 	        </li>
 	        <li>
 	        	<a href="#">
-	        	<input type='button' name='settings' value= + class = "settings-button"/> 
+	        	<input type='button' name='settings' value="+" class = "settings-button"/> 
 	            &nbsp
 	            9pm | Nightly Stretch
 	            </a>
@@ -90,7 +90,7 @@
 	            
 	            <br><br>
 	            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
-	            <input type='button' name='AddNewEvent' value='Add New Event' class = "form-button"/>
+	            <input type='button' name='AddNewEvent' value='Add New Event' id="AddNewEvent" class = "form-button"/>
 	        </form>
 	    </ul>
 	</div>

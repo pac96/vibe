@@ -8,7 +8,7 @@
 <div id="wrapper">
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper">
-	    <ul class="sidebar-nav">
+	    <ul class="sidebar-nav" id = "calanderEvents">
 	        <li class="sidebar-brand">
 	            <a href="#">
 	            
@@ -72,25 +72,25 @@
 	            </a>
 	        </li>
 	        <hr>
-	        <form id='form' action='handle_new_event.php' method='POST' target='formresponse'>
+	        <form id='eventForm' form method="POST" action="/newEvent">
 	            <label for='name' > <font color="white"> Event Name: </font> </label>
-	            <input type='text' name='name' id='name' maxlength="30" class = "form-textbox"/><br/>
+	            <input type='text' id='eventName' name='name' id='name' maxlength="30" class = "form-textbox"/><br/>
 
 	            <br>
 	            <label for='start-time' ><font color="white">Start Time:</font></label> 
-	            <input type='text' name='startTime' id='startTime' maxlength="5" class = "form-textbox-time-start"/> 
-	            &nbsp <input type="radio" name="time-selection-start" value="am-start" checked> <font color="white"> am </font>
-	            &nbsp <input type="radio" name="time-selection-start" value="pm-start"> <font color="white"> pm </font>
+	            <input type='text' id='startTime' name='startTime' maxlength="5" class = "form-textbox-time-start"/> 
+	            &nbsp <input type="radio" id='startAP' name="time-selection-start" value="am-start" checked> <font color="white"> am </font>
+	            &nbsp <input type="radio" id='startAP' name="time-selection-start" value="pm-start"> <font color="white"> pm </font>
 
 	            <br><br>
 	            <label for='end-time' ><font color="white">End Time:</font></label> 
-	            <input type='text' name='endTime' id='endTime' maxlength="5" class = "form-textbox-time-end"/>
-	            &nbsp <input type="radio" name="time-selection-end" value="am-end" checked> <font color="white"> am </font>
-	            &nbsp <input type="radio" name="time-selection-end" value="pm-end"> <font color="white"> pm </font>
+	            <input type='text' id='endTime' name='endTime' maxlength="5" class = "form-textbox-time-end"/>
+	            &nbsp <input type="radio" id='endAP' name="time-selection-end" value="am-end" checked> <font color="white"> am </font>
+	            &nbsp <input type="radio" id='endAP' name="time-selection-end" value="pm-end"> <font color="white"> pm </font>
 	            
 	            <br><br>
 	            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
-	            <input type='button' name='Add New Event' value='Add New Event' class = "form-button"/>
+	            <input type='button' name='AddNewEvent' value='Add New Event' class = "form-button"/>
 	        </form>
 	    </ul>
 	</div>

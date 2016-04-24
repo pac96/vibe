@@ -1,5 +1,6 @@
 package edu.brown.cs.cjps.music;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.wrapper.spotify.Api;
@@ -23,15 +24,16 @@ public class SpotifyConverter {
   }
 
   public String makeSpotifyPlaylist(Api api, User user, List<String> trackList) {
-    System.out.println("in make spotify");
+
     final PlaylistCreationRequest request = api
         .createPlaylist(user.getId(), "title").publicAccess(true).build();
 
     System.out.println("request: " + request.toString());
     String playlistID = null;
     String playlistURI = "";
+    Playlist playlist = null;
     try {
-      final Playlist playlist = request.get();
+      playlist = request.get();
       playlistID = playlist.getId();
       playlistURI = playlist.getUri();
       System.out.println(playlistID);
@@ -48,15 +50,31 @@ public class SpotifyConverter {
     // Index starts at 0
     final int insertIndex = 0;
 
-    final AddTrackToPlaylistRequest addRequest = api
-        .addTracksToPlaylist(user.getId(), playlistID, trackList)
-        .position(insertIndex).build();
-    System.out.println(trackList);
-    try {
-      addRequest.get();
-    } catch (Exception e) {
-      System.out.println("P2: Something went wrong!" + e.getMessage());
-    }
+    System.out.println("Tracklist: " + trackList);
+
+
+
+//    for (int i = 0; i < trackList.size(); i++) {
+    	
+        List<String> trackList2 = new ArrayList<>();
+        trackList2.add("spotify:track:4BYGxv4rxSNcTgT3DsFB9o");
+    	
+    	final AddTrackToPlaylistRequest addRequest = api
+    	        .addTracksToPlaylist(user.getId(), playlistID, trackList2)
+    	        .position(0)
+    	        .build();
+
+    	    try {
+    	      addRequest.get();
+    	    } catch (Exception e) {
+    	    	e.printStackTrace();
+    	      System.out.println("P2: Something went wrong!" + e.getMessage());
+    	    }	
+//    }
+    
+    
+//    System.out.println("Tracks in playlist: " + playlist.getTracks().getNext());
+    
     return playlistURI;
   }
 

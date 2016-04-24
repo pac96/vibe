@@ -1,5 +1,9 @@
 package edu.brown.cs.cjps.music;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -151,30 +155,79 @@ public class PlaylistGenerator {
     params.setLimit(true);
 
     Playlist playlist = en.createStaticPlaylist(params);
-    Song testSong = playlist.getSongs().get(0);
-    System.out.println("ID is " + testSong.getID());
-    Track t = testSong.getTrack("spotify");
-    System.out.println("trak1 is " + t);
-    System.out.println(testSong.toString());
-    System.out.println("and now...");
+//    Song testSong = playlist.getSongs().get(0);
+//    System.out.println("ID is " + testSong.getID());
+//    Track t = testSong.getTrack("spotify");
+//    System.out.println("trak1 is " + t);
+//    System.out.println(testSong.toString());
+//    System.out.println("and now...");
     // REGEX
 
     List<String> tracks = new ArrayList<>();
     for (Song song : playlist.getSongs()) {
-      Pattern pattern = Pattern
-          .compile("tracks\":\\[\\{\"foreign_id\":\"(.*?)\"");
+        String name = song.getTitle();
+        // String name = "Karma Police";
+        name = name.toLowerCase();
+        name = name.replaceAll(" ", "%20");
 
-      Matcher matcher = pattern.matcher(song.toString());
+        String artist = song.getArtistName();
+        // String artist = "radiohead";
+        artist = artist.toLowerCase();
+        artist = artist.replaceAll(" ", "%20");
+        String stringURL = "http://developer.echonest.com/api/v4/song/search?api_key=OOT8LZ0VYRFYT5YYK&format=json&results=1&artist="
+            + artist
+            + "&title="
+            + name
+            + "&bucket=id:spotify&bucket=tracks&limit=true";
 
-      if (matcher.find()) {
-        String found = matcher.group(0);
-        System.out.println("regex found " + found);
-        found = found.substring(24, found.length() - 2);
-        System.out.println("AND NOW " + found);
-        tracks.add(found);
-      }
+//         String stringURL =
+//         "http://developer.echonest.com/api/v4/song/search?api_key=OOT8LZ0VYRFYT5YYK&format=json&results=1&artist=radiohead&title=karma%20police&bucket=id:spotify&bucket=tracks&limit=true";
+        URL actualURL = null;
+        try {
+          actualURL = new URL(stringURL);
+        } catch (MalformedURLException e1) {
+          System.out.println("ERROR: Bad URL");
+        }
+        InputStream response = null;
+        try {
+          response = actualURL.openStream();
+          // update to time of this call
+
+        } catch (IOException e) {
+          // Return and try again in one second - shouldn't interrupt anyone else
+          e.printStackTrace();
+        }
+
+        @SuppressWarnings("resource")
+		java.util.Scanner s = new java.util.Scanner(response).useDelimiter("\\A");
+        String stringVersion = s.hasNext() ? s.next() : "";
+        // If there are no updates, [] is returned. In this case, no need to
+        // continue
+//        System.out.println(stringVersion);
+
+        Pattern pattern = Pattern.compile("\"spotify:track:(.*?)\"");
+
+        Matcher matcher = pattern.matcher(stringVersion);
+
+        if (matcher.find()) {
+          String found = matcher.group(0);
+          // System.out.println("regex found " + found);
+          found = found.substring(1, found.length() - 2);
+          System.out.println("AND NOW " + found);
+          tracks.add(found);
+        }
+        try {
+          response.close();
+        } catch (IOException e) {
+          System.out.println("ERROR: error closing stream");
+        }
+        s.close();
+        
+//	    System.out.println(tracks);
     }
+    
     System.out.println(tracks);
-    return tracks;
+	return tracks;
   }
+  
 }

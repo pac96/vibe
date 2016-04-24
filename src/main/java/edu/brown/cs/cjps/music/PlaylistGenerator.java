@@ -158,41 +158,22 @@ public class PlaylistGenerator {
     System.out.println(testSong.toString());
     System.out.println("and now...");
     // REGEX
-    String test = "hello'this'and I hope'this' it works";
-    // Pattern pattern = Pattern.compile(":\"(.*?)\"");
-    Pattern pattern = Pattern
-        .compile("tracks\":\\[\\{\"foreign_id\":\"(.*?)\"");
-    System.out.println("which line");
-    Matcher matcher = pattern.matcher(testSong.toString());
-    System.out.println("is failing me");
-    if (matcher.find()) {
-      String found = matcher.group(0);
-      System.out.println("regex found " + found);
-      found = found.substring(24, found.length() - 2);
-      System.out.println("AND NOW " + found);
-    }
-    System.out.println("I do not know");
-    // System.out.println(testSong.getAnalysisURL());
-    // System.out.println(testSong.getTrackNew("spotify-WW"));
-    // System.out.println(testSong.getTrackOld("spotify-WW"));
-    // Track t = testSong.getTrack("spotify-WW");
-    // System.out.println("track is " + t);
-    // System.out.println("Audio url: " + t.getAudioUrl());
-    // System.out.println(t.getForeignID());
-    // System.out.println(t.getSongID());
-    // System.out.println(t.getID());
-    // System.out.println(t.getAnalysisURL());
-    // System.out.println(testSong);
-    // System.out.println(testSong.getForeignID());
 
     List<String> tracks = new ArrayList<>();
     for (Song song : playlist.getSongs()) {
-      // System.out.println(song);
-      Track track = song.getTrack("spotify-WW");
-      System.out.println("right before the question line");
-      // tracks.add(track.getID());
+      Pattern pattern = Pattern
+          .compile("tracks\":\\[\\{\"foreign_id\":\"(.*?)\"");
+
+      Matcher matcher = pattern.matcher(song.toString());
+
+      if (matcher.find()) {
+        String found = matcher.group(0);
+        System.out.println("regex found " + found);
+        found = found.substring(24, found.length() - 2);
+        System.out.println("AND NOW " + found);
+        tracks.add(found);
+      }
     }
-    System.out.println("The track list in PlaylistGenerator");
     System.out.println(tracks);
     return tracks;
   }

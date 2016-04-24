@@ -60,4 +60,8 @@ public class VibeCache {
     return playlistCache;
   }
 
+  public static ListMultimap<Tag, String> getTagMap() {
+    return tags;
+  }
+
 }

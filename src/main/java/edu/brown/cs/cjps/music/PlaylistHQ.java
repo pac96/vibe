@@ -6,6 +6,7 @@ import com.echonest.api.v4.Playlist;
 import com.wrapper.spotify.Api;
 import com.wrapper.spotify.models.User;
 
+import edu.brown.cs.cjps.vibe.MusicEventTag.Tag;
 import edu.brown.cs.cjps.vibe.VibeCache;
 
 public class PlaylistHQ {
@@ -21,19 +22,20 @@ public class PlaylistHQ {
     sc = new SpotifyConverter();
   }
 
-  public void generateFromTag(String eventID, String tag) {
+  public void generateFromTag(String eventID) {
+    Tag tag = this.findTag(eventID);
     Settings defaults;
     switch (tag) {
-    case "WorkStudy":
+    case WORKSTUDY:
       defaults = def.getWorkStudyDefaults();
       break;
-    case "EatSocial":
+    case EATSOCIAL:
       defaults = def.getEatSocialDefaults();
       break;
-    case "Exercise":
+    case EXERCISE:
       defaults = def.getExerciseDefaults();
       break;
-    case "Party":
+    case PARTY:
       defaults = def.getPartyDefaults();
       break;
     // Restful is default
@@ -42,20 +44,7 @@ public class PlaylistHQ {
     }
 
     Playlist p = pg.makePlaylist(defaults);
-    // // System.out.println(songs);
-    // for (Song s : songs) {
-    // System.out.println(s.getTitle());
-    // System.out.println(" " + s.getArtistName());
-    // try {
-    // // System.out.println(" " + s.getSongHotttnesss());
-    // System.out.println(" " + s.getArtistHotttnesss());
-    //
-    // } catch (EchoNestException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    //
-    // }
+
     VibePlaylist newVPlaylist = new VibePlaylist(p);
     VibeCache.getPlaylistCache().put(eventID, newVPlaylist);
 
@@ -79,4 +68,17 @@ public class PlaylistHQ {
     return id;
   }
 
+  private Tag findTag(String eventID) {
+    String[] idArray = eventID.split(" ");
+    for (int i = 0; i < idArray.length; i++) {
+      if (VibeCache.getTagMap().containsValue(idArray[i])) {
+        for (Tag t : VibeCache.getTagMap().keys()) {
+          if (VibeCache.getTagMap().containsEntry(t, idArray[i])) {
+            return t;
+          }
+        }
+      }
+    }
+    return null;
+  }
 }

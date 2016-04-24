@@ -20,6 +20,7 @@ function CalendarEvent(event) {
 
 //Creates a new event on the sidebar
 function renderCalander(event){
+	console.log("renderCalander ...");
 	var timePeriod = "";
 	if(event.start.isAM){
 		timePeriod = "am";
@@ -27,7 +28,8 @@ function renderCalander(event){
 		timePeriod = "pm";
 	}
 	
-	var eventTimeline = document.getElementById('#calanderEvents'); //.parentNode?
+	var eventTimeline = document.getElementById('#calanderEvents').parentNode;
+	var eventTimlineItems = eventTimeline.getElementsByTagName("li");
 	var eventHTMLString = 
 		"<li id='" + event.id + "' class='eventClick'> " +
 		"<a href='#'>" +
@@ -38,7 +40,7 @@ function renderCalander(event){
 
 	console.log("Event html string: " + eventHTMLString);
 	
-	for(var i = 0; i < eventsArray.length; i++){
+	for(var i = 0; i < eventTimlineItems.length; i++){
 		if (eventComparator(event, eventsArray[i]) == -1){
 			continue;
 		} else {
@@ -151,22 +153,29 @@ if (window.location.pathname === "/playlists") {
 		console.log("Start time: " + startTime);
 		console.log("End time: " + endTime);
 		
-		if ($('#startAP').val == "am-start"){
+		console.log("Check start time value: " + $('#startAM').is(':checked'));
+		console.log("Check end time value: " + $('#endAM').is(':checked'));
+		
+		
+		if ($('#startAM').is(':checked')) {
 			startAP = true;
 		} else {
 			startAP = false;
 		}
 		
-		if ($('#endAP').val == "am-end"){
+		if ($('#endAM').is(':checked')) {
 			endAP = true;
 		} else {
 			endAP = false;
 		}
 		
+		console.log("start AM/PM Option: " + startAP);
+		console.log("end AM/PM Option: " + endAP);
+		
 		eventFormat = /^[a-zA-Z]+$/;
 		timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
 		
-		if(eventName == '' || startTime == '' || endTime == '' || startAP == '' || endAP == '') {
+		if(eventName == null || startTime == null || endTime == null || startAP == null || endAP == null) {
 			alert("One or more event fields are empty");
 		} else if(eventName != '' && !eventName.match(eventFormat)) {
 			alert("Invalid Event Name: " + eventName.val);
@@ -186,7 +195,7 @@ if (window.location.pathname === "/playlists") {
 	    	
 	    	$.post("/newEvent", postParameters, function(response) {
 	    		//1. send stuff to back end and store in responseObject
-	    		var responseObject = JSON.parse(responseJSON);
+	    		var responseObject = JSON.parse(response);
 	    		console.log("Parsed json event: " +  responseObject);
 	    		//2. Make calendar event object from responseObject
 	    		var newEvent =  new CalendarEvent(responseObject);
@@ -198,7 +207,13 @@ if (window.location.pathname === "/playlists") {
 	    		eventsArray.sort(eventComparator);
 	    		
 	    		//5. Render calendar 
-	    		renderCalendar(newEvent);
+	    		console.log("New Event Name : " + newEvent.name);
+	    		console.log("New Event Start Time Hour: " + newEvent.start.hour);
+	    		console.log("New Event Start Time AM: " + newEvent.start.isAM);
+	    		console.log("New Event End Time Hour: " + newEvent.end.hour);
+	    		console.log("New Event End Time AM: " + newEvent.end.isAM);
+	    		console.log("New Event : " + newEvent.id);
+	    		renderCalander(newEvent);
 	    		
 	    	});
 	    }

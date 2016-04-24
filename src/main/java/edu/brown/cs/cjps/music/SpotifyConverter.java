@@ -10,25 +10,25 @@ import com.wrapper.spotify.models.User;
 
 public class SpotifyConverter {
 
-  private Api api;
-  private User user;
-  private List<String> trackList;
-  private String playlistID;
+  // private Api api;
+  // private User user;
+  // private List<String> trackList;
+  // private String playlistID;
 
-  public SpotifyConverter(Api api, User currentUser, List<String> tracks) {
-    this.api = api;
-    user = currentUser;
-    trackList = tracks;
-    this.makeSpotifyPlaylist();
+  public SpotifyConverter() {
+    // this.api = api;
+    // user = currentUser;
+    // trackList = tracks;
+    // this.makeSpotifyPlaylist(api, user, trackList);
   }
 
-  public String makeSpotifyPlaylist() {
+  public String makeSpotifyPlaylist(Api api, User user, List<String> trackList) {
     System.out.println("in make spotify");
     final PlaylistCreationRequest request = api
         .createPlaylist(user.getId(), "title").publicAccess(true).build();
 
     System.out.println("request: " + request.toString());
-    playlistID = null;
+    String playlistID = null;
     try {
       final Playlist playlist = request.get();
       playlistID = playlist.getId();
@@ -54,11 +54,11 @@ public class SpotifyConverter {
     } catch (Exception e) {
       System.out.println("P2: Something went wrong!" + e.getMessage());
     }
-    return null;
-  }
-
-  public String getSpotifyPlaylistID() {
     return playlistID;
   }
+
+  // public String getSpotifyPlaylistID() {
+  // return playlistID;
+  // }
 
 }

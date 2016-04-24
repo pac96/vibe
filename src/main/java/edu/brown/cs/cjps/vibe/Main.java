@@ -32,6 +32,7 @@ import com.wrapper.spotify.models.AuthorizationCodeCredentials;
 import com.wrapper.spotify.models.User;
 
 import edu.brown.cs.cjps.music.PlaylistGenerator;
+import edu.brown.cs.cjps.music.PlaylistHQ;
 import edu.brown.cs.cjps.music.SpotifyConverter;
 import freemarker.template.Configuration;
 
@@ -80,6 +81,8 @@ public final class Main {
    */
   private User currentUser;
 
+  private PlaylistHQ hq;
+
   /**
    * Google's GSON instance variable that helps with sending and retrieving
    * front-end and back-end requests.
@@ -102,6 +105,9 @@ public final class Main {
    * Runs the program.
    */
   private void run() {
+    // Instantiate HQ
+    hq = new PlaylistHQ();
+
     System.out.println("Starting Vibe...");
     OptionParser parser = new OptionParser();
     parser.accepts("gui");
@@ -140,8 +146,8 @@ public final class Main {
     }
     System.out.println("after the try in main");
     // Generate a playlist based on something
-    SpotifyConverter spotconv = new SpotifyConverter(api, currentUser, tracks);
-    String playlistID = spotconv.getSpotifyPlaylistID();
+    SpotifyConverter spotconv = new SpotifyConverter();
+    String playlistID = spotconv.makeSpotifyPlaylist(api, currentUser, tracks);
     System.out.println("through generate playlist in main");
 
     return playlistID;

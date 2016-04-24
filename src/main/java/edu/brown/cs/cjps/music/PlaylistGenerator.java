@@ -2,6 +2,8 @@ package edu.brown.cs.cjps.music;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.echonest.api.v4.Artist;
 import com.echonest.api.v4.EchoNestAPI;
@@ -29,7 +31,7 @@ public class PlaylistGenerator {
 
   }
 
-  public List<Song> makePlaylist(Settings s) {
+  public Playlist makePlaylist(Settings s) {
     PlaylistParams params = new PlaylistParams();
     params.addIDSpace("spotify-WW");
     params.setType(PlaylistType.ARTIST_RADIO);
@@ -83,7 +85,7 @@ public class PlaylistGenerator {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    return playlist.getSongs();
+    return playlist;
   }
 
   // public List<Artist> getArtistsByGenre(List<String> genres) {
@@ -154,6 +156,22 @@ public class PlaylistGenerator {
     Track t = testSong.getTrack("spotify");
     System.out.println("trak1 is " + t);
     System.out.println(testSong.toString());
+    System.out.println("and now...");
+    // REGEX
+    String test = "hello'this'and I hope'this' it works";
+    // Pattern pattern = Pattern.compile(":\"(.*?)\"");
+    Pattern pattern = Pattern
+        .compile("tracks\":\\[\\{\"foreign_id\":\"(.*?)\"");
+    System.out.println("which line");
+    Matcher matcher = pattern.matcher(testSong.toString());
+    System.out.println("is failing me");
+    if (matcher.find()) {
+      String found = matcher.group(0);
+      System.out.println("regex found " + found);
+      found = found.substring(24, found.length() - 2);
+      System.out.println("AND NOW " + found);
+    }
+    System.out.println("I do not know");
     // System.out.println(testSong.getAnalysisURL());
     // System.out.println(testSong.getTrackNew("spotify-WW"));
     // System.out.println(testSong.getTrackOld("spotify-WW"));

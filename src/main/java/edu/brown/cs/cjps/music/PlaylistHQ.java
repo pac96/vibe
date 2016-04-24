@@ -50,15 +50,11 @@ public class PlaylistHQ {
 
   }
 
-  // public void generateGeneric() {
-  // Settings s = def.getRestfulDefaults();
-  // List<Song> songs = pg.makePlaylist(s);
-  // }
-
   public void generateCustom(List<String> params) {
     // TODO: Convert the params to a setting and pass to make playlist
   }
 
+  // Method to call to create a spotify playlist, returns the ID of the playlist
   public String convertForSpotify(String eventID, Api spotifyAPI,
       User spotifyUser) {
     VibeCache.getPlaylistCache().get(eventID);

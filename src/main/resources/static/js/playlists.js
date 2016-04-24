@@ -20,7 +20,7 @@ if (window.location.pathname === "/playlists") {
 	  }
 
 	  var username = backendParams[0].slice(1, backendParams[0].length); // remove the [
-	  var playlistURI = "https://embed.spotify.com/?uri=" + backendParams[1].slice(backendParams[1].length - 1, backendParams[1].length); // remove the ]
+	  var playlistURI = "https://embed.spotify.com/?uri=" + backendParams[1].slice(0, backendParams[1].length-1).trim(); // remove the ]
 
 	  console.log("user: " + username);
 	  console.log("playlist: " + playlistURI);

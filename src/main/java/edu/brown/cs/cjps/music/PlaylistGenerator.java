@@ -1,5 +1,9 @@
 package edu.brown.cs.cjps.music;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -12,7 +16,6 @@ import com.echonest.api.v4.Playlist;
 import com.echonest.api.v4.PlaylistParams;
 import com.echonest.api.v4.PlaylistParams.PlaylistType;
 import com.echonest.api.v4.Song;
-import com.echonest.api.v4.Track;
 
 public class PlaylistGenerator {
 
@@ -144,23 +147,21 @@ public class PlaylistGenerator {
     System.out.println("playlisttest");
     EchoNestAPI en = new EchoNestAPI(API_KEY);
     PlaylistParams params = new PlaylistParams();
-    params.addIDSpace("spotify-WW");
-    params.setType(PlaylistParams.PlaylistType.ARTIST_RADIO);
-    params.addArtist("Michael Jackson");
+    params.addIDSpace("spotify");
+    params.setType(PlaylistParams.PlaylistType.ARTIST);
+    params.addArtist("Jimi Hendrix");
     params.includeTracks();
     params.setLimit(true);
+    params.setAdventurousness(0);
 
     Playlist playlist = en.createStaticPlaylist(params);
-    Song testSong = playlist.getSongs().get(0);
-    System.out.println("ID is " + testSong.getID());
-    Track t = testSong.getTrack("spotify");
-    System.out.println("trak1 is " + t);
-    System.out.println(testSong.toString());
-    System.out.println("and now...");
-    // REGEX
-
     List<String> tracks = new ArrayList<>();
     for (Song song : playlist.getSongs()) {
+      System.out.println(song.getTitle());
+      System.out.println(song.getArtistName());
+      if (song.getTitle().equals("Purple Haze")) {
+        System.out.println(song);
+      }
       Pattern pattern = Pattern
           .compile("tracks\":\\[\\{\"foreign_id\":\"(.*?)\"");
 
@@ -168,13 +169,42 @@ public class PlaylistGenerator {
 
       if (matcher.find()) {
         String found = matcher.group(0);
-        System.out.println("regex found " + found);
+        // System.out.println("regex found " + found);
         found = found.substring(24, found.length() - 2);
         System.out.println("AND NOW " + found);
         tracks.add(found);
       }
     }
-    System.out.println(tracks);
+
+    String stringURL = "http://developer.echonest.com/api/v4/song/search?api_key=OOT8LZ0VYRFYT5YYK&format=json&results=1&artist=radiohead&title=karma%20police&bucket=id:spotify&bucket=tracks&limit=true";
+    URL actualURL = null;
+    try {
+      actualURL = new URL(stringURL);
+    } catch (MalformedURLException e1) {
+      System.out.println("ERROR: Bad URL");
+    }
+    InputStream newTraffic = null;
+    try {
+      newTraffic = actualURL.openStream();
+      // update to time of this call
+
+    } catch (IOException e) {
+      // Return and try again in one second - shouldn't interrupt anyone else
+      e.printStackTrace();
+    }
+
+    java.util.Scanner s = new java.util.Scanner(newTraffic).useDelimiter("\\A");
+    String stringVersion = s.hasNext() ? s.next() : "";
+    // If there are no updates, [] is returned. In this case, no need to
+    // continue
+    System.out.println(stringVersion);
+    try {
+      newTraffic.close();
+    } catch (IOException e) {
+      System.out.println("ERROR: error closing stream");
+    }
+    s.close();
+    // System.out.println(tracks);
     return tracks;
   }
 }

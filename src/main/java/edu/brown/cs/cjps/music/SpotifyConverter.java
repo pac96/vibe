@@ -1,5 +1,6 @@
 package edu.brown.cs.cjps.music;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.wrapper.spotify.Api;
@@ -38,8 +39,8 @@ public class SpotifyConverter {
       System.out.println("uri: " + playlist.getUri());
 
       System.out.println("You just created this playlist!");
-      System.out.println("Its title is " + playlist.getName() 
-    		  + " and link is " + playlistURI);
+      System.out.println("Its title is " + playlist.getName() + " and link is "
+          + playlistURI);
     } catch (Exception e) {
       System.out.println("P1: Something went wrong!" + e.getMessage());
       e.printStackTrace();
@@ -47,15 +48,25 @@ public class SpotifyConverter {
 
     // Index starts at 0
     final int insertIndex = 0;
+    for (int i = 0; i < trackList.size(); i++) {
+      List<String> testList = new ArrayList<>();
+      // testList.add(trackList.get(i));
+      // Builder track = api.getTrack("spotify:track:4BYGxv4rxSNcTgT3DsFB9o");
+      // System.out.println(track);
+      testList.add("spotify:track:5YtKNQRPr4WE4EW1q2KJ8y");
+      // "spotify:track:5YtKNQRPr4WE4EW1q2KJ8y"
 
-    final AddTrackToPlaylistRequest addRequest = api
-        .addTracksToPlaylist(user.getId(), playlistID, trackList)
-        .position(insertIndex).build();
-    System.out.println(trackList);
-    try {
-      addRequest.get();
-    } catch (Exception e) {
-      System.out.println("P2: Something went wrong!" + e.getMessage());
+      final AddTrackToPlaylistRequest addRequest = api
+          .addTracksToPlaylist(user.getId(), playlistID, testList)
+          .position(insertIndex).build();
+      // System.out.println(trackList);
+
+      try {
+        addRequest.get();
+        System.out.println("SUCCESS");
+      } catch (Exception e) {
+        System.out.println("P2: Something went wrong!" + e.getMessage());
+      }
     }
     return playlistURI;
   }

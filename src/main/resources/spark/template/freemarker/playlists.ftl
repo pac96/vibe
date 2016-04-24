@@ -111,6 +111,7 @@
 	    </ul>
 
 	    <br>
+
 	    <h2>TODO: Display Selected Event Here</h2>
 	        <!-- <div class="table-responsive">
 	            <table class="table table-hover">
@@ -161,6 +162,8 @@
 	            </table>
 	        </div> -->
 	         <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Expand Playlist View</a>
+	    
+		<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>
 	    </div>
 	</div>
 	<!-- /#page-content-wrapper -->
@@ -174,8 +177,6 @@ $("#menu-toggle").click(function(e) {
     $("#wrapper").toggleClass("toggled");
 });
 
-console.log(window.location.href);
-console.log("Split: " + window.location.href.split("code=(.*?)&"));
 </script>
 
 

@@ -1,5 +1,9 @@
 package edu.brown.cs.cjps.calendar;
 
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
+
 /**A class to represent an eventTime. It takes an integer
  * of the time, and a boolean representing AM or PM.*/
 public class EventTime implements Comparable<EventTime> {
@@ -14,7 +18,7 @@ public class EventTime implements Comparable<EventTime> {
     private boolean isAM;
   
   //Constructor for an event time.
-  public EventTime(int hour , int minute, boolean amOrPm) {
+  public EventTime(int hour , int minute, boolean amOrPm) throws IllegalArgumentException {
     if ( hour < 0 || hour > 12 || minute < 0 || minute > 59) {
       throw new IllegalArgumentException();
     }
@@ -24,7 +28,7 @@ public class EventTime implements Comparable<EventTime> {
     this.isAM = amOrPm;
   }
   
-  public void update(int _hour, int _minute, boolean _amOrPm) {
+  public void update(int _hour, int _minute, boolean _amOrPm) throws IllegalArgumentException {
     if (hour < 0 || hour > 12 || minute < 0 || minute > 60) {
       throw new IllegalArgumentException();
     }
@@ -61,6 +65,13 @@ public int getMinute() {
   return minute;
 }
 
+/**  
+ * @return if the time is AM or PM.
+ * */
+public boolean IsAm() {
+  return isAM;
+}
+
 @Override
 public boolean equals(Object o) {
   if (!(o  instanceof EventTime)) {
@@ -72,5 +83,23 @@ public boolean equals(Object o) {
   }
 }
 
+@Override
+public String toString() {
+  StringBuilder sb = new StringBuilder();
+  sb.append(hour + ":" + minute);
+  if (isAM) {
+    sb.append("AM");
+  } else {
+    sb.append("PM");
+  }
+  
+  return sb.toString();
+}
+
+public Map<String, Object> toJson() {
+  return ImmutableMap.of("hour" , hour , 
+      "minute", minute
+      ,"isAM",isAM);
+}
 
 }

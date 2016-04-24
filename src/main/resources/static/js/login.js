@@ -12,7 +12,7 @@ if (window.location.pathname === "/vibe") {
   // Retrieve the authorizeURI from the back-end
   $.get("/login", function(responseJSON) {
     var authorizeURI = JSON.parse(responseJSON);
-    authorizeURI += "&show_dialog=true"; // necessary for other users to login
+     authorizeURI += "&show_dialog=true"; // necessary for other users to login
     linkToLogin.prop("href", authorizeURI);
   });  
 }

@@ -75,7 +75,6 @@ public class Day implements Collection<CalendarEvent> {
 
   @Override
   public Iterator<CalendarEvent> iterator() {
-    // TODO Auto-generated method stub
     return null;
   }
 

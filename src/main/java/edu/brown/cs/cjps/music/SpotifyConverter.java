@@ -29,14 +29,17 @@ public class SpotifyConverter {
 
     System.out.println("request: " + request.toString());
     String playlistID = null;
+    String playlistURI = "";
     try {
       final Playlist playlist = request.get();
       playlistID = playlist.getId();
+      playlistURI = playlist.getUri();
       System.out.println(playlistID);
       System.out.println("uri: " + playlist.getUri());
 
       System.out.println("You just created this playlist!");
-      System.out.println("Its title is " + playlist.getName());
+      System.out.println("Its title is " + playlist.getName() 
+    		  + " and link is " + playlistURI);
     } catch (Exception e) {
       System.out.println("P1: Something went wrong!" + e.getMessage());
       e.printStackTrace();
@@ -54,7 +57,7 @@ public class SpotifyConverter {
     } catch (Exception e) {
       System.out.println("P2: Something went wrong!" + e.getMessage());
     }
-    return playlistID;
+    return playlistURI;
   }
 
   // public String getSpotifyPlaylistID() {

@@ -4,52 +4,89 @@
 
 </form>
 
+
 <div id="wrapper">
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper">
 	    <ul class="sidebar-nav">
 	        <li class="sidebar-brand">
 	            <a href="#">
-	                Display Date Here
+	            
+	            <script>
+	            <p id="date"></p>
+	            var d = new Date();
+	            document.getElementById("date").innerHTML = d.toDateString();
+	            var result = d.fontcolor("white");
+				</script>
+				 <font color="white"> d </font>
 	            </a>
 	        </li>
 	        <li>
-	            <a href="#">7am | Running</a>
+	            <a href="#"> 
+	            <input type='button' name='settings' value= + class = "settings-button"/> 
+	            &nbsp
+	            7am | Running 
+	            </a>
+	            
 	        </li>
 	        <li>
-	            <a href="#">8am | Drive to Work</a>
+	            <a href="#">
+	            <input type='button' name='settings' value= + class = "settings-button"/> 
+	            &nbsp
+	            8am | Drive to Work
+	            </a>
 	        </li>
 	        <li>
-	            <a href="#">9am | Work</a>
+	        	<a href="#">
+	        	<input type='button' name='settings' value= + class = "settings-button"/> 
+	            &nbsp
+	            9am | Work
+	            </a>
 	        </li>
 	        <li>
-	            <a href="#">5pm | Drive Home</a>
+	        	<a href="#">
+	        	<input type='button' name='settings' value= + class = "settings-button"/> 
+	            &nbsp
+	            5pm | Drive Home
+	            </a>
 	        </li>
 	        <li>
-	            <a href="#">6pm | Dinner with Friends</a>
+	        	<a href="#">
+	        	<input type='button' name='settings' value= + class = "settings-button"/> 
+	            &nbsp
+	            6pm | Dinner with Friends
+	            </a>
 	        </li>
 	        <li>
-	            <a href="#">7pm | Reading</a>
+	        	<a href="#">
+	        	<input type='button' name='settings' value= + class = "settings-button"/> 
+	            &nbsp
+	            7pm | Reading
+	            </a>
 	        </li>
 	        <li>
-	            <a href="#">9pm | Nightly Stretch</a>
+	        	<a href="#">
+	        	<input type='button' name='settings' value= + class = "settings-button"/> 
+	            &nbsp
+	            9pm | Nightly Stretch
+	            </a>
 	        </li>
 	        <hr>
 	        <form id='form' action='handle_new_event.php' method='POST' target='formresponse'>
-	            <label for='name' >Event Name: </label>
+	            <label for='name' > <font color="white"> Event Name: </font> </label>
 	            <input type='text' name='name' id='name' maxlength="30" class = "form-textbox"/><br/>
 
 	            <br>
-	            <label for='start-time' >Start Time:</label> 
+	            <label for='start-time' ><font color="white">Start Time:</font></label> 
 	            <input type='text' name='startTime' id='startTime' maxlength="5" class = "form-textbox-time-start"/> 
-	            &nbsp <input type="radio" name="time-selection-start" value="am-start" checked> am
-	            &nbsp <input type="radio" name="time-selection-start" value="pm-start"> pm
+	            &nbsp <input type="radio" name="time-selection-start" value="am-start" checked> <font color="white"> am </font>
+	            &nbsp <input type="radio" name="time-selection-start" value="pm-start"> <font color="white"> pm </font>
 
 	            <br><br>
-	            <label for='end-time' >End Time:</label> 
+	            <label for='end-time' ><font color="white">End Time:</font></label> 
 	            <input type='text' name='endTime' id='endTime' maxlength="5" class = "form-textbox-time-end"/>
-	            &nbsp <input type="radio" name="time-selection-end" value="am-end" checked> am
-	            &nbsp <input type="radio" name="time-selection-end" value="pm-end"> pm 
+	            &nbsp <input type="radio" name="time-selection-end" value="am-end" checked> <font color="white"> am </font>
+	            &nbsp <input type="radio" name="time-selection-end" value="pm-end"> <font color="white"> pm </font>
 	            
 	            <br><br>
 	            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
@@ -75,7 +112,7 @@
 
 	    <br>
 	    <h2>TODO: Display Selected Event Here</h2>
-	        <div class="table-responsive">
+	        <!-- <div class="table-responsive">
 	            <table class="table table-hover">
 	                <thead>
 	                    <tr>
@@ -122,7 +159,7 @@
 	                    </tr>
 	                </tbody>
 	            </table>
-	        </div>
+	        </div> -->
 	         <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Expand Playlist View</a>
 	    </div>
 	</div>

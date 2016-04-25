@@ -1,8 +1,6 @@
 var name = "";
 var eventsArray = [];
 
-
-
 //Object to mirror EventTime from the backend
 function EventTime(eventTime) {
 	this.hour = Number(eventTime.hour);
@@ -20,7 +18,7 @@ function CalendarEvent(event) {
 
 //Creates a new event on the sidebar
 function renderCalander(event){
-	console.log("renderCalander ...");
+	console.log("Rendering calendar...");
 	var timePeriod = "";
 	if(event.start.isAM){
 		timePeriod = "am";
@@ -28,19 +26,20 @@ function renderCalander(event){
 		timePeriod = "pm";
 	}
 	
-	var eventTimeline = document.getElementById('#calanderEvents').parentNode;
-	var eventTimlineItems = eventTimeline.getElementsByTagName("li");
+	var eventTimeline = $('#calanderEvents');
+	// var eventTimelineItems = eventTimeline.getElementsByTagName("li");
+	var eventTimelineItems = eventTimeline.children();
 	var eventHTMLString = 
 		"<li id='" + event.id + "' class='eventClick'> " +
 		"<a href='#'>" +
 		"<input type='button' name='settings' value='+' class='settings-button'/> " +
-		"&nbsp " +
-		event.start.hour + timePeriod + " | " + event.name +
-		"</a> </li>";
+		"<p id='eventDesc'>" +
+		event.start.hour + timePeriod + " | " + event.name + 
+		"</p></a></li>";
 
-	console.log("Event html string: " + eventHTMLString);
+	eventTimeline.append(eventHTMLString);
 	
-	for(var i = 0; i < eventTimlineItems.length; i++){
+	for(var i = 0; i < eventTimelineItems.length; i++){
 		if (eventComparator(event, eventsArray[i]) == -1){
 			continue;
 		} else {
@@ -52,7 +51,7 @@ function renderCalander(event){
 
 
 
-var eventComparator = function(eventA , eventB) {
+var eventComparator = function(eventA, eventB) {
 	var eventAStartTime = eventA.start;
 	var eventBStartTime = eventB.start;
 	
@@ -82,19 +81,18 @@ var eventComparator = function(eventA , eventB) {
 }
 
 if (window.location.pathname === "/playlists") {
+	// First, set the logout link 
+	$("#logoutLink").attr('href', "http://localhost:" + window.location.port + "/vibe");
+
+	// Next, retrieve the user's code to send to the back-end from the URL	
 	var uri = new URI(window.location.href);
 	var urlParams = uri.search(true);
-	// console.log("User code: " + urlParams.code);
-
 	var codeFromURL = urlParams.code;
 	var postParams = {code: JSON.stringify(codeFromURL)};
 
 	$.post("/code", postParams, function(responseJSON) {
 	  // Back-end sends back the user's display name
 	  var backendParams = responseJSON.split(",");
-	  console.log(backendParams[0]);
-	  console.log(backendParams[1]);
-
 
 	  if (backendParams === "") {
 	  	alert("Error loading user information. Please logout and login again!");
@@ -103,6 +101,8 @@ if (window.location.pathname === "/playlists") {
 	  var username = backendParams[0].slice(1, backendParams[0].length); // remove the [
 	  var playlistURI = "https://embed.spotify.com/?uri=" 
 	  + backendParams[1].slice(0, backendParams[1].length - 1).trim(); // remove the ]
+
+	  document.cookie = "name=" + username; // Store the username in a cookie
 
 	  console.log("user: " + username);
 	  console.log("playlist: " + playlistURI);
@@ -115,8 +115,6 @@ if (window.location.pathname === "/playlists") {
 	$("#playlist").attr('src', playlistURI);
 	
 	}); // end code post
-
-	console.log("We got out the post");
 
 	// Handles clicking on each event and generating spotify playlist
 	$(".eventClick").on('click', function() {
@@ -175,47 +173,49 @@ if (window.location.pathname === "/playlists") {
 		eventFormat = /^[a-zA-Z]+$/;
 		timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
 		
-		if(eventName == null || startTime == null || endTime == null || startAP == null || endAP == null) {
+		if(eventName == null || startTime == null ||
+		 endTime == null || startAP == null || endAP == null) {
 			alert("One or more event fields are empty");
-		} else if(eventName != '' && !eventName.match(eventFormat)) {
-			alert("Invalid Event Name: " + eventName.val);
-		} else if(startTime != '' && !startTime.match(timeFormat)) {
-	    	alert("Invalid Start Time: " + startTime.val);
-	    } else if(endTime != '' && !startTime.match(timeFormat)) {
-	    	alert("Invalid End Time: " + endTime.val);
+		} else if(eventName == '' && !eventName.match(eventFormat)) {
+			alert("Invalid Event Name: " + eventName);
+		} else if(startTime == '' && !startTime.match(timeFormat)) {
+	    	alert("Invalid Start Time: " + startTime);
+	    } else if(endTime == '' && !startTime.match(timeFormat)) {
+	    	alert("Invalid End Time: " + endTime);
 	    } else {
 	    	
-	    	var postParameters = {
-	    			start : startTime ,
-	    			end : endTime ,
-	    			startAMPM : startAP ,
-	    			endAMPM : endAP,
-	    			name : eventName
-	    	};
-	    	
-	    	$.post("/newEvent", postParameters, function(response) {
-	    		//1. send stuff to back end and store in responseObject
-	    		var responseObject = JSON.parse(response);
-	    		console.log("Parsed json event: " +  responseObject);
-	    		//2. Make calendar event object from responseObject
-	    		var newEvent =  new CalendarEvent(responseObject);
-	    		
-	    		//3. Add new calendar event to user's list
-	    		eventsArray.push(newEvent);
-	    		
-	    		//4. sort the list 
-	    		eventsArray.sort(eventComparator);
-	    		
-	    		//5. Render calendar 
-	    		console.log("New Event Name : " + newEvent.name);
-	    		console.log("New Event Start Time Hour: " + newEvent.start.hour);
-	    		console.log("New Event Start Time AM: " + newEvent.start.isAM);
-	    		console.log("New Event End Time Hour: " + newEvent.end.hour);
-	    		console.log("New Event End Time AM: " + newEvent.end.isAM);
-	    		console.log("New Event : " + newEvent.id);
-	    		renderCalander(newEvent);
-	    		
-	    	});
+    	var postParameters = {
+    			start : startTime ,
+    			end : endTime ,
+    			startAMPM : startAP ,
+    			endAMPM : endAP,
+    			name : eventName
+    	};
+    	
+    	$.post("/newEvent", postParameters, function(response) {
+    		//1. send stuff to back end and store in responseObject
+    		var responseObject = JSON.parse(response);
+    		console.log("Parsed json event: " +  responseObject);
+    		//2. Make calendar event object from responseObject
+    		var newEvent =  new CalendarEvent(responseObject);
+    		
+    		//3. Add new calendar event to user's list
+    		eventsArray.push(newEvent);
+    		
+    		//4. sort the list 
+    		eventsArray.sort(eventComparator);
+    		
+    		//5. Render calendar 
+    		console.log("New Event Name : " + newEvent.name);
+    		console.log("New Event Start Time Hour: " + newEvent.start.hour);
+    		console.log("New Event Start Time AM: " + newEvent.start.isAM);
+    		console.log("New Event End Time Hour: " + newEvent.end.hour);
+    		console.log("New Event End Time AM: " + newEvent.end.isAM);
+    		console.log("New Event : " + newEvent.id);
+    		renderCalander(newEvent);
+    		
+    	}); // end post event
+
 	    }
 	    
 		});

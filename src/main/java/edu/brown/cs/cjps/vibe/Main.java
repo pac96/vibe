@@ -318,8 +318,7 @@ public final class Main {
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
       
-      System.out.println("WE ARE ADDING AN EVENT");
-      
+      System.out.println("********** ADD EVENT HANDLER *********");
       //Parse the start time to hour and minute.
       String startTime = qm.value("start");
       String[] startTimeSplit = startTime.split(":");
@@ -335,14 +334,18 @@ public final class Main {
       Integer endMinute = Integer.parseInt(endTimeSplit[1]);
       Boolean endAMorPM = Boolean.parseBoolean(qm.value("endAMPM"));
       EventTime end = new EventTime(endHour, endMinute, endAMorPM);
-      //Pare the name from the front end.
+      
+      // Parse the name from the front end.
       String name = qm.value("name");
+      System.out.println("Event name: " + name);
+      System.out.println("Event start time: " + start.toString());
+      System.out.println("Event end time: " + end.toString());
             
-      //Create a calendar event
+      // Create a calendar event
       CalendarEvent newEvent = new CalendarEvent(name,start, end);
       
-      //Send the event to the frontend.
-//      return newEvent.toJson();
+      // Send the event to the frontend.
+     
       return GSON.toJson(newEvent);
       
     }
@@ -359,9 +362,11 @@ public final class Main {
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
       
-      // Retrieve the event ID
+      // Retrieve the event ID and find the associated playlist
       String eventID = qm.value("eventID");
       String uri = hq.convertForSpotify(eventID, api, currentUser);
+      
+      System.out.println("Cached playlist: " + uri);
       
       return uri;
     }

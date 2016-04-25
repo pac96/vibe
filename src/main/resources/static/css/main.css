@@ -31,6 +31,17 @@ h1 span {
   color: white;
 }
 
+#sidebar-wrapper {
+  color: white;
+}
+
+#eventDesc {
+  color: white;
+  font-size: 1.1em;
+  text-align: center;
+  padding: .1em;
+}
+
 iframe {
   width: 1000px;
   height: 600px;

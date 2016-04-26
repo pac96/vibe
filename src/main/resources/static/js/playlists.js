@@ -31,25 +31,30 @@ function renderCalander(event){
 	var eventTimelineItems = eventTimeline.children();
 	var eventHTMLString = 
 		"<li id='" + event.id + "' class='eventClick'> " +
-		"<a href='#'>" +
-		
-		
-		"<div class = 'btn-group'>" + 
-			"<button type='button' class='btn btn-secondary dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'> " +
-			"</button>" +
-			"<div class='dropdown-menu'>" +
-				"<a class='dropdown-item' href='#'>View Playlist</a>" +
-				"<a class='dropdown-item' href='#'>Customize Playlist</a>" +
-				"<a class='dropdown-item' href='#'>Use Spotify Playlist</a>" +
-				"<div class='dropdown-divider'></div>" +
-				"<a class='dropdown-item' href='#'>Edit Event</a>" +
-				"<a class='dropdown-item' href='#'>Delete Event</a>" +
-			"</div>" +
-		"</div>" +
-		
-		
-		event.start.hour + timePeriod + " | " + event.name + 
-		"</a></li>";
+			"<a href='#'>" +
+			"<a href='javascript:;' data-toggle='collapse' data-target='#demo'>" +
+				"<i class='fa fa-fw fa-arrows-v'></i> " +
+				event.start.hour + timePeriod + " | " + event.name + " " +
+				"<i class='fa fa-fw fa-caret-down'></i></a>" +
+				"<ul id='demo' class='collapse'>" +
+					"<li>" +
+						"<a href='#'>View Playlist</a>" +
+					"</li>" +
+					"<li>" +
+						"<a href='#'>Customize Playlist</a>" +
+					"</li>" +
+					"<li>" +
+						"<a href='#'>Use Spotify Playlist</a>" +
+					"</li>" +
+					"<div class='dropdown-divider'></div>" +
+					"<li>" +
+						"<a href='#'>Edit Event</a>" +
+					"</li>" +
+					"<li>" +
+						"<a href='#'>Delete Event</a>" +
+					"</li>" +
+				"</ul>" +
+			"</a></li>";
 
 	eventTimeline.append(eventHTMLString);
 	

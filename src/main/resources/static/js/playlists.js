@@ -32,10 +32,24 @@ function renderCalander(event){
 	var eventHTMLString = 
 		"<li id='" + event.id + "' class='eventClick'> " +
 		"<a href='#'>" +
-		"<input type='button' name='settings' value='+' class='settings-button'/> " +
-		"<p id='eventDesc'>" +
+		
+		
+		"<div class = 'btn-group'>" + 
+			"<button type='button' class='btn btn-secondary dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'> " +
+			"</button>" +
+			"<div class='dropdown-menu'>" +
+				"<a class='dropdown-item' href='#'>View Playlist</a>" +
+				"<a class='dropdown-item' href='#'>Customize Playlist</a>" +
+				"<a class='dropdown-item' href='#'>Use Spotify Playlist</a>" +
+				"<div class='dropdown-divider'></div>" +
+				"<a class='dropdown-item' href='#'>Edit Event</a>" +
+				"<a class='dropdown-item' href='#'>Delete Event</a>" +
+			"</div>" +
+		"</div>" +
+		
+		
 		event.start.hour + timePeriod + " | " + event.name + 
-		"</p></a></li>";
+		"</a></li>";
 
 	eventTimeline.append(eventHTMLString);
 	

@@ -36,6 +36,7 @@
 	            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
 	            <input type='button' name='AddNewEvent' value='Add New Event' id="AddNewEvent" class="form-button"/>
 	        </form>
+	        <hr>
 	    </ul>
 	</div>
 	<!-- /#sidebar-wrapper -->

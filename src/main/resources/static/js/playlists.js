@@ -31,7 +31,7 @@ function renderCalander(event){
 	// var eventTimelineItems = eventTimeline.getElementsByTagName("li");
 	var eventTimelineItems = eventTimeline.children();
 	var eventHTMLString = 
-		"<li id='" + event.id + "' class='eventClick'> " +
+		"<li id='" + event.id + "' class='eventClick' onclick='createDropdown()'> " +
 			"<a href='#'>" +
 			"<a href='javascript:;' data-toggle='collapse' data-target='#demo'>" +
 				"<i class='fa fa-fw fa-arrows-v'></i> " +
@@ -69,11 +69,31 @@ function renderCalander(event){
 	}
 }
 
+/* When the user clicks on the button, 
+toggle dropdown content using show and hide  */
+function createDropdown() {
+    document.getElementById("eventClick").classList.toggle("show");
+}
 
-//TODO: handle clicking an event
-$('#eventClick').onClick(function() {
-	//display stuff
+/* Handle clicking an event */
+$(".eventClick").on('click', function() {
+	if (!event.target.matches('collapse')) {
+
+	    var dropdowns = document.getElementsByClassName('collapse');
+	    var i;
+	    for (i = 0; i < dropdowns.length; i++) {
+	      var openDropdown = dropdowns[i];
+	      if (openDropdown.classList.contains('show')) {
+	        openDropdown.classList.remove('show');
+	      }
+	    }
+	  }
 })
+
+
+
+
+
 var eventComparator = function(eventA, eventB) {
 	var eventAStartTime = eventA.start;
 	var eventBStartTime = eventB.start;

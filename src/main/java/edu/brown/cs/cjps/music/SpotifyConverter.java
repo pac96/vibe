@@ -25,8 +25,10 @@ public class SpotifyConverter {
 
   public String makeSpotifyPlaylist(Api api, User user, List<String> trackList) {
     System.out.println("in make spotify");
+    // final PlaylistCreationRequest request = api
+    // .createPlaylist(user.getId(), "title").publicAccess(true).build();
     final PlaylistCreationRequest request = api
-        .createPlaylist(user.getId(), "title").publicAccess(true).build();
+        .createPlaylist("pacdaboss", "title").publicAccess(true).build();
 
     System.out.println("request: " + request.toString());
     String playlistID = null;
@@ -53,7 +55,7 @@ public class SpotifyConverter {
       // testList.add(trackList.get(i));
       // Builder track = api.getTrack("spotify:track:4BYGxv4rxSNcTgT3DsFB9o");
       // System.out.println(track);
-      testList.add("spotify:track:5YtKNQRPr4WE4EW1q2KJ8y");
+      testList.add("spotify:track:6zHrqd3mvAtIMoqDpw0dW");
       // "spotify:track:5YtKNQRPr4WE4EW1q2KJ8y"
 
       final AddTrackToPlaylistRequest addRequest = api

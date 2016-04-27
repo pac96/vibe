@@ -1,5 +1,6 @@
 var name = "";
 var eventsArray = [];
+var currentEvent;
 
 //Object to mirror EventTime from the backend
 function EventTime(eventTime) {
@@ -36,9 +37,9 @@ function renderCalander(event){
 				"<i class='fa fa-fw fa-arrows-v'></i> " +
 				event.start.hour + timePeriod + " | " + event.name + " " +
 				"<i class='fa fa-fw fa-caret-down'></i></a>" +
-				"<ul id='demo' class='collapse'>" +
+				"<ul id= 'demo'" + "class='collapse'>" +
 					"<li>" +
-						"<a href='#'>View Playlist</a>" +
+						"<a href='#'>View Playlist" + event.start.hour + "</a>" +
 					"</li>" +
 					"<li>" +
 						"<a href='#'>Customize Playlist</a>" +
@@ -46,7 +47,6 @@ function renderCalander(event){
 					"<li>" +
 						"<a href='#'>Use Spotify Playlist</a>" +
 					"</li>" +
-					"<div class='dropdown-divider'></div>" +
 					"<li>" +
 						"<a href='#'>Edit Event</a>" +
 					"</li>" +
@@ -54,7 +54,8 @@ function renderCalander(event){
 						"<a href='#'>Delete Event</a>" +
 					"</li>" +
 				"</ul>" +
-			"</a></li>";
+			"</a>" +
+		"</li>";
 
 	eventTimeline.append(eventHTMLString);
 	
@@ -69,7 +70,10 @@ function renderCalander(event){
 }
 
 
-
+//TODO: handle clicking an event
+$('#eventClick').onClick(function() {
+	//display stuff
+})
 var eventComparator = function(eventA, eventB) {
 	var eventAStartTime = eventA.start;
 	var eventBStartTime = eventB.start;
@@ -216,7 +220,8 @@ if (window.location.pathname === "/playlists") {
     		var responseObject = JSON.parse(response);
     		console.log("Parsed json event: " +  responseObject);
     		//2. Make calendar event object from responseObject
-    		var newEvent =  new CalendarEvent(responseObject);
+    		var newEvent = new CalendarEvent(responseObject);
+    		currentEvent = newEvent;
     		
     		//3. Add new calendar event to user's list
     		eventsArray.push(newEvent);
@@ -231,7 +236,7 @@ if (window.location.pathname === "/playlists") {
     		console.log("New Event End Time Hour: " + newEvent.end.hour);
     		console.log("New Event End Time AM: " + newEvent.end.isAM);
     		console.log("New Event : " + newEvent.id);
-    		renderCalander(newEvent);
+    		renderCalander(currentEvent);
     		
     	}); // end post event
 

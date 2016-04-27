@@ -15,6 +15,7 @@ function CalendarEvent(event) {
 	this.end = new EventTime(event.end);
 	this.name = event.name;
 	this.id = event.id;
+	this.playlistId = event.playlistID;
 }
 
 //Creates a new event on the sidebar

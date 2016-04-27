@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import edu.brown.cs.cjps.calendar.CalendarEvent;
+
 //Creates a database to store users
 //Schema  USER , userID
 public class UserDBCreator {
@@ -41,14 +43,44 @@ public class UserDBCreator {
     
     //Fill in the schema for the table called user
     String schema = "Create TABLE users ( "
-        + "name TEXT"
-        + "id TEXT);";
+        + " userid TEXT , "
+        + " name TEXT "
+        + " ); ";
+    buildTable(schema);
         
     //Fill in the schema to create a table called playlist
-    
-    
-    
-    
+    schema = "Create TABLE userEvents ( "
+        + " userid TEXT , "
+        + " eventid TEXT , "
+        + " playlistid TEXT , "
+        + " starttime TEXT , "
+        + " endtime TEXT , "
+        + " BIT starAMorPM , "
+        + " BIT endAMorPM );";
+    buildTable(schema);  
   }
+  
+  public void insertCalendarEvent(CalendarEvent event) throws SQLException {
+    String query = "INSERT INTO userEvents VALUES (?, ?, ?, ?, ?, ?, ?)";
+  }
+
+  
+  /**
+   * Creates a new table according to the schema
+   * @param schema
+   * @throws SQLException
+   */
+  private void buildTable(String schema) throws SQLException {
+    //TODO(1): Use a PreparedStatement to execute the command in
+    //the argument schema. Since it will build a table, we do
+    //not care about the results.
+     PreparedStatement prep = conn.prepareStatement(schema);
+     prep.executeUpdate();
+
+    //TODO(2): Close the PreparedStatement
+     prep.close();
+  }
+  
+  
 
 }

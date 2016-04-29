@@ -39,19 +39,19 @@ function renderCalander(event){
 				event.start.hour + timePeriod + " | " + event.name + " " +
 				"<i class='fa fa-fw fa-caret-down'></i></a>" +
 				"<ul id= 'demo'" + "class='collapse'>" +
-					"<li>" +
+					"<li id='viewPlaylist'>" +
 						"<a href='#'>View Playlist" + event.start.hour + "</a>" +
 					"</li>" +
-					"<li>" +
+					"<li id='customizePlaylist'>" +
 						"<a href='#'>Customize Playlist</a>" +
 					"</li>" +
-					"<li>" +
+					"<li id='usePlaylist'>" +
 						"<a href='#'>Use Spotify Playlist</a>" +
 					"</li>" +
-					"<li>" +
+					"<li id='editEvent'>" +
 						"<a href='#'>Edit Event</a>" +
 					"</li>" +
-					"<li>" +
+					"<li id='deleteEvent'>" +
 						"<a href='#'>Delete Event</a>" +
 					"</li>" +
 				"</ul>" +

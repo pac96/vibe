@@ -39,19 +39,19 @@ function renderCalander(event){
 				"<i class='fa fa-fw fa-caret-down'></i></a>" +
 				"<ul id= 'demo'" + "class='collapse'>" +
 					"<li>" +
-						"<a href='#'>View Playlist" + event.start.hour + "</a>" +
+						"<a href='#'>View Playlist" + event.name + " onclick='displayPlaylist(" + event.id + ")' </a>" +
 					"</li>" +
 					"<li>" +
-						"<a href='#'>Customize Playlist</a>" +
+						"<a href='#'>Customize Playlist onclick='displayCustomizePlaylist(" + event.id + ")' </a>" +
 					"</li>" +
 					"<li>" +
-						"<a href='#'>Use Spotify Playlist</a>" +
+						"<a href='#'>Use Spotify Playlist onclick='displaySpotifyPlaylist(" + event.id + ")'</a>" +
 					"</li>" +
 					"<li>" +
-						"<a href='#'>Edit Event</a>" +
+						"<a href='#'>Edit Event onclick='editEvent(" + event.id, true + ")'</a>" +
 					"</li>" +
 					"<li>" +
-						"<a href='#'>Delete Event</a>" +
+						"<a href='#'>Delete Event onclick='deleteEvent(" + event.id + ")'</a>" +
 					"</li>" +
 				"</ul>" +
 			"</a>" +
@@ -67,6 +67,7 @@ function renderCalander(event){
 			eventTimeline.insertAfter(eventsArray[i], eventHTMLString);
 		}
 	}
+	
 }
 
 /* When the user clicks on the button, 
@@ -90,8 +91,74 @@ $(".eventClick").on('click', function() {
 	  }
 })
 
+/**
+ * Displays the playlist for a given event.
+ */
+function displayCustomizePlaylist(eventID){
+    document.getElementById('view-playlist-panel').style.display = "block";   
+}
+
+/**
+ * Displays options for a users Spotify Playlist.
+ */
+function displaySpotifyPlaylist(eventID){
+    document.getElementById('customize-playlist-panel').style.display = "block";   
+
+}
+
+/**
+ * Allows a user to edit an event.
+ */
+function editEvent(eventID, toChange){
+	if (toChange) {
+        var currentEvent = document.getElementById('eventID');
+        if (currentEvent) {
+            var newHTML = 
+            	"<li id='" + event.id + "' class='eventClick' onclick='createDropdown()'> " +
+    			"<a href='#'>" +
+    			"<a href='javascript:;' data-toggle='collapse' data-target='#demo'>" +
+    				"<i class='fa fa-fw fa-arrows-v'></i> " +
+    				event.start.hour + timePeriod + " | " + event.name + " " +
+    				"<i class='fa fa-fw fa-caret-down'></i></a>" +
+    				"<ul id= 'demo'" + "class='collapse'>" +
+    					"<li>" +
+    						"<a href='#'>View Playlist" + event.name + " onclick='displayPlaylist(" + event.id + ")' </a>" +
+    					"</li>" +
+    					"<li>" +
+    						"<a href='#'>Customize Playlist onclick='displayCustomizePlaylist(" + event.id + ")' </a>" +
+    					"</li>" +
+    					"<li>" +
+    						"<a href='#'>Use Spotify Playlist onclick='displaySpotifyPlaylist(" + event.id + ")'</a>" +
+    					"</li>" +
+    					"<li>" +
+    						"<a href='#'>Edit Event onclick='editEvent(" + event.id, true + ")'</a>" +
+    					"</li>" +
+    					"<li>" +
+    						"<a href='#'>Delete Event onclick='deleteEvent(" + event.id + ")'</a>" +
+    					"</li>" +
+    				"</ul>" +
+    			"</a>" +
+    		"</li>";
+            elt.innerHTML = newHTML;
+        }
+    }
+    document.getElementById('use-spotify-playlist-panel').style.display = "block";   
+
+}
+
+/**
+ * Allows a user to delete an event.
+ */
+function deleteEvent(eventID){
+    document.getElementById('edit-event').style.display = "block";   
+
+}
 
 
+ <div id='view-playlist-panel'> ... </div>
+	    <div id='customize-playlist-panel'> ... </div>
+	    <div id='use-spotify-playlist-panel'> ... </div>
+	    <div id='edit-event'> ... </div>
 
 
 var eventComparator = function(eventA, eventB) {

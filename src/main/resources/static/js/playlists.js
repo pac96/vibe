@@ -1,7 +1,6 @@
 var name = "";
 var eventsArray = [];
-var currentEvent = new Object();
-
+var currentEvent;
 
 //Object to mirror EventTime from the backend
 function EventTime(eventTime) {
@@ -32,7 +31,6 @@ function renderCalander(event){
 	var eventTimelineItems = eventTimeline.children();
 	var eventHTMLString = 
 		"<li id='" + event.id + "' class='anEvent'> " +
-			"<a href='#'>" +
 			"<a href='javascript:;' data-toggle='collapse' data-target='#demo'>" +
 				"<i class='fa fa-fw fa-arrows-v'></i> " +
 				event.start.hour + timePeriod + " | " + event.name + " " +
@@ -74,25 +72,6 @@ toggle dropdown content using show and hide  */
 function createDropdown(id) {
     document.getElementById(id).classList.toggle("show");
 }
-
-/* Handle clicking an event */
-$(".anEvent").click(function() {
-	console.log("Clicked on an event");
-	currentEvent.id = this.id;
-	console.log("Current event: " + currentEvent + "[id: " + currentEvent.id + "]");
-	createDropdown(currentEvent.id);
-	if (!event.target.matches('collapse')) {
-
-	    var dropdowns = document.getElementsByClassName('collapse');
-	    var i;
-	    for (i = 0; i < dropdowns.length; i++) {
-	      var openDropdown = dropdowns[i];
-	      if (openDropdown.classList.contains('show')) {
-	        openDropdown.classList.remove('show');
-	      }
-	    }
-	  }
-});
 
 
 
@@ -181,7 +160,9 @@ if (window.location.pathname === "/playlists") {
 	// 	});
 	// })
 	
-	$("#AddNewEvent").on('click', function() {
+	/* Handle clicking an event */
+	
+	$("#AddNewEvent").click(function() {
 		console.log("Adding new event...");
 
 		// necessary for some browser problems (saw on jquery's website)
@@ -255,15 +236,33 @@ if (window.location.pathname === "/playlists") {
     		eventsArray.sort(eventComparator);
     		
     		//5. Render calendar 
-    		console.log("New Event Name : " + newEvent.name);
-    		console.log("New Event Start Time Hour: " + newEvent.start.hour);
-    		console.log("New Event Start Time AM: " + newEvent.start.isAM);
-    		console.log("New Event End Time Hour: " + newEvent.end.hour);
-    		console.log("New Event End Time AM: " + newEvent.end.isAM);
-    		console.log("New Event : " + newEvent.id);
+    		// console.log("New Event Name : " + newEvent.name);
+    		// console.log("New Event Start Time Hour: " + newEvent.start.hour);
+    		// console.log("New Event Start Time AM: " + newEvent.start.isAM);
+    		// console.log("New Event End Time Hour: " + newEvent.end.hour);
+    		// console.log("New Event End Time AM: " + newEvent.end.isAM);
+    		// console.log("New Event : " + newEvent.id);
     		renderCalander(currentEvent);
     		
     	}); // end post event
+
+	$(".anEvent").click(function() {
+		console.log("Clicked on an event");
+		var eventID = this.id;
+		console.log("Current event: " + currentEvent + "[id: " + eventID + "]");
+		createDropdown(eventID);
+		if (!event.target.matches('collapse')) {
+
+		    var dropdowns = document.getElementsByClassName('collapse');
+		    var i;
+		    for (i = 0; i < dropdowns.length; i++) {
+		      var openDropdown = dropdowns[i];
+		      if (openDropdown.classList.contains('show')) {
+		        openDropdown.classList.remove('show');
+		      }
+		    }
+		}
+	});
 
 	    }
 	    

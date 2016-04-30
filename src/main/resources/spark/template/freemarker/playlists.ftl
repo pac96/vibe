@@ -35,6 +35,8 @@
 
 	            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
 	            <input type='button' name='AddNewEvent' value='Add New Event' id="AddNewEvent" class="form-button"/>
+	            <ul id="calendarEvents">
+	            </ul>
 	        </form>
 	        <hr>
 	    </ul>

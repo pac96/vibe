@@ -1,6 +1,7 @@
 var name = "";
 var eventsArray = [];
-var currentEvent;
+var currentEvent = new Object();
+
 
 //Object to mirror EventTime from the backend
 function EventTime(eventTime) {
@@ -20,7 +21,6 @@ function CalendarEvent(event) {
 
 //Creates a new event on the sidebar
 function renderCalander(event){
-	console.log("Rendering calendar...");
 	var timePeriod = "";
 	if(event.start.isAM){
 		timePeriod = "am";
@@ -29,10 +29,9 @@ function renderCalander(event){
 	}
 	
 	var eventTimeline = $('#calanderEvents');
-	// var eventTimelineItems = eventTimeline.getElementsByTagName("li");
 	var eventTimelineItems = eventTimeline.children();
 	var eventHTMLString = 
-		"<li id='" + event.id + "' class='eventClick' onclick='createDropdown()'> " +
+		"<li id='" + event.id + "' class='anEvent'> " +
 			"<a href='#'>" +
 			"<a href='javascript:;' data-toggle='collapse' data-target='#demo'>" +
 				"<i class='fa fa-fw fa-arrows-v'></i> " +
@@ -72,12 +71,16 @@ function renderCalander(event){
 
 /* When the user clicks on the button, 
 toggle dropdown content using show and hide  */
-function createDropdown() {
-    document.getElementById("eventClick").classList.toggle("show");
+function createDropdown(id) {
+    document.getElementById(id).classList.toggle("show");
 }
 
 /* Handle clicking an event */
-$(".eventClick").on('click', function() {
+$(".anEvent").click(function() {
+	console.log("Clicked on an event");
+	currentEvent.id = this.id;
+	console.log("Current event: " + currentEvent + "[id: " + currentEvent.id + "]");
+	createDropdown(currentEvent.id);
 	if (!event.target.matches('collapse')) {
 
 	    var dropdowns = document.getElementsByClassName('collapse');
@@ -89,13 +92,15 @@ $(".eventClick").on('click', function() {
 	      }
 	    }
 	  }
-})
-
-
+});
 
 
 
 var eventComparator = function(eventA, eventB) {
+	if (eventA == null || eventB == null) {
+		return -1;
+	}
+
 	var eventAStartTime = eventA.start;
 	var eventBStartTime = eventB.start;
 	
@@ -156,25 +161,25 @@ if (window.location.pathname === "/playlists") {
 		$("#displayname").html(name);
 	  }
 
-	$("#playlist").attr('src', playlistURI);
+	// $("#playlist").attr('src', playlistURI);
 	
 	}); // end code post
 
 	// Handles clicking on each event and generating spotify playlist
-	$(".eventClick").on('click', function() {
-		console.log("Clicked id = " + this.id);
-		var eventID = this.id;
-		var eventClickParams = {eventID: JSON.stringify(eventID)};
-		$.post("/eventClick", eventClickParams, function(responseJSON) {
-			var eventClickResponse = responseJSON;
+	// $(".eventClick").on('click', function() {
+	// 	console.log("Clicked id = " + this.id);
+	// 	var eventID = this.id;
+	// 	var eventClickParams = {eventID: JSON.stringify(eventID)};
+	// 	$.post("/eventClick", eventClickParams, function(responseJSON) {
+	// 		var eventClickResponse = responseJSON;
 
-			console.log("Event click response : " + eventClickResponse);
+	// 		console.log("Event click response : " + eventClickResponse);
 
-		 	var uri = "https://embed.spotify.com/?uri=" + eventClickResponse; // remove the ]
+	// 	 	var uri = "https://embed.spotify.com/?uri=" + eventClickResponse; // remove the ]
 
-		  	console.log("Event id: " +  eventID + " | playlist: " + playlistURI);
-		});
-	})
+	// 	  	console.log("Event id: " +  eventID + " | playlist: " + playlistURI);
+	// 	});
+	// })
 	
 	$("#AddNewEvent").on('click', function() {
 		console.log("Adding new event...");
@@ -186,7 +191,7 @@ if (window.location.pathname === "/playlists") {
 		  }
 		};
 
-		var eventName = $('#eventName').val();
+		var eventName = $('#name').val();
 		var startTime = $('#startTime').val();
 		var endTime = $('#endTime').val();
 		var startAP;
@@ -197,8 +202,7 @@ if (window.location.pathname === "/playlists") {
 		
 		console.log("Check start time value: " + $('#startAM').is(':checked'));
 		console.log("Check end time value: " + $('#endAM').is(':checked'));
-		
-		
+
 		if ($('#startAM').is(':checked')) {
 			startAP = true;
 		} else {
@@ -264,10 +268,4 @@ if (window.location.pathname === "/playlists") {
 	    }
 	    
 		});
-	
-	// $.post("/code", postParams, function(responseJSON) {
-	// 	var eventRequest = $('#eventForm');
-		
-	// });
-
 }

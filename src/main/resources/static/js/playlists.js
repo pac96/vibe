@@ -119,6 +119,7 @@ var eventComparator = function(eventA, eventB) {
 }
 
 if (window.location.pathname === "/playlists") {
+	$("#editEventForm").hide();
 	// First, set the logout link 
 	$("#logoutLink").attr('href', "http://localhost:" + window.location.port + "/vibe");
 
@@ -154,21 +155,6 @@ if (window.location.pathname === "/playlists") {
 	
 	}); // end code post
 
-	// Handles clicking on each event and generating spotify playlist
-	// $(".eventClick").on('click', function() {
-	// 	console.log("Clicked id = " + this.id);
-	// 	var eventID = this.id;
-	// 	var eventClickParams = {eventID: JSON.stringify(eventID)};
-	// 	$.post("/eventClick", eventClickParams, function(responseJSON) {
-	// 		var eventClickResponse = responseJSON;
-
-	// 		console.log("Event click response : " + eventClickResponse);
-
-	// 	 	var uri = "https://embed.spotify.com/?uri=" + eventClickResponse; // remove the ]
-
-	// 	  	console.log("Event id: " +  eventID + " | playlist: " + playlistURI);
-	// 	});
-	// })
 	
 	/* Handle clicking an event */
 	

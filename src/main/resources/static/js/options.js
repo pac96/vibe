@@ -13,6 +13,7 @@ $("#customizePlaylist").click(function(event) {
 // "Edit Event" option
 $("#editEvent").click(function(event) {
 	console.log("Edit event clicked!");
+    $("#editEventForm").show();
 	
 });
 

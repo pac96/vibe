@@ -80,14 +80,13 @@ if (window.location.pathname === "/playlists") {
 		addEvent();
     }); // end add new click handler
 
-	$(document).ready(function() {
-		$('.anEvent').click(function() {
-			console.log("Clicked on an event");
-			var eventID = this.id;
-			console.log("Current event: " + currentEvent + "[id: " + eventID + "]");
-			createDropdown(eventID);
-		}); // end click on event handler
-	}
+
+	$(document).on('click', '.anEvent', function() {
+		console.log("Clicked on an event");
+		var eventID = this.id;
+		console.log("Current event id: " + eventID);
+		createDropdown(eventID);
+	}); // end click on event handler
 }
 
 
@@ -170,4 +169,95 @@ function renderCalander(event){
 	}
 	
 }
+
+
+/* When the user clicks on the button, 
+toggle dropdown content using show and hide  */
+function createDropdown(id) {
+    document.getElementById(id).classList.toggle("show");
+    if (!event.target.matches('collapse')) {
+
+	    var dropdowns = document.getElementsByClassName('collapse');
+	    var i;
+	    for (i = 0; i < dropdowns.length; i++) {
+	      var openDropdown = dropdowns[i];
+	      if (openDropdown.classList.contains('show')) {
+	        openDropdown.classList.remove('show');
+	      }
+	    }
+	}
+}
+
+
+/**
+ * Adds an event to the list of events on the front-end
+ */
+function addEvent() {
+	// necessary for some browser problems (saw on jquery's website)
+		$.valHooks.textarea = {
+		  get: function( elem ) {
+		    return elem.value.replace( /\r?\n/g, "\r\n" );
+		  }
+		};
+
+		var eventName = $('#name').val();
+		var startTime = $('#startTime').val();
+		var endTime = $('#endTime').val();
+		var startAP;
+		var endAP;
+
+		// Check to see if start time is AM or PM
+		if ($('#startAM').is(':checked')) {
+			startAP = true;
+		} else {
+			startAP = false;
+		}
+		
+		// Check to see if end time is AM or PM
+		if ($('#endAM').is(':checked')) {
+			endAP = true;
+		} else {
+			endAP = false;
+		}
+
+		// Set up the event format and time format
+		eventFormat = /^[a-zA-Z]+$/;
+		timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+		
+		if(eventName == null || startTime == null ||
+		 endTime == null || startAP == null || endAP == null) {
+			alert("One or more event fields are empty");
+		} else if(eventName == '' && !eventName.match(eventFormat)) {
+			alert("Invalid Event Name: " + eventName);
+		} else if(startTime == '' && !startTime.match(timeFormat)) {
+	    	alert("Invalid Start Time: " + startTime);
+	    } else if(endTime == '' && !startTime.match(timeFormat)) {
+	    	alert("Invalid End Time: " + endTime);
+	    } else {
+	    	var postParameters = {
+				start : startTime ,
+				end : endTime ,
+				startAMPM : startAP ,
+				endAMPM : endAP,
+				name : eventName
+	    	};
+	    	
+	    	$.post("/newEvent", postParameters, function(response) {
+	    		// 1. send stuff to back end and store in responseObject
+	    		var responseObject = JSON.parse(response);
+
+	    		// 2. Make calendar event object from responseObject
+	    		var newEvent = new CalendarEvent(responseObject);
+	    		currentEvent = newEvent;
+	    		
+	    		// 3. Add new calendar event to user's list
+	    		eventsArray.push(newEvent);
+	    		
+	    		// 4. sort the list 
+	    		eventsArray.sort(eventComparator);
+	    		
+	    		//5. Render calendar
+	    		renderCalander(currentEvent);
+	    	});
+		}
 }

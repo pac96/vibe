@@ -15,11 +15,11 @@ function CalendarEvent(event) {
 	this.end = new EventTime(event.end);
 	this.name = event.name;
 	this.id = event.id;
+	this.playlistId = event.playlistID;
 }
 
 //Creates a new event on the sidebar
 function renderCalander(event){
-	console.log("Rendering calendar...");
 	var timePeriod = "";
 	if(event.start.isAM){
 		timePeriod = "am";
@@ -28,30 +28,29 @@ function renderCalander(event){
 	}
 	
 	var eventTimeline = $('#calanderEvents');
-	// var eventTimelineItems = eventTimeline.getElementsByTagName("li");
 	var eventTimelineItems = eventTimeline.children();
 	var eventHTMLString = 
-		"<li id='" + event.id + "' class='eventClick' onclick='createDropdown()'> " +
-			"<a href='#'>" +
+		"<li id='" + event.id + "' class='anEvent'> " +
 			"<a href='javascript:;' data-toggle='collapse' data-target='#demo'>" +
 				"<i class='fa fa-fw fa-arrows-v'></i> " +
 				event.start.hour + timePeriod + " | " + event.name + " " +
 				"<i class='fa fa-fw fa-caret-down'></i></a>" +
 				"<ul id= 'demo'" + "class='collapse'>" +
-					"<li>" +
-						"<a href='#'>View Playlist" + event.name + " onclick='displayPlaylist(" + event.id + ")' </a>" +
+
+					"<li id='viewPlaylist'>" +
+						"<a href='#'>View Playlist" + event.start.hour + "</a>" +
 					"</li>" +
-					"<li>" +
-						"<a href='#'>Customize Playlist onclick='displayCustomizePlaylist(" + event.id + ")' </a>" +
+					"<li id='customizePlaylist'>" +
+						"<a href='#'>Customize Playlist</a>" +
 					"</li>" +
-					"<li>" +
-						"<a href='#'>Use Spotify Playlist onclick='displaySpotifyPlaylist(" + event.id + ")'</a>" +
+					"<li id='usePlaylist'>" +
+						"<a href='#'>Use Spotify Playlist</a>" +
 					"</li>" +
-					"<li>" +
-						"<a href='#'>Edit Event onclick='editEvent(" + event.id, true + ")'</a>" +
+					"<li id='editEvent'>" +
+						"<a href='#'>Edit Event</a>" +
 					"</li>" +
-					"<li>" +
-						"<a href='#'>Delete Event onclick='deleteEvent(" + event.id + ")'</a>" +
+					"<li id='deleteEvent'>" +
+						"<a href='#'>Delete Event</a>" +
 					"</li>" +
 				"</ul>" +
 			"</a>" +
@@ -72,24 +71,10 @@ function renderCalander(event){
 
 /* When the user clicks on the button, 
 toggle dropdown content using show and hide  */
-function createDropdown() {
-    document.getElementById("eventClick").classList.toggle("show");
+function createDropdown(id) {
+    document.getElementById(id).classList.toggle("show");
 }
 
-/* Handle clicking an event */
-$(".eventClick").on('click', function() {
-	if (!event.target.matches('collapse')) {
-
-	    var dropdowns = document.getElementsByClassName('collapse');
-	    var i;
-	    for (i = 0; i < dropdowns.length; i++) {
-	      var openDropdown = dropdowns[i];
-	      if (openDropdown.classList.contains('show')) {
-	        openDropdown.classList.remove('show');
-	      }
-	    }
-	  }
-})
 
 /**
  * Displays the playlist for a given event.
@@ -155,13 +140,18 @@ function deleteEvent(eventID){
 }
 
 
- <div id='view-playlist-panel'> ... </div>
-	    <div id='customize-playlist-panel'> ... </div>
-	    <div id='use-spotify-playlist-panel'> ... </div>
-	    <div id='edit-event'> ... </div>
+// <div id='view-playlist-panel'> ... </div>
+//	    <div id='customize-playlist-panel'> ... </div>
+//	    <div id='use-spotify-playlist-panel'> ... </div>
+//	    <div id='edit-event'> ... </div>
+
 
 
 var eventComparator = function(eventA, eventB) {
+	if (eventA == null || eventB == null) {
+		return -1;
+	}
+
 	var eventAStartTime = eventA.start;
 	var eventBStartTime = eventB.start;
 	
@@ -222,27 +212,29 @@ if (window.location.pathname === "/playlists") {
 		$("#displayname").html(name);
 	  }
 
-	$("#playlist").attr('src', playlistURI);
+	// $("#playlist").attr('src', playlistURI);
 	
 	}); // end code post
 
 	// Handles clicking on each event and generating spotify playlist
-	$(".eventClick").on('click', function() {
-		console.log("Clicked id = " + this.id);
-		var eventID = this.id;
-		var eventClickParams = {eventID: JSON.stringify(eventID)};
-		$.post("/eventClick", eventClickParams, function(responseJSON) {
-			var eventClickResponse = responseJSON;
+	// $(".eventClick").on('click', function() {
+	// 	console.log("Clicked id = " + this.id);
+	// 	var eventID = this.id;
+	// 	var eventClickParams = {eventID: JSON.stringify(eventID)};
+	// 	$.post("/eventClick", eventClickParams, function(responseJSON) {
+	// 		var eventClickResponse = responseJSON;
 
-			console.log("Event click response : " + eventClickResponse);
+	// 		console.log("Event click response : " + eventClickResponse);
 
-		 	var uri = "https://embed.spotify.com/?uri=" + eventClickResponse; // remove the ]
+	// 	 	var uri = "https://embed.spotify.com/?uri=" + eventClickResponse; // remove the ]
 
-		  	console.log("Event id: " +  eventID + " | playlist: " + playlistURI);
-		});
-	})
+	// 	  	console.log("Event id: " +  eventID + " | playlist: " + playlistURI);
+	// 	});
+	// })
 	
-	$("#AddNewEvent").on('click', function() {
+	/* Handle clicking an event */
+	
+	$("#AddNewEvent").click(function() {
 		console.log("Adding new event...");
 
 		// necessary for some browser problems (saw on jquery's website)
@@ -252,7 +244,7 @@ if (window.location.pathname === "/playlists") {
 		  }
 		};
 
-		var eventName = $('#eventName').val();
+		var eventName = $('#name').val();
 		var startTime = $('#startTime').val();
 		var endTime = $('#endTime').val();
 		var startAP;
@@ -263,8 +255,7 @@ if (window.location.pathname === "/playlists") {
 		
 		console.log("Check start time value: " + $('#startAM').is(':checked'));
 		console.log("Check end time value: " + $('#endAM').is(':checked'));
-		
-		
+
 		if ($('#startAM').is(':checked')) {
 			startAP = true;
 		} else {
@@ -317,23 +308,35 @@ if (window.location.pathname === "/playlists") {
     		eventsArray.sort(eventComparator);
     		
     		//5. Render calendar 
-    		console.log("New Event Name : " + newEvent.name);
-    		console.log("New Event Start Time Hour: " + newEvent.start.hour);
-    		console.log("New Event Start Time AM: " + newEvent.start.isAM);
-    		console.log("New Event End Time Hour: " + newEvent.end.hour);
-    		console.log("New Event End Time AM: " + newEvent.end.isAM);
-    		console.log("New Event : " + newEvent.id);
+    		// console.log("New Event Name : " + newEvent.name);
+    		// console.log("New Event Start Time Hour: " + newEvent.start.hour);
+    		// console.log("New Event Start Time AM: " + newEvent.start.isAM);
+    		// console.log("New Event End Time Hour: " + newEvent.end.hour);
+    		// console.log("New Event End Time AM: " + newEvent.end.isAM);
+    		// console.log("New Event : " + newEvent.id);
     		renderCalander(currentEvent);
     		
     	}); // end post event
 
+	$(".anEvent").click(function() {
+		console.log("Clicked on an event");
+		var eventID = this.id;
+		console.log("Current event: " + currentEvent + "[id: " + eventID + "]");
+		createDropdown(eventID);
+		if (!event.target.matches('collapse')) {
+
+		    var dropdowns = document.getElementsByClassName('collapse');
+		    var i;
+		    for (i = 0; i < dropdowns.length; i++) {
+		      var openDropdown = dropdowns[i];
+		      if (openDropdown.classList.contains('show')) {
+		        openDropdown.classList.remove('show');
+		      }
+		    }
+		}
+	});
+
 	    }
 	    
 		});
-	
-	// $.post("/code", postParams, function(responseJSON) {
-	// 	var eventRequest = $('#eventForm');
-		
-	// });
-
 }

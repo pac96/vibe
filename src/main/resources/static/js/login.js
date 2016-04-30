@@ -2,11 +2,11 @@
 // retrieved from the back-end
 
 var linkToLogin = $("#loginLink");
-var isPlaylistUp = true;
-var isAddEventUp = false;
-var addEventDiv = $("#addEvent");
-var playlistDiv = $("#playlist");
-hideMainContent();
+// var isPlaylistUp = true;
+// var isAddEventUp = false;
+// var addEventDiv = $("#addEvent");
+// var playlistDiv = $("#playlist");
+// hideMainContent();
 
 if (window.location.pathname === "/vibe") {
   // Retrieve the authorizeURI from the back-end
@@ -23,15 +23,15 @@ if (window.location.pathname === "/vibe") {
   * and shows the other portion
   *
   */
-function hideMainContent() {
-  if (isPlaylistUp) {
-    addEventDiv.hide();  
-    playlistDiv.show();
-    isAddEventUp = false;
-  } 
-  if (isAddEventUp) {
-    playlistDiv.hide();
-    addEventDiv.show();
-    isPlaylistUp = false;
-  }
-}
+// function hideMainContent() {
+//   if (isPlaylistUp) {
+//     addEventDiv.hide();  
+//     playlistDiv.show();
+//     isAddEventUp = false;
+//   } 
+//   if (isAddEventUp) {
+//     playlistDiv.hide();
+//     addEventDiv.show();
+//     isPlaylistUp = false;
+//   }
+// }

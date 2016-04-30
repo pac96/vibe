@@ -12,6 +12,9 @@ public class CalendarEvent {
   private EventTime start;
   private EventTime end;
   private UUID id;
+
+  //We set the playlist id to this default. Spotify playlist IDs are
+  private String playListId = "";
   
   public CalendarEvent(String name, EventTime start, EventTime end) {
     this.name = name;
@@ -34,6 +37,14 @@ public class CalendarEvent {
   
   public UUID getId() {
     return id;
+  }
+
+  public String getPlayListId() {
+    return playListId;
+  }
+
+  public void setPlayListId(String playListID) {
+    this.playListId = playListID;
   }
   
   public void setStart(int newHour,int newMinute, boolean amOrPm) {
@@ -64,7 +75,8 @@ public class CalendarEvent {
      return this.getStart().equals(other.getStart()) 
          && this.getEnd().equals(other.getEnd())
          && this.getId().equals(other.getId())
-         && this.getName().equals(other.getName());   
+         && this.getName().equals(other.getName())
+         && this.getPlayListId().equals(other.getPlayListId());   
    }
  }
  

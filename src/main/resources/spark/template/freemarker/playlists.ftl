@@ -18,7 +18,7 @@
 	        <hr>
 	        <form id='eventForm' form method="POST" action="/newEvent">
 	            <label for='name' >Event Name: </label>
-	            <input type='text' id='eventName' name='name' id='name' maxlength="30" class="form-textbox"/>
+	            <input type='text' name='name' id='name' maxlength="30" class="form-textbox"/>
 	            <br/><br/>
 
 	            <label for='start-time' >Start Time:</label> 
@@ -35,6 +35,8 @@
 
 	            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
 	            <input type='button' name='AddNewEvent' value='Add New Event' id="AddNewEvent" class="form-button"/>
+	            <ul id="calendarEvents">
+	            </ul>
 	        </form>
 	        <hr>
 	    </ul>

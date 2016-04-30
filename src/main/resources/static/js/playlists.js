@@ -80,10 +80,10 @@ if (window.location.pathname === "/playlists") {
 		addEvent();
     }); // end add new click handler
 
-	$('.anEvent').click(function() {
+	$(document).on('click', '.anEvent', function() {
 		console.log("Clicked on an event");
 		var eventID = this.id;
-		console.log("Current event: " + currentEvent + "[id: " + eventID + "]");
+		console.log("Current event id: " + eventID);
 		createDropdown(eventID);
 	}); // end click on event handler
 
@@ -174,110 +174,6 @@ function renderCalander(event){
 toggle dropdown content using show and hide  */
 function createDropdown(id) {
     document.getElementById(id).classList.toggle("show");
-}
-
-
-
-
-// <div id='view-playlist-panel'> ... </div>
-//	    <div id='customize-playlist-panel'> ... </div>
-//	    <div id='use-spotify-playlist-panel'> ... </div>
-//	    <div id='edit-event'> ... </div>
-
-
-
-var eventComparator = function(eventA, eventB) {
-	if (eventA == null || eventB == null) {
-		return -1;
-	}
-
-	var eventAStartTime = eventA.start;
-	var eventBStartTime = eventB.start;
-	
-	//Case where eventA and eventB are both in the AM or both PM
-	if (eventAStartTime.isAM && eventBStartTime.isAM 
-			|| (!eventAStartTime.isAM && !eventBStartTime.isAM)) {	
-		if (eventAStartTime.hour < eventBStartTime.hour) {
-			return -1;
-		} else if (eventAStartTime.hour > eventBStartTime.hour) {
-			return 1;
-		} else {
-			if (eventAStartTime.minute <= eventBStartTime.minute) {
-				return -1;
-			} else if (eventAStartTime.minute > eventBStartTime.minute) {
-				return 1;
-			}			
-		} 
-	
-	} else if (eventAStartTime.isAM && !eventBStartTime.isAM) {
-		//eventA comes before eventB
-		return -1;	
-	//Case where eventA is in the PM and eventA is in the AM	
-	} else {
-		//eventA comes after eventB
-		return 1;
-	}
-}
-
-if (window.location.pathname === "/playlists") {
-	// First, set the logout link 
-	$("#logoutLink").attr('href', "http://localhost:" + window.location.port + "/vibe");
-
-	// Next, retrieve the user's code to send to the back-end from the URL	
-	var uri = new URI(window.location.href);
-	var urlParams = uri.search(true);
-	var codeFromURL = urlParams.code;
-	var postParams = {code: JSON.stringify(codeFromURL)};
-
-	$.post("/code", postParams, function(responseJSON) {
-	  // Back-end sends back the user's display name
-	  var backendParams = responseJSON.split(",");
-
-	  if (backendParams === "") {
-	  	alert("Error loading user information. Please logout and login again!");
-	  }
-
-	  var username = backendParams[0].slice(1, backendParams[0].length).trim(); // remove the [
-	  var playlistURI = "https://embed.spotify.com/?uri=" 
-	  + backendParams[1].slice(0, backendParams[1].length - 1).trim(); // remove the ]
-
-	  document.cookie = "name=" + username; // Store the username in a cookie
-
-	  console.log("user: " + username);
-	  console.log("playlist: " + playlistURI);
-
-	  if (backendParams != null) {
-	    name = username;
-		$("#displayname").html(name);
-	  }
-
-	$("#playlist").attr('src', playlistURI);
-	
-	}); // end code post
-
-	// Handles clicking on each event and generating spotify playlist
-	// $(".eventClick").on('click', function() {
-	// 	console.log("Clicked id = " + this.id);
-	// 	var eventID = this.id;
-	// 	var eventClickParams = {eventID: JSON.stringify(eventID)};
-	// 	$.post("/eventClick", eventClickParams, function(responseJSON) {
-	// 		var eventClickResponse = responseJSON;
-
-	// 		console.log("Event click response : " + eventClickResponse);
-
-	// 	 	var uri = "https://embed.spotify.com/?uri=" + eventClickResponse; // remove the ]
-
-	// 	  	console.log("Event id: " +  eventID + " | playlist: " + playlistURI);
-	// 	});
-	// })
-	
-	/* Handle clicking an event */
-	
-	$("#AddNewEvent").click(function() {
-		console.log("Adding new event...");
-
-		// necessary for some browser problems (saw on jquery's website)
-
     if (!event.target.matches('collapse')) {
 
 	    var dropdowns = document.getElementsByClassName('collapse');
@@ -290,6 +186,7 @@ if (window.location.pathname === "/playlists") {
 	    }
 	}
 }
+
 
 /**
  * Adds an event to the list of events on the front-end

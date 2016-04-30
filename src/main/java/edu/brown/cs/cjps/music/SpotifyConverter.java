@@ -54,10 +54,15 @@ public class SpotifyConverter {
     // for (int i = 0; i < trackList.size(); i++) {
     List<String> testList = new ArrayList<>();
 
-    testList.add("spotify:track:38tKqQuqodiUYOsw6HWyeQ");
+    testList.add("spotify:track:5JZcX7TTLx4l0xFIXJ3DBt");
+    System.out.println("hard coded is " + testList.get(0));
+    System.out.println("not hard coded is " + trackList.get(0));
+    // trackList.set(0,
+    // trackList.get(0).substring(1, trackList.get(0).length() - 1));
+    // System.out.println("not hard coded take 2 is " + trackList.get(0));
 
     final AddTrackToPlaylistRequest addRequest = api
-        .addTracksToPlaylist(user.getId(), playlistID, testList)
+        .addTracksToPlaylist(user.getId(), playlistID, trackList)
         .position(insertIndex).build();
 
     try {

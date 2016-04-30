@@ -40,6 +40,7 @@ if (window.location.pathname === "/playlists") {
 	// First, set the logout link 
 	$("#logoutLink").attr('href', "http://localhost:" + window.location.port + "/vibe");
 
+	// If the cookie doesn't have the code already
 	// Next, retrieve the user's code to send to the back-end from the URL	
 	var uri = new URI(window.location.href);
 	var urlParams = uri.search(true);
@@ -79,7 +80,7 @@ if (window.location.pathname === "/playlists") {
 		addEvent();
     }); // end add new click handler
 
-	$(".anEvent").click(function() {
+	$('.anEvent').click(function() {
 		console.log("Clicked on an event");
 		var eventID = this.id;
 		console.log("Current event: " + currentEvent + "[id: " + eventID + "]");
@@ -88,6 +89,10 @@ if (window.location.pathname === "/playlists") {
 
 }
 
+
+/////////////////////////////////////
+// Constructor Declarations
+////////////////////////////////////
 
 //Object to mirror EventTime from the backend
 function EventTime(eventTime) {
@@ -105,7 +110,16 @@ function CalendarEvent(event) {
 	this.playlistId = event.playlistID;
 }
 
-//Creates a new event on the sidebar
+
+
+/////////////////////////////////////
+// Function Declarations
+////////////////////////////////////
+/**
+ * Renders the calendar so that we cna 
+ * @param  {CalendarEvent} event - the calendar event object 
+ *                               we got from the backend
+ */
 function renderCalander(event){
 	var timePeriod = "";
 	if(event.start.isAM){

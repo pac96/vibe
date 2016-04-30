@@ -1,11 +1,11 @@
 edu/brown/cs/cjps/db/Pair.class
-edu/brown/cs/cjps/vibe/Main$FrontHandler.class
-edu/brown/cs/cjps/vibe/Main$PlaylistPageHandler.class
 edu/brown/cs/cjps/vibe/Main$1.class
-edu/brown/cs/cjps/vibe/Main$ExceptionPrinter.class
 edu/brown/cs/cjps/vibe/Main$clickEventHandler.class
 edu/brown/cs/cjps/vibe/Main.class
 edu/brown/cs/cjps/vibe/Main$addEventHandler.class
 edu/brown/cs/cjps/vibe/Main$LoginHandler.class
 edu/brown/cs/cjps/db/UserDBCreator.class
 edu/brown/cs/cjps/music/PlaylistHQ$1.class
+edu/brown/cs/cjps/vibe/Main$FrontHandler.class
+edu/brown/cs/cjps/vibe/Main$PlaylistPageHandler.class
+edu/brown/cs/cjps/vibe/Main$ExceptionPrinter.class

@@ -20,25 +20,26 @@ h1 span {
   text-align: center;
 }
 
-/*.spotify button {
-  font-weight: bold;
-  background-color: #8CFC99;
-}
-
-.spotify button:hover {
-  background-color: green;
-  color: white;
-}
-
-.spotify button a:visited {
-  text-decoration: none;
-  color: black;
-}*/
 
 /* Playlist Page */
 #calendar { /* References the div col */
   border-right: 1px solid black;
 
+}
+
+#date {
+  color: white;
+}
+
+#sidebar-wrapper {
+  color: white;
+}
+
+#eventDesc {
+  color: white;
+  font-size: 1.1em;
+  text-align: center;
+  padding: .1em;
 }
 
 iframe {

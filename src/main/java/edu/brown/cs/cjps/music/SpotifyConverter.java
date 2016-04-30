@@ -24,17 +24,16 @@ public class SpotifyConverter {
   }
 
   public String makeSpotifyPlaylist(Api api, User user, List<String> trackList) {
-    System.out.println("in make spotify");
-    // final PlaylistCreationRequest request = api
-    // .createPlaylist(user.getId(), "title").publicAccess(true).build();
-    final PlaylistCreationRequest request = api
-        .createPlaylist("pacdaboss", "title").publicAccess(true).build();
 
-    System.out.println("request: " + request.toString());
+    // MAKING THE PLAYLIST
+
+    final PlaylistCreationRequest request = api
+        .createPlaylist(user.getId(), "title").publicAccess(true).build();
     String playlistID = null;
     String playlistURI = "";
+    Playlist playlist = null;
     try {
-      final Playlist playlist = request.get();
+      playlist = request.get();
       playlistID = playlist.getId();
       playlistURI = playlist.getUri();
       System.out.println(playlistID);
@@ -48,33 +47,30 @@ public class SpotifyConverter {
       e.printStackTrace();
     }
 
+    // FILLING THE PLAYLIST
+
     // Index starts at 0
     final int insertIndex = 0;
-    for (int i = 0; i < trackList.size(); i++) {
-      List<String> testList = new ArrayList<>();
-      // testList.add(trackList.get(i));
-      // Builder track = api.getTrack("spotify:track:4BYGxv4rxSNcTgT3DsFB9o");
-      // System.out.println(track);
-      testList.add("spotify:track:6zHrqd3mvAtIMoqDpw0dW");
-      // "spotify:track:5YtKNQRPr4WE4EW1q2KJ8y"
+    // for (int i = 0; i < trackList.size(); i++) {
+    List<String> testList = new ArrayList<>();
 
-      final AddTrackToPlaylistRequest addRequest = api
-          .addTracksToPlaylist(user.getId(), playlistID, testList)
-          .position(insertIndex).build();
-      // System.out.println(trackList);
+    testList.add("spotify:track:38tKqQuqodiUYOsw6HWyeQ");
 
-      try {
-        addRequest.get();
-        System.out.println("SUCCESS");
-      } catch (Exception e) {
-        System.out.println("P2: Something went wrong!" + e.getMessage());
-      }
+    final AddTrackToPlaylistRequest addRequest = api
+        .addTracksToPlaylist(user.getId(), playlistID, testList)
+        .position(insertIndex).build();
+
+    try {
+      addRequest.get();
+      System.out.println("SUCCESS");
+    } catch (Exception e) {
+      System.out.println("P2: Something went wrong!" + e.getMessage());
+      e.printStackTrace();
     }
+    // }
+    System.out.println("Tracklist: " + trackList);
+    System.out.println(playlist.getTracks().toString());
     return playlistURI;
   }
-
-  // public String getSpotifyPlaylistID() {
-  // return playlistID;
-  // }
 
 }

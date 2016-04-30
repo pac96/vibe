@@ -1,7 +1,6 @@
 var name = "";
 var eventsArray = [];
-
-
+var currentEvent;
 
 //Object to mirror EventTime from the backend
 function EventTime(eventTime) {
@@ -20,6 +19,7 @@ function CalendarEvent(event) {
 
 //Creates a new event on the sidebar
 function renderCalander(event){
+	console.log("Rendering calendar...");
 	var timePeriod = "";
 	if(event.start.isAM){
 		timePeriod = "am";
@@ -27,16 +27,39 @@ function renderCalander(event){
 		timePeriod = "pm";
 	}
 	
-	var eventTimeline = document.getElementById('#calanderEvents'); //.parentNode?
+	var eventTimeline = $('#calanderEvents');
+	// var eventTimelineItems = eventTimeline.getElementsByTagName("li");
+	var eventTimelineItems = eventTimeline.children();
 	var eventHTMLString = 
-		"<li id='" + event.id + "' class='eventClick'> " +
-		"<a href='#'>" +
-		"<input type='button' name='settings' value='+' class='settings-button'/> " +
-		"&nbsp " +
-		event.start.hour + timePeriod + " | " + event.name +
-		"</a> </li>";
+		"<li id='" + event.id + "' class='eventClick' onclick='createDropdown()'> " +
+			"<a href='#'>" +
+			"<a href='javascript:;' data-toggle='collapse' data-target='#demo'>" +
+				"<i class='fa fa-fw fa-arrows-v'></i> " +
+				event.start.hour + timePeriod + " | " + event.name + " " +
+				"<i class='fa fa-fw fa-caret-down'></i></a>" +
+				"<ul id= 'demo'" + "class='collapse'>" +
+					"<li>" +
+						"<a href='#'>View Playlist" + event.start.hour + "</a>" +
+					"</li>" +
+					"<li>" +
+						"<a href='#'>Customize Playlist</a>" +
+					"</li>" +
+					"<li>" +
+						"<a href='#'>Use Spotify Playlist</a>" +
+					"</li>" +
+					"<li>" +
+						"<a href='#'>Edit Event</a>" +
+					"</li>" +
+					"<li>" +
+						"<a href='#'>Delete Event</a>" +
+					"</li>" +
+				"</ul>" +
+			"</a>" +
+		"</li>";
+
+	eventTimeline.append(eventHTMLString);
 	
-	for(var i = 0; i < eventsArray.length; i++){
+	for(var i = 0; i < eventTimelineItems.length; i++){
 		if (eventComparator(event, eventsArray[i]) == -1){
 			continue;
 		} else {
@@ -46,9 +69,32 @@ function renderCalander(event){
 	}
 }
 
+/* When the user clicks on the button, 
+toggle dropdown content using show and hide  */
+function createDropdown() {
+    document.getElementById("eventClick").classList.toggle("show");
+}
+
+/* Handle clicking an event */
+$(".eventClick").on('click', function() {
+	if (!event.target.matches('collapse')) {
+
+	    var dropdowns = document.getElementsByClassName('collapse');
+	    var i;
+	    for (i = 0; i < dropdowns.length; i++) {
+	      var openDropdown = dropdowns[i];
+	      if (openDropdown.classList.contains('show')) {
+	        openDropdown.classList.remove('show');
+	      }
+	    }
+	  }
+})
 
 
-var eventComparator = function (eventA , eventB) {
+
+
+
+var eventComparator = function(eventA, eventB) {
 	var eventAStartTime = eventA.start;
 	var eventBStartTime = eventB.start;
 	
@@ -78,31 +124,28 @@ var eventComparator = function (eventA , eventB) {
 }
 
 if (window.location.pathname === "/playlists") {
+	// First, set the logout link 
+	$("#logoutLink").attr('href', "http://localhost:" + window.location.port + "/vibe");
+
+	// Next, retrieve the user's code to send to the back-end from the URL	
 	var uri = new URI(window.location.href);
 	var urlParams = uri.search(true);
-	// console.log("User code: " + urlParams.code);
-
 	var codeFromURL = urlParams.code;
 	var postParams = {code: JSON.stringify(codeFromURL)};
 
 	$.post("/code", postParams, function(responseJSON) {
 	  // Back-end sends back the user's display name
 	  var backendParams = responseJSON.split(",");
-	  console.log(backendParams[0]);
-	  console.log(backendParams[1]);
-
 
 	  if (backendParams === "") {
 	  	alert("Error loading user information. Please logout and login again!");
 	  }
 
-	  var username = backendParams[0].slice(1, backendParams[0].length); // remove the [
-<<<<<<< HEAD
-	  var playlistURI = "https://embed.spotify.com/?uri=" + backendParams[1].slice(0, backendParams[1].length-1).trim(); // remove the ]
-=======
+	  var username = backendParams[0].slice(1, backendParams[0].length).trim(); // remove the [
 	  var playlistURI = "https://embed.spotify.com/?uri=" 
 	  + backendParams[1].slice(0, backendParams[1].length - 1).trim(); // remove the ]
->>>>>>> a62ecd32954500359ee5f8a25657da1199389c88
+
+	  document.cookie = "name=" + username; // Store the username in a cookie
 
 	  console.log("user: " + username);
 	  console.log("playlist: " + playlistURI);
@@ -115,8 +158,6 @@ if (window.location.pathname === "/playlists") {
 	$("#playlist").attr('src', playlistURI);
 	
 	}); // end code post
-
-	console.log("We got out the post");
 
 	// Handles clicking on each event and generating spotify playlist
 	$(".eventClick").on('click', function() {
@@ -149,66 +190,83 @@ if (window.location.pathname === "/playlists") {
 		var endTime = $('#endTime').val();
 		var startAP;
 		var endAP;
-		console.log(eventName);
-		console.log(startTime);
-		console.log(endTime);
+		console.log("Event name: " + eventName);
+		console.log("Start time: " + startTime);
+		console.log("End time: " + endTime);
 		
-		if ($('#startAP').val == "am-start"){
+		console.log("Check start time value: " + $('#startAM').is(':checked'));
+		console.log("Check end time value: " + $('#endAM').is(':checked'));
+		
+		
+		if ($('#startAM').is(':checked')) {
 			startAP = true;
 		} else {
 			startAP = false;
 		}
 		
-		if ($('#endAP').val == "am-end"){
+		if ($('#endAM').is(':checked')) {
 			endAP = true;
 		} else {
 			endAP = false;
 		}
 		
+		console.log("start AM/PM Option: " + startAP);
+		console.log("end AM/PM Option: " + endAP);
+		
 		eventFormat = /^[a-zA-Z]+$/;
 		timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
 		
-		if(eventName == '' || startTime == '' || endTime == '' || startAP == '' || endAP == '') {
+		if(eventName == null || startTime == null ||
+		 endTime == null || startAP == null || endAP == null) {
 			alert("One or more event fields are empty");
-		} else if(eventName != '' && !eventName.match(eventFormat)) {
-			alert("Invalid Event Name: " + eventName.val);
-		} else if(startTime != '' && !startTime.match(timeFormat)) {
-	    	alert("Invalid Start Time: " + startTime.val);
-	    } else if(endTime != '' && !startTime.match(timeFormat)) {
-	    	alert("Invalid End Time: " + endTime.val);
+		} else if(eventName == '' && !eventName.match(eventFormat)) {
+			alert("Invalid Event Name: " + eventName);
+		} else if(startTime == '' && !startTime.match(timeFormat)) {
+	    	alert("Invalid Start Time: " + startTime);
+	    } else if(endTime == '' && !startTime.match(timeFormat)) {
+	    	alert("Invalid End Time: " + endTime);
 	    } else {
 	    	
-	    	var postParameters = {
-	    			start : startTime ,
-	    			end : endTime ,
-	    			startAMPM : startAP ,
-	    			endAMPM : endAP,
-	    			name : eventName
-	    	};
-	    	
-	    	$.post("/newEvent", postParameters, function(response) {
-	    		//1. send stuff to back end and store in responseObject
-	    		var responseObject = JSON.parse(responseJSON);
-	    		//2. Make calendar event object from responseObject
-	    		var newEvent =  new CalendarEvent(responseObject);
-	    		
-	    		//3. Add new calendar event to user's list
-	    		eventsArray.push(newEvent);
-	    		
-	    		//4. sort the list 
-	    		eventsArray.sort(eventComparator);
-	    		
-	    		//5. Render calendar 
-	    		renderCalendar(newEvent);
-	    		
-	    	});
+    	var postParameters = {
+    			start : startTime ,
+    			end : endTime ,
+    			startAMPM : startAP ,
+    			endAMPM : endAP,
+    			name : eventName
+    	};
+    	
+    	$.post("/newEvent", postParameters, function(response) {
+    		//1. send stuff to back end and store in responseObject
+    		var responseObject = JSON.parse(response);
+    		console.log("Parsed json event: " +  responseObject);
+    		//2. Make calendar event object from responseObject
+    		var newEvent = new CalendarEvent(responseObject);
+    		currentEvent = newEvent;
+    		
+    		//3. Add new calendar event to user's list
+    		eventsArray.push(newEvent);
+    		
+    		//4. sort the list 
+    		eventsArray.sort(eventComparator);
+    		
+    		//5. Render calendar 
+    		console.log("New Event Name : " + newEvent.name);
+    		console.log("New Event Start Time Hour: " + newEvent.start.hour);
+    		console.log("New Event Start Time AM: " + newEvent.start.isAM);
+    		console.log("New Event End Time Hour: " + newEvent.end.hour);
+    		console.log("New Event End Time AM: " + newEvent.end.isAM);
+    		console.log("New Event : " + newEvent.id);
+    		renderCalander(currentEvent);
+    		
+    	}); // end post event
+
 	    }
 	    
 		});
 	
-	$.post("/code", postParams, function(responseJSON) {
-		var eventRequest = $('#eventForm');
+	// $.post("/code", postParams, function(responseJSON) {
+	// 	var eventRequest = $('#eventForm');
 		
-	});
+	// });
 
 }

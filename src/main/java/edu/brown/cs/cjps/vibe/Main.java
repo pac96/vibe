@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +26,6 @@ import spark.SparkBase;
 import spark.TemplateViewRoute;
 import spark.template.freemarker.FreeMarkerEngine;
 
-import com.echonest.api.v4.EchoNestException;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.wrapper.spotify.Api;
@@ -34,7 +34,7 @@ import com.wrapper.spotify.models.User;
 
 import edu.brown.cs.cjps.calendar.CalendarEvent;
 import edu.brown.cs.cjps.calendar.EventTime;
-import edu.brown.cs.cjps.music.PlaylistGenerator;
+import edu.brown.cs.cjps.music.NewSpotifyTester;
 import edu.brown.cs.cjps.music.PlaylistHQ;
 import edu.brown.cs.cjps.music.SpotifyConverter;
 import freemarker.template.Configuration;
@@ -86,6 +86,9 @@ public final class Main {
 
   private PlaylistHQ hq;
 
+  private String accessToken;
+  private String refreshToken;
+
   /**
    * Google's GSON instance variable that helps with sending and retrieving
    * front-end and back-end requests.
@@ -125,7 +128,7 @@ public final class Main {
         .redirectURI(redirectURI).build();
 
     // SOME TEST STUFF
-    this.generatePlaylist();
+    // this.generatePlaylist();
 
     // END TEST STUFF
 
@@ -137,24 +140,37 @@ public final class Main {
 
   // TODO: Call this method from some sort of handler
   private String generatePlaylist() {
-    System.out.println("in generate playlist");
-    PlaylistGenerator generator = new PlaylistGenerator();
-    List<String> tracks = null;
+    // System.out.println("in generate playlist");
+    // PlaylistGenerator generator = new PlaylistGenerator();
+    // List<String> tracks = null;
+    // try {
+    // System.out.println("try in main");
+    // tracks = generator.playlistTest();
+    // } catch (EchoNestException e) {
+    // // TODO Auto-generated catch block
+    // e.printStackTrace();
+    // }
+    // System.out.println("after the try in main");
+    // // Generate a playlist based on something
+    SpotifyConverter spotconv = new SpotifyConverter();
+
+    NewSpotifyTester t = new NewSpotifyTester(api, currentUser, accessToken);
+    String track = null;
     try {
-      System.out.println("try in main");
-      tracks = generator.playlistTest();
-    } catch (EchoNestException e) {
+      track = t.testTrack();
+    } catch (MalformedURLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    System.out.println("after the try in main");
-    // Generate a playlist based on something
-    SpotifyConverter spotconv = new SpotifyConverter();
-    String playlistURI = spotconv.makeSpotifyPlaylist(api, currentUser, tracks);
-    System.out.println("through generate playlist in main");
-    // String playlistURI = spotconv.
+    List<String> list = Arrays.asList(track);
+    String playlistURI = spotconv.makeSpotifyPlaylist(api, currentUser, list);
+    // System.out.println("through generate playlist in main");
 
     return playlistURI;
+    // return null;
   }
 
   /**
@@ -255,8 +271,8 @@ public final class Main {
        */
       AuthorizationCodeCredentials acg = null;
       currentUser = null;
-      String accessToken = "";
-      String refreshToken = "";
+      accessToken = "";
+      refreshToken = "";
 
       try {
         acg = api.authorizationCodeGrant(code).build().get();
@@ -284,9 +300,10 @@ public final class Main {
 
       List<String> params = new ArrayList<>();
 
-      String playlistURI = generatePlaylist();
-      params.add(display);
-      params.add(playlistURI);
+      generatePlaylist();
+      // String playlistURI = generatePlaylist();
+      // params.add(display);
+      // params.add(playlistURI);
 
       System.out.printf("User: %s\n", display);
 
@@ -317,6 +334,10 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
+
+      // Parse the start time to hour and minute.
+
+      System.out.println("********** ADD EVENT HANDLER *********");
       // Parse the start time to hour and minute.
       String startTime = qm.value("start");
       String[] startTimeSplit = startTime.split(":");
@@ -332,14 +353,19 @@ public final class Main {
       Integer endMinute = Integer.parseInt(endTimeSplit[1]);
       Boolean endAMorPM = Boolean.parseBoolean(qm.value("endAMPM"));
       EventTime end = new EventTime(endHour, endMinute, endAMorPM);
-      // Pare the name from the front end.
+
+      // Parse the name from the front end.
       String name = qm.value("name");
+      System.out.println("Event name: " + name);
+      System.out.println("Event start time: " + start.toString());
+      System.out.println("Event end time: " + end.toString());
 
       // Create a calendar event
       CalendarEvent newEvent = new CalendarEvent(name, start, end);
 
       // Send the event to the frontend.
-      return newEvent.toJson();
+
+      return GSON.toJson(newEvent);
 
     }
   }
@@ -354,9 +380,11 @@ public final class Main {
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
 
-      // Retrieve the event ID
+      // Retrieve the event ID and find the associated playlist
       String eventID = qm.value("eventID");
       String uri = hq.convertForSpotify(eventID, api, currentUser);
+
+      System.out.println("Cached playlist: " + uri);
 
       return uri;
     }

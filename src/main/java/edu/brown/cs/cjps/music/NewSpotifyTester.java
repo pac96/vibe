@@ -7,6 +7,8 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -69,9 +71,10 @@ public class NewSpotifyTester {
     return trackString;
   }
 
-  public String recommendations() throws MalformedURLException, IOException {
+  public List<String> recommendations() throws MalformedURLException,
+      IOException {
     // String recString = "https://api.spotify.com/v1/recommendations";
-    String recString = "https://api.spotify.com/v1/recommendations?min_popularity=50&min_energy=0.4&seed_tracks=0c6xIDDpzE81m2q797ordA&market=US&seed_artists=4NHQUGzhtTLFvgF5SZesLK";
+    String recString = "https://api.spotify.com/v1/recommendations?min_energy=0.5&max_popularity=100&limit=5&seed_genres=rock&min_popularity=50&market=US&max_energy=1.0";
 
     URLConnection connection = new URL(recString).openConnection();
     connection.setRequestProperty("Host", "api.spotify.com");
@@ -100,18 +103,23 @@ public class NewSpotifyTester {
     }
     String stringVersion = out.toString();
 
-    System.out.println(stringVersion);
+    // System.out.println(stringVersion);
     JsonParser jparser = new JsonParser();
     JsonElement je = jparser.parse(stringVersion);
     System.out
         .println("------------------------------------------------------------------------------------");
     JsonObject jo = je.getAsJsonObject();
     JsonArray jarray = jo.getAsJsonArray("tracks");
-    System.out.println(jarray);
     System.out.println("done");
-    JsonObject tracID = jarray.get(jarray.size() - 1).getAsJsonObject();
-    String s = tracID.get("uri").toString();
-    System.out.println(s);
-    return s;
+    List<String> trackList = new ArrayList<>();
+    for (int i = 0; i < 5; i++) {
+      JsonObject firstTrack = jarray.get(i).getAsJsonObject();
+      JsonElement uri = firstTrack.get("uri");
+      String trackString = uri.getAsString();
+      System.out.println("New way is " + trackString);
+      trackList.add(trackString);
+    }
+
+    return trackList;
   }
 }

@@ -156,8 +156,9 @@ public final class Main {
 
     NewSpotifyTester t = new NewSpotifyTester(api, currentUser, accessToken);
     String track = null;
+    List<String> list = new ArrayList<>();
     try {
-      track = t.testTrack();
+      list = t.recommendations();
     } catch (MalformedURLException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -165,7 +166,8 @@ public final class Main {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    List<String> list = Arrays.asList(track);
+    // System.out.println("Track from main : " + track.toString());
+
     String playlistURI = spotconv.makeSpotifyPlaylist(api, currentUser, list);
     // System.out.println("through generate playlist in main");
 
@@ -300,10 +302,10 @@ public final class Main {
 
       List<String> params = new ArrayList<>();
 
-      generatePlaylist();
-      // String playlistURI = generatePlaylist();
-      // params.add(display);
-      // params.add(playlistURI);
+      // generatePlaylist();
+      String playlistURI = generatePlaylist();
+      params.add(display);
+      params.add(playlistURI);
 
       System.out.printf("User: %s\n", display);
 

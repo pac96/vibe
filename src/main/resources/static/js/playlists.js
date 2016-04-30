@@ -144,9 +144,6 @@ function renderCalander(event){
 					"<li id='customizePlaylist'>" +
 						"<a href='#'>Customize Playlist</a>" +
 					"</li>" +
-					"<li id='usePlaylist'>" +
-						"<a href='#'>Use Spotify Playlist</a>" +
-					"</li>" +
 					"<li id='editEvent'>" +
 						"<a href='#'>Edit Event</a>" +
 					"</li>" +

@@ -57,10 +57,10 @@
 	        </li>
 	    </ul>
 	    
-	    <div id='view-playlist-panel'> ... </div>
+<#-- 	    <div id='view-playlist-panel'> ... </div>
 	    <div id='customize-playlist-panel'> ... </div>
-	    <div id='use-spotify-playlist-panel'> ... </div>
-	    <form id='edit-event' form method="POST" action="/editEvent">
+	    <div id='use-spotify-playlist-panel'> ... </div> -->
+	    <form id='editEventForm' form method="POST" action="/editEvent">
 	           <label for='name' >Event Name: </label>
 	           <input type='text' id='eventName' name='name' id='name' maxlength="30" class="form-textbox"/>
 	           <br/><br/>

@@ -13,6 +13,7 @@ $("#customizePlaylist").click(function(event) {
 // "Edit Event" option
 $("#editEvent").click(function(event) {
 	console.log("Edit event clicked!");
+    $("#editEventForm").show();
 	
 });
 
@@ -72,29 +73,29 @@ function editEvent(eventID, toChange){
         var currentEvent = document.getElementById('eventID');
         if (currentEvent) {
             var newHTML = 
-            	"<li id='" + event.id + "' class='eventClick' onclick='createDropdown()'> " +
+            	"<li id='" + event.id + "' class='anEvent'> " +
     			"<a href='#'>" +
     			"<a href='javascript:;' data-toggle='collapse' data-target='#demo'>" +
     				"<i class='fa fa-fw fa-arrows-v'></i> " +
     				event.start.hour + timePeriod + " | " + event.name + " " +
     				"<i class='fa fa-fw fa-caret-down'></i></a>" +
-    				"<ul id= 'demo'" + "class='collapse'>" +
-    					"<li>" +
-    						"<a href='#'>View Playlist" + event.name + "</a>" +
-    					"</li>" +
-    					"<li>" +
-    						"<a href='#'>Customize Playlist </a>" +
-    					"</li>" +
-    					"<li>" +
-    						"<a href='#'>Use Spotify Playlist </a>" +
-    					"</li>" +
-    					"<li>" +
-    						"<a href='#'>Edit Event </a>" +
-    					"</li>" +
-    					"<li>" +
-    						"<a href='#'>Delete Event </a>" +
-    					"</li>" +
-    				"</ul>" +
+        			"<ul id= 'demo'" + "class='collapse'>" +
+                        "<li id='viewPlaylist'>" +
+                            "<a href='#'>View Playlist" + event.start.hour + "</a>" +
+                        "</li>" +
+                        "<li id='customizePlaylist'>" +
+                            "<a href='#'>Customize Playlist</a>" +
+                        "</li>" +
+                        "<li id='usePlaylist'>" +
+                            "<a href='#'>Use Spotify Playlist</a>" +
+                        "</li>" +
+                        "<li id='editEvent'>" +
+                            "<a href='#'>Edit Event</a>" +
+                        "</li>" +
+                        "<li id='deleteEvent'>" +
+                            "<a href='#'>Delete Event</a>" +
+                        "</li>" +
+                    "</ul>" +
     			"</a>" +
     		"</li>";
             elt.innerHTML = newHTML;

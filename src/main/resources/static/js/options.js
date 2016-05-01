@@ -123,8 +123,11 @@ function editEvent(editedEvent){
 			"</a>"
 //			"</li>";
 		
-		var eventLI = document.getElementById(editedEvent.id);
+		var eventLI = document.getElementById(currentEventID);
 		console.log(newHTML);
+		console.log("inner html of event LI...");
+		console.log(eventLI);
+		console.log(eventLI.innerHTML);
 		eventLI.innerHTML = newHTML;      
 //		console.log("After");
 //		console.log(eventLI.html());

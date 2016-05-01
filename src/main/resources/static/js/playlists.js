@@ -159,6 +159,7 @@ function renderCalendar(event){
 	eventTimeline.append(eventHTMLString);
 	
 	for(var i = 0; i < eventTimelineItems.length; i++){
+		console.log(eventsArray[i]);
 		if (eventComparator(event, eventsArray[i]) == -1){
 			continue;
 		} else {
@@ -263,6 +264,7 @@ function addEvent() {
 		}
 }
 
+<<<<<<< HEAD
 /**
  * Adds an event to the list of events on the front-end
  */
@@ -348,3 +350,5 @@ function editEvent() {
 
 		}
 }
+=======
+>>>>>>> bd591a3ef345810687e5defe767eec2a95ef8f76

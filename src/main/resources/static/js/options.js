@@ -76,7 +76,12 @@ function displaySpotifyPlaylist(eventID){
  */
 function editEvent(eventID, toChange){
 	if (toChange) {
-        var currentEvent = document.getElementById('eventID');
+        var currentEvent = document.getElementById(eventID);
+        var newName;
+        var newStart;
+        var newEnd;
+        var newStartIsAM;
+        var newEndIsAM;
         if (currentEvent) {
             var newHTML = 
             	"<li id='" + event.id + "' class='anEvent'> " +
@@ -105,10 +110,11 @@ function editEvent(eventID, toChange){
     			"</a>" +
     		"</li>";
             elt.innerHTML = newHTML;
+            
         }
     }
-    document.getElementById('use-spotify-playlist-panel').style.display = "block";   
-
+    //document.getElementById('use-spotify-playlist-panel').style.display = "block";   
+	regenerateEvent(eventID);
 }
 
 /**
@@ -119,4 +125,14 @@ function deleteEvent(eventID){
     var jqueryEventID = "#" + eventID;
     $("#" + eventID).remove();
     // TODO: Send deletion request to the back-end
+}
+
+/**
+ * Allows a user's event edits to effect the events 
+ * attributes
+**/
+
+function regenerateEvent(eventID){
+	var currentEvent = document.getElementById(eventID);
+	currentEvent
 }

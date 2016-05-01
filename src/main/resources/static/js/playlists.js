@@ -326,8 +326,8 @@ function editEvent() {
 	    		editableEvent.id = currentEventID;
 	    		
 	    		// 3. Remove the old event from the eventsArray
-	    		for(event e: eventsArray){
-	    			if(e.id = currentEventID){
+	    		for(int i = 0; i < eventsArray.size(); i++){
+	    			if(eventsArray[i].id = currentEventID){
 	    				eventsArray.pop(e);
 	    			}
 	    		}

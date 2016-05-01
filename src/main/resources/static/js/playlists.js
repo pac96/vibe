@@ -159,6 +159,7 @@ function renderCalander(event){
 	eventTimeline.append(eventHTMLString);
 	
 	for(var i = 0; i < eventTimelineItems.length; i++){
+		console.log(eventsArray[i]);
 		if (eventComparator(event, eventsArray[i]) == -1){
 			continue;
 		} else {
@@ -260,87 +261,3 @@ function addEvent() {
 		}
 }
 
-/**
- * Adds an event to the list of events on the front-end
- */
-function editEvent() {
-	// necessary for some browser problems (saw on jquery's website)
-		$.valHooks.textarea = {
-		  get: function( elem ) {
-		    return elem.value.replace( /\r?\n/g, "\r\n" );
-		  }
-		};
-
-		var eventName = $('#editEventName').val();
-		var startTime = $('#editStartTime').val();
-		var endTime = $('#editEndTime').val();
-		var startAP;
-		var endAP;
-
-		// Check to see if start time is AM or PM
-		if ($('#editStartAM').is(':checked')) {
-			startAP = true;
-		} else {
-			startAP = false;
-		}
-		
-		// Check to see if end time is AM or PM
-		if ($('#editEndAM').is(':checked')) {
-			endAP = true;
-		} else {
-			endAP = false;
-		}
-
-		// Set up the event format and time format
-		eventFormat = /^[a-zA-Z]+$/;
-		timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-		
-		if(eventName == null || startTime == null ||
-		 endTime == null || startAP == null || endAP == null) {
-			alert("One or more event fields are empty");
-		} else if(eventName == '' && !eventName.match(eventFormat)) {
-			alert("Invalid Event Name: " + eventName);
-		} else if(startTime == '' && !startTime.match(timeFormat)) {
-	    	alert("Invalid Start Time: " + startTime);
-	    } else if(endTime == '' && !startTime.match(timeFormat)) {
-	    	alert("Invalid End Time: " + endTime);
-	    } else {
-	    	var postParameters = {
-				start : startTime ,
-				end : endTime ,
-				startAMPM : startAP ,
-				endAMPM : endAP,
-				name : eventName
-	    	};
-	    	
-	    	$.post("/newEvent", postParameters, function(response) {
-	    		// 1. send stuff to back end and store in responseObject
-	    		var responseObject = JSON.parse(response);
-
-	    		// 2. Get calendar event from the calendar array
-	    		var editableEvent = getEvent(currentEventID);
-	    		
-	    		editableEvent.start = startTime;
-	    		editableEvent.end = endTime;
-	    		editableEvent.name = eventName;
-	    		editableEvent.id = currentEventID;
-	    		
-	    		// 3. Remove the old event from the eventsArray
-	    		for(int i = 0; i < eventsArray.size(); i++){
-	    			if(eventsArray[i].id = currentEventID){
-	    				eventsArray.pop(e);
-	    			}
-	    		}
-	    		
-	    		// 3. Add new calendar event to user's list
-	    		eventsArray.push(editableEvent);
-	    		
-	    		// 4. sort the list 
-	    		eventsArray.sort(eventComparator);
-	    		
-	    		//5. Render calendar
-	    		renderCalander(editableEvent);
-	    	});
-
-		}
-}

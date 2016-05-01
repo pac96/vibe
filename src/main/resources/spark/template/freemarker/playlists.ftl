@@ -78,7 +78,7 @@
 	           <br/><br/>
 
 	           &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
-	           <input type='button' name='AddNewEvent' value='Add New Event' id="EditAddNewEvent" class="form-button"/>
+	           <input type='button' name='AddNewEvent' value='Submit Changes' id="EditAddNewEvent" class="form-button"/>
 	    </form>
 
 	    <br>

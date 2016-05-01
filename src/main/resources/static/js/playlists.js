@@ -253,7 +253,7 @@ function addEvent() {
 	    		
 	    		// 4. sort the list 
 	    		eventsArray.sort(eventComparator);
-	    		
+
 	    		//5. Render calendar
 	    		renderCalander(newEvent);
 	    	});
@@ -341,5 +341,6 @@ function editEvent() {
 	    		//5. Render calendar
 	    		renderCalander(editableEvent);
 	    	});
+
 		}
 }

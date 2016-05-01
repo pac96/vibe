@@ -1,25 +1,25 @@
 // "View Playlist" option
-$(document).on('click', '#viewPlaylist', (function(event) {
+$(document).on('click', '#viewPlaylist', (function() {
 	console.log("View playlist clicked!");
-	// TODO: retrieve the playlist for a certain event
-	// var playlistURI = "";
+    // Retrieve the playlist URI from the backend and show it
+	// var playlistURI = getPlaylistURI(currentEventID);
 	// showPlaylist(playlistURI);
 }));
 
 // "Customize Playlist" option
-$(document).on('click', '#customizePlaylist', (function(event) {
+$(document).on('click', '#customizePlaylist', (function() {
 	console.log("Customize playlist clicked!");
 }));
 
 // "Edit Event" option
-$(document).on('click', '#editEvent', (function(event) {
+$(document).on('click', '#editEvent', (function() {
 	console.log("Edit event clicked!");
     $("#editEventForm").show();
 	
 }));
 
 // "Delete Event" option
-$(document).on('click', '#deleteEvent', (function(event) {
+$(document).on('click', '#deleteEvent', (function() {
 	console.log("Delete event clicked!");
 
 }));
@@ -46,8 +46,13 @@ function showPlaylist(playlistURI) {
  * @return {String} the URI of the playlist
  */
 function getPlaylistURI(eventID) {
-	var uri = "";
-	// TODO: retrieve the URI of a playlist given an event ID
+	// 1. Set up a post request to the backend and get the event ID
+    var uri = "";
+
+    $.post("/getPlaylist", {eventID: eventID}, function(link) {
+        uri = link;
+    }); 
+
 	return uri;
 }
 
@@ -113,11 +118,13 @@ function editEvent(eventID, toChange){
 }
 
 /**
- * Allows a user to delete an event.
+ * Allows the user to delete an event.
+ * @param  {String} eventID - the ID of the event you clicked on
  */
 function deleteEvent(eventID){
-    document.getElementById('edit-event').style.display = "block";   
-
+    var jqueryEventID = "#" + eventID;
+    $("#" + eventID).remove();
+    // TODO: Send deletion request to the back-end
 }
 
 /**

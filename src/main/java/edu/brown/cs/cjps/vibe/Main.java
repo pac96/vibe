@@ -207,8 +207,11 @@ public final class Main {
     Spark.get("/login", new LoginHandler());
     Spark.get("/playlists", new PlaylistPageHandler(), freeMarker);
     Spark.post("/code", new CodeHandler());
-    Spark.post("/newEvent", new addEventHandler());
-    Spark.post("/clickEvent", new clickEventHandler());
+    Spark.post("/newEvent", new AddEventHandler());
+    Spark.post("/getPlaylist", new GetPlaylistHandler());
+    Spark.post("/deleteEvent", new DeleteEventHandler());
+    Spark.post("/editEvent", new EditEventHandler());
+
   }
 
   /**
@@ -332,7 +335,7 @@ public final class Main {
    * Handles adding an event to a user's calendar.
    * 
    * */
-  private class addEventHandler implements Route {
+  private class AddEventHandler implements Route {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
@@ -374,10 +377,10 @@ public final class Main {
 
   /**
    * 
-   * Handles adding an event to a user's calendar.
+   * Handles retrieving a playlist for a specific event.
    * 
    * */
-  private class clickEventHandler implements Route {
+  private class GetPlaylistHandler implements Route {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
@@ -391,7 +394,37 @@ public final class Main {
       return uri;
     }
   }
+  
+  /**
+   * 
+   * Handles deleting a specific event.
+   * 
+   * */
+  private class DeleteEventHandler implements Route {
+    @Override
+    public Object handle(Request req, Response res) {
+      QueryParamsMap qm = req.queryMap();
 
+      return null;
+    }
+  }
+  
+  /**
+   * 
+   * Handles editing a specific event.
+   * 
+   * */
+  private class EditEventHandler implements Route {
+    @Override
+    public Object handle(Request req, Response res) {
+      QueryParamsMap qm = req.queryMap();
+
+      return null;
+    }
+  }
+  
+  
+  
   /**
    * Handles printing out exceptions to the GUI
    * 

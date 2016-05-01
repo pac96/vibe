@@ -1,6 +1,7 @@
 var name = "";
 var eventsArray = [];
 var currentEvent;
+var currentEventID;
 var eventComparator = function(eventA, eventB) {
 	if (eventA == null || eventB == null) {
 		return -1;
@@ -83,9 +84,9 @@ if (window.location.pathname === "/playlists") {
 
 	$(document).on('click', '.anEvent', function() {
 		console.log("Clicked on an event");
-		var eventID = this.id;
-		console.log("Current event id: " + eventID);
-		createDropdown(eventID);
+		currentEventID = this.id;
+		console.log("Current event id: " + currentEventID);
+		createDropdown(currentEventID);
 	}); // end click on event handler
 }
 
@@ -252,7 +253,7 @@ function addEvent() {
 	    		
 	    		// 4. sort the list 
 	    		eventsArray.sort(eventComparator);
-	    		
+
 	    		//5. Render calendar
 	    		renderCalander(currentEvent);
 	    	});

@@ -208,7 +208,8 @@ public final class Main {
     Spark.get("/playlists", new PlaylistPageHandler(), freeMarker);
     Spark.post("/code", new CodeHandler());
     Spark.post("/newEvent", new addEventHandler());
-    Spark.post("/clickEvent", new clickEventHandler());
+    Spark.post("/getPlaylist", new GetPlaylistHandler());
+
   }
 
   /**
@@ -377,7 +378,7 @@ public final class Main {
    * Handles adding an event to a user's calendar.
    * 
    * */
-  private class clickEventHandler implements Route {
+  private class GetPlaylistHandler implements Route {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
@@ -391,7 +392,7 @@ public final class Main {
       return uri;
     }
   }
-
+  
   /**
    * Handles printing out exceptions to the GUI
    * 

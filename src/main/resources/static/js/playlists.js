@@ -1,6 +1,8 @@
 var name = "";
 var eventsArray = [];
 var currentEvent;
+var currentEventID;
+
 var eventComparator = function(eventA, eventB) {
 	if (eventA == null || eventB == null) {
 		return -1;
@@ -83,9 +85,9 @@ if (window.location.pathname === "/playlists") {
 
 	$(document).on('click', '.anEvent', function() {
 		console.log("Clicked on an event");
-		var eventID = this.id;
-		console.log("Current event id: " + eventID);
-		createDropdown(eventID);
+		currentEventID = this.id;
+		console.log("Current event id: " + currentEventID);
+		createDropdown(currentEventID);
 	}); // end click on event handler
 }
 
@@ -116,7 +118,7 @@ function CalendarEvent(event) {
 // Function Declarations
 ////////////////////////////////////
 /**
- * Renders the calendar so that we cna 
+ * Renders the calendar so that we can 
  * @param  {CalendarEvent} event - the calendar event object 
  *                               we got from the backend
  */
@@ -245,7 +247,6 @@ function addEvent() {
 
 	    		// 2. Make calendar event object from responseObject
 	    		var newEvent = new CalendarEvent(responseObject);
-	    		currentEvent = newEvent;
 	    		
 	    		// 3. Add new calendar event to user's list
 	    		eventsArray.push(newEvent);
@@ -254,7 +255,91 @@ function addEvent() {
 	    		eventsArray.sort(eventComparator);
 	    		
 	    		//5. Render calendar
-	    		renderCalander(currentEvent);
+	    		renderCalander(newEvent);
+	    	});
+		}
+}
+
+/**
+ * Adds an event to the list of events on the front-end
+ */
+function editEvent() {
+	// necessary for some browser problems (saw on jquery's website)
+		$.valHooks.textarea = {
+		  get: function( elem ) {
+		    return elem.value.replace( /\r?\n/g, "\r\n" );
+		  }
+		};
+
+		var eventName = $('#editEventName').val();
+		var startTime = $('#editStartTime').val();
+		var endTime = $('#editEndTime').val();
+		var startAP;
+		var endAP;
+
+		// Check to see if start time is AM or PM
+		if ($('#editStartAM').is(':checked')) {
+			startAP = true;
+		} else {
+			startAP = false;
+		}
+		
+		// Check to see if end time is AM or PM
+		if ($('#editEndAM').is(':checked')) {
+			endAP = true;
+		} else {
+			endAP = false;
+		}
+
+		// Set up the event format and time format
+		eventFormat = /^[a-zA-Z]+$/;
+		timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+		
+		if(eventName == null || startTime == null ||
+		 endTime == null || startAP == null || endAP == null) {
+			alert("One or more event fields are empty");
+		} else if(eventName == '' && !eventName.match(eventFormat)) {
+			alert("Invalid Event Name: " + eventName);
+		} else if(startTime == '' && !startTime.match(timeFormat)) {
+	    	alert("Invalid Start Time: " + startTime);
+	    } else if(endTime == '' && !startTime.match(timeFormat)) {
+	    	alert("Invalid End Time: " + endTime);
+	    } else {
+	    	var postParameters = {
+				start : startTime ,
+				end : endTime ,
+				startAMPM : startAP ,
+				endAMPM : endAP,
+				name : eventName
+	    	};
+	    	
+	    	$.post("/newEvent", postParameters, function(response) {
+	    		// 1. send stuff to back end and store in responseObject
+	    		var responseObject = JSON.parse(response);
+
+	    		// 2. Get calendar event from the calendar array
+	    		var editableEvent = getEvent(currentEventID);
+	    		
+	    		editableEvent.start = startTime;
+	    		editableEvent.end = endTime;
+	    		editableEvent.name = eventName;
+	    		editableEvent.id = currentEventID;
+	    		
+	    		// 3. Remove the old event from the eventsArray
+	    		for(event e: eventsArray){
+	    			if(e.id = currentEventID){
+	    				eventsArray.pop(e);
+	    			}
+	    		}
+	    		
+	    		// 3. Add new calendar event to user's list
+	    		eventsArray.push(editableEvent);
+	    		
+	    		// 4. sort the list 
+	    		eventsArray.sort(eventComparator);
+	    		
+	    		//5. Render calendar
+	    		renderCalander(editableEvent);
 	    	});
 		}
 }

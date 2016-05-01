@@ -62,23 +62,23 @@
 	    <div id='use-spotify-playlist-panel'> ... </div> -->
 	    <form id='editEventForm' form method="POST" action="/editEvent">
 	           <label for='name' >Event Name: </label>
-	           <input type='text' id='eventName' name='name' id='name' maxlength="30" class="form-textbox"/>
+	           <input type='text' id='editEventName' name='name' maxlength="30" class="form-textbox"/>
 	           <br/><br/>
 
 	           <label for='start-time' >Start Time:</label> 
-	           <input type='text' id='startTime' name='startTime' maxlength="5" class="form-textbox-time-start"/> 
-	           &nbsp <input type="radio" id='startAM' name="time-selection-start" value="am-start" checked>am
-	           &nbsp <input type="radio" id='startPM' name="time-selection-start" value="pm-start">pm
+	           <input type='text' id='editStartTime' name='startTime' maxlength="5" class="form-textbox-time-start"/> 
+	           &nbsp <input type="radio" id='editStartAM' name="time-selection-start" value="am-start" checked>am
+	           &nbsp <input type="radio" id='editStartPM' name="time-selection-start" value="pm-start">pm
 	           <br/><br/>
 
 	           <label for='end-time' >End Time:</label> 
-	           <input type='text' id='endTime' name='endTime' maxlength="5" class="form-textbox-time-end"/>
-	           &nbsp <input type="radio" id='endAM' name="time-selection-end" value="am-end" checked>am
-	           &nbsp <input type="radio" id='endPM' name="time-selection-end" value="pm-end">pm
+	           <input type='text' id='editEndTime' name='endTime' maxlength="5" class="form-textbox-time-end"/>
+	           &nbsp <input type="radio" id='editEndAM' name="time-selection-end" value="am-end" checked>am
+	           &nbsp <input type="radio" id='editEndPM' name="time-selection-end" value="pm-end">pm
 	           <br/><br/>
 
 	           &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
-	           <input type='button' name='AddNewEvent' value='Add New Event' id="AddNewEvent" class="form-button"/>
+	           <input type='button' name='AddNewEvent' value='Add New Event' id="EditAddNewEvent" class="form-button"/>
 	    </form>
 
 	    <br>

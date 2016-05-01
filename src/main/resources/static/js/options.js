@@ -80,13 +80,7 @@ function displaySpotifyPlaylist(eventID){
  * Allows a user to edit an event.
  */
 function editEvent(editedEvent){
-	//var elt =  document.getElementById(eventID);
-
 	console.log("edit event: event details...");
-//	console.log(editedEvent);
-//
-//	console.log("Edited Event Name =" + editedEvent.name);
-//	console.log("Edited Event Start =" + editedEvent.start);
 
 	var timePeriod = "";
 	if(editedEvent.start.isAM){
@@ -97,8 +91,6 @@ function editEvent(editedEvent){
 
 	if (editedEvent) {
 		var newHTML = 
-//			"<li id='" + editedEvent.id + "' class='anEvent'> " +
-//			"<a href='#'>" +
 			"<a href='javascript:;' data-toggle='collapse' data-target='#demo'>" +
 			"<i class='fa fa-fw fa-arrows-v'></i> " +
 			editedEvent.start.hour + timePeriod + " | " + editedEvent.name + " " +
@@ -121,23 +113,13 @@ function editEvent(editedEvent){
 			"</li>" +
 			"</ul>" +
 			"</a>"
-//			"</li>";
 		
-		var eventLI = document.getElementById(currentEventID);
+		var eventLI = $('#' + currentEventID);
 		console.log(newHTML);
 		console.log("inner html of event LI...");
-		console.log(eventLI);
-		console.log(eventLI.innerHTML);
-		eventLI.innerHTML = newHTML;      
-//		console.log("After");
-//		console.log(eventLI.html());
-//		console.log("Selection id: " + eventLI.attr("id"));
-//		console.log("Text: " + eventLI.text());
-
-	}
-    
-    //document.getElementById('use-spotify-playlist-panel').style.display = "block";   
-	
+		console.log(eventLI.html());
+		eventLI.html(newHTML);
+	}	
 }
 
 /**
@@ -151,8 +133,9 @@ function deleteEvent(eventID){
 }
 
 /**
- * Edits an event and changes it on the 
- * list of events on the front-end
+ * Edits an event by sending a post request to the back-end 
+ * and updates the calendar
+ * @param  {String} eventID - the ID of the event
  */
 function editEventPost(eventID) {
 	console.log("edit Event...");

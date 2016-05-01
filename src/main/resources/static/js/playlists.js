@@ -121,7 +121,7 @@ function CalendarEvent(event) {
  * @param  {CalendarEvent} event - the calendar event object 
  *                               we got from the backend
  */
-function renderCalander(event){
+function renderCalendar(event){
 	var timePeriod = "";
 	if(event.start.isAM){
 		timePeriod = "am";
@@ -129,13 +129,13 @@ function renderCalander(event){
 		timePeriod = "pm";
 	}
 	
-	var eventTimeline = $('#calanderEvents');
+	var eventTimeline = $('#calendarEvents');
 	var eventTimelineItems = eventTimeline.children();
 	var eventHTMLString = 
 		"<li id='" + event.id + "' class='anEvent'> " +
 			"<a href='javascript:;' data-toggle='collapse' data-target='#demo'>" +
 				"<i class='fa fa-fw fa-arrows-v'></i> " +
-				event.start.hour + timePeriod + " | " + event.name + " " +
+				+ event.start.hour + timePeriod + " | " + event.name +
 				"<i class='fa fa-fw fa-caret-down'></i></a>" +
 				"<ul id= 'demo'" + "class='collapse'>" +
 
@@ -255,7 +255,7 @@ function addEvent() {
 	    		eventsArray.sort(eventComparator);
 
 	    		//5. Render calendar
-	    		renderCalander(currentEvent);
+	    		renderCalendar(currentEvent);
 	    	});
 		}
 }

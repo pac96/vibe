@@ -21,7 +21,7 @@ $(document).on('click', '#editEvent', (function() {
 // "Delete Event" option
 $(document).on('click', '#deleteEvent', (function() {
 	console.log("Delete event clicked!");
-
+    // deleteEvent(currentEventID);
 }));
 
 

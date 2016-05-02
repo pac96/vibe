@@ -12,29 +12,31 @@ public class EventProcessor {
 	public EventProcessor() {}
 	
 	/**
-	 * Adds an event to the calendar and returns that event object
-	 * @param qm - the map that contains values from the front-end
-	 * @return the event object of the event you created and added
+	 * Creates a CalendarEvent object for an event that the user 
+	 * wants to add
+	 * 
+	 * @param startTime - the starting time of the event
+	 * @param amOrPm - start boolean (true if AM, false if PM)
+	 * @param endTime - the end time of the event
+	 * @param endAMorPM - end boolean (true if AM, false if PM)
+	 * @param name - the name of the event
+	 * @return the CalendarEvent object of the event you just added
 	 */
-	public CalendarEvent addEvent(QueryParamsMap qm) {
+	public CalendarEvent addEvent(String startTime, Boolean amOrPm, 
+			String endTime, Boolean endAMorPM, String name) {
 		// Parse the start time to hour and minute.
-	      String startTime = qm.value("start");
 	      String[] startTimeSplit = startTime.split(":");
 	      Integer startHour = Integer.parseInt(startTimeSplit[0]);
 	      Integer startMinute = Integer.parseInt(startTimeSplit[1]);
-	      Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
 	      EventTime start = new EventTime(startHour, startMinute, amOrPm);
 
 	      // Parse the end time to hour and minute.
-	      String endTime = qm.value("end");
 	      String[] endTimeSplit = endTime.split(":");
 	      Integer endHour = Integer.parseInt(endTimeSplit[0]);
 	      Integer endMinute = Integer.parseInt(endTimeSplit[1]);
-	      Boolean endAMorPM = Boolean.parseBoolean(qm.value("endAMPM"));
 	      EventTime end = new EventTime(endHour, endMinute, endAMorPM);
 
 	      // Parse the name from the front end.
-	      String name = qm.value("name");
 	      System.out.println("Event name: " + name);
 	      System.out.println("Event start time: " + start.toString());
 	      System.out.println("Event end time: " + end.toString());
@@ -42,6 +44,36 @@ public class EventProcessor {
 	      // Create a calendar event
 	      CalendarEvent newEvent = new CalendarEvent(name, start, end);
 	      
+	      // TODO: add this event to the database
+	      
 	      return newEvent;
+	}
+
+	/**
+	 * Edits and returns a CalendarEvent object for an event that the user 
+	 * wants to edit
+	 * 
+	 * @param startTime - the new starting time of the event
+	 * @param amOrPm - the new start boolean (true if AM, false if PM)
+	 * @param endTime - the new end time of the event
+	 * @param endAMorPM - the new end boolean (true if AM, false if PM)
+	 * @param name - the new name of the event
+	 * @return the CalendarEvent object of the event you just edited
+	 */
+	public CalendarEvent editEvent(String startTime, Boolean amOrPm, 
+			String endTime, Boolean endAMorPM, String name) {
+		      
+	      // TODO: edit the old event in the database
+	      
+	      return null;
+	}
+	
+	/**
+	 * Deletes an event from the database with the specified eventID
+	 * 
+	 * @param eventID - the id of the event you want to delete
+	 */
+	public void deleteEvent(String eventID) {
+		// TODO: delete an event with a certain eventID
 	}
 }

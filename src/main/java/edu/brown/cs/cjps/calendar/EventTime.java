@@ -86,7 +86,7 @@ public boolean equals(Object o) {
 @Override
 public String toString() {
   StringBuilder sb = new StringBuilder();
-  sb.append(hour + ":" + minute);
+  sb.append(hour + ":" + String.format("%02d", minute));
   if (isAM) {
     sb.append("AM");
   } else {

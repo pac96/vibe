@@ -75,17 +75,17 @@
 	           <br/><br/>
 
 	           &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
-	           <input type='button' name='AddNewEvent' value='Submit Changes' id="EditAddNewEvent" class="form-button"/>
+	           <input type='button' name='EditAddNewEvent' value='Submit Changes' id="EditAddNewEvent" class="form-button"/>
 	    </form>
 
 	    <br>
 
-	    <h2>Display Selected Event Here</h2>
+	    <h2 id="selectedEvent"></h2>
 	    <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Expand Playlist View</a>
 	    
 		<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>
 	    </div>
->>>>>>> 694eb3a7d3792dc3dddd30cb2ca01f8527c8d786
+
 	</div>
 	<!-- /#page-content-wrapper -->
 </div>

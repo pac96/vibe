@@ -88,6 +88,7 @@ public final class Main {
 
   private String accessToken;
   private String refreshToken;
+  private EventProcessor eventProcessor;
 
   /**
    * Google's GSON instance variable that helps with sending and retrieving
@@ -113,6 +114,7 @@ public final class Main {
   private void run() {
     // Instantiate HQ
     hq = new PlaylistHQ();
+    eventProcessor = new EventProcessor();
 
     System.out.println("Starting Vibe...");
     OptionParser parser = new OptionParser();
@@ -334,42 +336,14 @@ public final class Main {
    * 
    * Handles adding an event to a user's calendar.
    * 
-   * */
+   */
   private class AddEventHandler implements Route {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
 
-      // Parse the start time to hour and minute.
-
-      System.out.println("********** ADD EVENT HANDLER *********");
-      // Parse the start time to hour and minute.
-      String startTime = qm.value("start");
-      String[] startTimeSplit = startTime.split(":");
-      Integer startHour = Integer.parseInt(startTimeSplit[0]);
-      Integer startMinute = Integer.parseInt(startTimeSplit[1]);
-      Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
-      EventTime start = new EventTime(startHour, startMinute, amOrPm);
-
-      // Parse the end time to hour and minute.
-      String endTime = qm.value("end");
-      String[] endTimeSplit = endTime.split(":");
-      Integer endHour = Integer.parseInt(endTimeSplit[0]);
-      Integer endMinute = Integer.parseInt(endTimeSplit[1]);
-      Boolean endAMorPM = Boolean.parseBoolean(qm.value("endAMPM"));
-      EventTime end = new EventTime(endHour, endMinute, endAMorPM);
-
-      // Parse the name from the front end.
-      String name = qm.value("name");
-      System.out.println("Event name: " + name);
-      System.out.println("Event start time: " + start.toString());
-      System.out.println("Event end time: " + end.toString());
-
-      // Create a calendar event
-      CalendarEvent newEvent = new CalendarEvent(name, start, end);
-
-      // Send the event to the frontend.
-
+      CalendarEvent newEvent = eventProcessor.addEvent(qm);
+      
       return GSON.toJson(newEvent);
 
     }

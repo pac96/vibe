@@ -42,49 +42,52 @@
 
 	<!-- Page Content -->
 	<div id="page-content-wrapper">
-	    <div class="container-fluid">
-	    <ul class="nav navbar-right top-nav">
-	        <li class="dropdown">
-	            <a href="#" class="dropdown-toggle" id="displayname" data-toggle="dropdown"><i class="fa fa-user"></i><span class="caret"></span></a>
-	            <ul class="dropdown-menu">
-	                <li>
-	                    <a href="" id="logoutLink"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
-	                </li>
-	            </ul>
-	        </li>
-	    </ul>
-	    
+    <div class="container-fluid">
+    <ul class="nav navbar-right top-nav">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" id="displayname" data-toggle="dropdown"><i class="fa fa-user"></i><span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="" id="logoutLink"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    
 <#-- 	    <div id='view-playlist-panel'> ... </div>
-	    <div id='customize-playlist-panel'> ... </div>
-	    <div id='use-spotify-playlist-panel'> ... </div> -->
-	    <form id='editEventForm' form method="POST" action="/editEvent">
-	           <label for='name' >Event Name: </label>
-	           <input type='text' id='editEventName' name='name' maxlength="30" class="form-textbox"/>
-	           <br/><br/>
+    <div id='customize-playlist-panel'> ... </div>
+    <div id='use-spotify-playlist-panel'> ... </div> -->
+    <form id='editEventForm' form method="POST" action="/editEvent">
+           <label for='name' >Event Name: </label>
+           <input type='text' id='editEventName' name='name' maxlength="30" class="form-textbox"/>
+           <br/><br/>
 
-	           <label for='start-time' >Start Time:</label> 
-	           <input type='text' id='editStartTime' name='startTime' maxlength="5" class="form-textbox-time-start"/> 
-	           &nbsp <input type="radio" id='editStartAM' name="time-selection-start" value="am-start" checked>am
-	           &nbsp <input type="radio" id='editStartPM' name="time-selection-start" value="pm-start">pm
-	           <br/><br/>
+           <label for='start-time' >Start Time:</label> 
+           <input type='text' id='editStartTime' name='startTime' maxlength="5" class="form-textbox-time-start"/> 
+           &nbsp <input type="radio" id='editStartAM' name="time-selection-start" value="am-start" checked>am
+           &nbsp <input type="radio" id='editStartPM' name="time-selection-start" value="pm-start">pm
+           <br/><br/>
 
-	           <label for='end-time' >End Time:</label> 
-	           <input type='text' id='editEndTime' name='endTime' maxlength="5" class="form-textbox-time-end"/>
-	           &nbsp <input type="radio" id='editEndAM' name="time-selection-end" value="am-end" checked>am
-	           &nbsp <input type="radio" id='editEndPM' name="time-selection-end" value="pm-end">pm
-	           <br/><br/>
+           <label for='end-time' >End Time:</label> 
+           <input type='text' id='editEndTime' name='endTime' maxlength="5" class="form-textbox-time-end"/>
+           &nbsp <input type="radio" id='editEndAM' name="time-selection-end" value="am-end" checked>am
+           &nbsp <input type="radio" id='editEndPM' name="time-selection-end" value="pm-end">pm
+           <br/><br/>
 
-	           &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
-	           <input type='button' name='EditAddNewEvent' value='Submit Changes' id="EditAddNewEvent" class="form-button"/>
-	    </form>
+           &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
+           <input type='button' name='EditAddNewEvent' value='Submit Changes' id="EditAddNewEvent" class="form-button"/>
+    </form>
 
-	    <br>
+    <h2 id="selectedEvent"></h2>
+    
+    <!-- This div could hold error messages, other forms, etc. -->
+    <div class="other-content"></div>
 
-	    <h2 id="selectedEvent"></h2>
-	    <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Expand Playlist View</a>
-	    
-		<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>
-	    </div>
+    <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Expand Playlist View</a>
+	<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>
+
+    </div>
+	<!-- end container-fluid -->
 
 	</div>
 	<!-- /#page-content-wrapper -->

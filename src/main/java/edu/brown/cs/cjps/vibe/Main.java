@@ -129,6 +129,11 @@ public final class Main {
     api = Api.builder().clientId(clientID).clientSecret(clientSecret)
         .redirectURI(redirectURI).build();
 
+    // SOME TEST STUFF
+    // this.generatePlaylist();
+
+    // END TEST STUFF
+
     if (options.has("gui")) {
       // Runs the GUI
       runSparkServer();
@@ -336,11 +341,19 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-
-      CalendarEvent newEvent = eventProcessor.addEvent(qm);
       
+      // Retrieve event information from the front-end
+      String start = qm.value("start");
+      Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
+      String end = qm.value("end");
+      Boolean endAmOrPm = Boolean.parseBoolean(qm.value("endAMPM"));
+      String eventName = qm.value("name");
+      
+      CalendarEvent newEvent = eventProcessor
+    		  .addEvent(start, amOrPm, end, endAmOrPm, eventName);
+      
+      // Return an event object to the front-end
       return GSON.toJson(newEvent);
-
     }
   }
 
@@ -363,7 +376,7 @@ public final class Main {
       return uri;
     }
   }
-
+  
   /**
    * 
    * Handles deleting a specific event.
@@ -377,7 +390,7 @@ public final class Main {
       return null;
     }
   }
-
+  
   /**
    * 
    * Handles editing a specific event.
@@ -391,7 +404,9 @@ public final class Main {
       return null;
     }
   }
-
+  
+  
+  
   /**
    * Handles printing out exceptions to the GUI
    * 

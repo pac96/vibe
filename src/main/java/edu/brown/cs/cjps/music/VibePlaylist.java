@@ -1,16 +1,19 @@
 package edu.brown.cs.cjps.music;
 
-import com.echonest.api.v4.Playlist;
+import java.util.List;
 
 public class VibePlaylist {
 
-  private Playlist echoP;
+  private List<String> trackList;
+  private Settings settings;
 
-  public VibePlaylist(Playlist p) {
-    echoP = p;
+  public VibePlaylist(List<String> tracks, Settings s) {
+    trackList = tracks;
+    settings = s;
+
   }
 
-  public Playlist getEchoPlaylist() {
-    return echoP;
+  public List<String> getTracks() {
+    return trackList;
   }
 }

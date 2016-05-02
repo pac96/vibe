@@ -127,11 +127,6 @@ public final class Main {
     api = Api.builder().clientId(clientID).clientSecret(clientSecret)
         .redirectURI(redirectURI).build();
 
-    // SOME TEST STUFF
-    // this.generatePlaylist();
-
-    // END TEST STUFF
-
     if (options.has("gui")) {
       // Runs the GUI
       runSparkServer();
@@ -394,7 +389,7 @@ public final class Main {
       return uri;
     }
   }
-  
+
   /**
    * 
    * Handles deleting a specific event.
@@ -408,7 +403,7 @@ public final class Main {
       return null;
     }
   }
-  
+
   /**
    * 
    * Handles editing a specific event.
@@ -422,9 +417,7 @@ public final class Main {
       return null;
     }
   }
-  
-  
-  
+
   /**
    * Handles printing out exceptions to the GUI
    * 

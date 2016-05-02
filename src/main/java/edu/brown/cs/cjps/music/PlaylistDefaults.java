@@ -13,42 +13,42 @@ public class PlaylistDefaults {
 
   // TODO wasting work regenerating these, could make them all at once
   public Settings getWorkStudyDefaults() {
-    List<String> g = Arrays.asList("Classical", "Jazz");
-    String m = "Relaxing";
-    float hotness = 0.4f;
+    List<String> g = Arrays.asList("classical", "jazz");
+    float m = 0.8f;
+    float hotness = 40f;
     float energy = 0.3f;
     return new Settings(Tag.WORKSTUDY, g, m, hotness, energy);
   }
 
   public Settings getEatSocialDefaults() {
-    List<String> g = Arrays.asList("Pop", "Rock", "Folk");
-    String m = "Happy";
-    float hotness = 0.6f;
+    List<String> g = Arrays.asList("pop", "rock", "folk");
+    float m = 0.6f;
+    float hotness = 60f;
     float energy = 0.4f;
     return new Settings(Tag.EATSOCIAL, g, m, hotness, energy);
   }
 
   public Settings getExerciseDefaults() {
-    List<String> g = Arrays.asList("Rap", "Hip hop", "Rock");
-    float hotness = 0.7f;
+    List<String> g = Arrays.asList("hip-hop", "rock");
+    float hotness = 70f;
     float energy = 1.0f;
-    String m = "Excited";
+    float m = 0.5f;
     return new Settings(Tag.EXERCISE, g, m, hotness, energy);
   }
 
   public Settings getPartyDefaults() {
-    List<String> g = Arrays.asList("Pop", "Hip hop");
-    float hotness = 1.0f;
+    List<String> g = Arrays.asList("pop", "hip-hop");
+    float hotness = 100f;
     float energy = 1.0f;
-    String m = "Excited";
+    float m = 0.8f;
     return new Settings(Tag.PARTY, g, m, hotness, energy);
   }
 
   public Settings getRestfulDefaults() {
-    List<String> g = Arrays.asList("Classical");
-    float hotness = 0.3f;
+    List<String> g = Arrays.asList("classical");
+    float hotness = 30f;
     float energy = 0.2f;
-    String m = "Relaxing";
+    float m = 0.5f;
     return new Settings(Tag.RESTFUL, g, m, hotness, energy);
   }
 

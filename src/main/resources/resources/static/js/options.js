@@ -92,35 +92,36 @@ function editEvent(editedEvent){
 }
 
 /**
+ * Allows the user to delete an event.
+ * @param  {String} eventID - the ID of the event you clicked on
+ */
+function deleteEvent(eventID){
+    $("#" + eventID).remove();
+    // Send deletion request to the back-end
+    deleteRequest(eventID);
+}
+
+/**
  * Sends a post request to the back-end to delete an event.
  * @param  {String} id - id of the event you want to delete
  */
-function deleteEvent(id) {
+function deleteRequest(id) {
 	var postParam = {eventID: id};
 	
 	// The backend responds with a string: 
 	// "SUCCESS" or "FAILED: [error message]"
 	$.post('/deleteEvent', postParam, function(response) {
-		console.log("postdelete");
-		otherContent.html(""); // Replace what's already in other content
-
 		if (response != "SUCCESS") {
 			// do some stuff
 			alert(response);
-		} else {
-			$("#" + id).remove();
-			// The same as <p class='contentMsg' id='successMsg'>Deletion successful!</p>
-			var $msg = $("<p/>", {class: "contentMsg", id: "successMsg"});
-			$msg.append("Deletion successful!");
-			otherContent.html($msg);
-		    otherContent.fadeIn('slow');
-		    setTimeout(function() {
-			    otherContent.fadeOut('slow');
-		    }, 2000);
 		}
+
+		// otherContent.hide();
+	    otherContent.html(""); // Replace what's already in other content
+	    otherContent.html("<p class='contentMsg' id='successMsg'>Deletion successful!</p>");
+	    otherContent.fadeIn('slow');
+	    otherContent.fadeOut('5');
 	});
-
-
 }
 
 /**

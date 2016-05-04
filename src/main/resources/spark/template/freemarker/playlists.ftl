@@ -180,7 +180,21 @@
 			  <button>Filter</button>
 			</dl>
 			
-		<input id="ex9" type="text"/>
+	<!-- Range sliders for popularity and energy bars -->
+	<div class="container">
+ 		<div class="row">
+    		<div class="col-xs-6">
+      			<div class="range range-success">
+        		<input type="range" name="range" min="0" max="10" value="5" onchange="popularity.value=value">
+        		<output id="popularity">5</output>
+      			</div>
+      			<div class="range range-success">
+        			<input type="range" name="range" min="0" max="10" value="5" onchange="energy.value=value">
+        			<output id="energy">5</output>
+      			</div>
+    		</div>
+  		</div>
+	</div>
 	    
 	    <form id='editEventForm' form method="POST" action="/editEvent">
 	           <label for='name' >Event Name: </label>

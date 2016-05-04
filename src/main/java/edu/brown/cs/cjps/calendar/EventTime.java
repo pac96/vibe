@@ -11,11 +11,42 @@ public class EventTime implements Comparable<EventTime> {
     //Integer representing the hour of the event.
     private int hour;
     
+    /**
+     * @return the isAM
+     */
+    public boolean isAM() {
+      return isAM;
+    }
+
+    /**
+     * @param hour the hour to set
+     */
+    public void setHour(int hour) {
+      this.hour = hour;
+    }
+
+    /**
+     * @param minute the minute to set
+     */
+    public void setMinute(int minute) {
+      this.minute = minute;
+    }
+
+    /**
+     * @param isAM the isAM to set
+     */
+    public void setAM(boolean isAM) {
+      this.isAM = isAM;
+    }
+
     //Integer representing the minute the event occurs.
     private int minute;
     
     //Boolean Representing AM (true) or PM (false) for the event time.
     private boolean isAM;
+    
+    //Empty Constructor that can be set later
+    public EventTime(){}
   
   //Constructor for an event time.
   public EventTime(int hour , int minute, boolean amOrPm) throws IllegalArgumentException {
@@ -86,11 +117,11 @@ public boolean equals(Object o) {
 @Override
 public String toString() {
   StringBuilder sb = new StringBuilder();
-  sb.append(hour + ":" + minute);
+  sb.append(hour + ":" + String.format("%02d", minute));
   if (isAM) {
-    sb.append("AM");
+    sb.append(":AM");
   } else {
-    sb.append("PM");
+    sb.append(":PM");
   }
   
   return sb.toString();

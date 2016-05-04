@@ -6,29 +6,32 @@ $(document).on('click', '#viewPlaylist', (function() {
 	// showPlaylist(playlistURI);
 }));
 
+
 // "Customize Playlist" option
 $(document).on('click', '#customizePlaylist', (function() {
 	console.log("Customize playlist clicked!");
 }));
 
+
 // "Edit Event" option
 $(document).on('click', '#editEvent', (function() {
-	console.log("Edit event clicked!");
+	// Show the edit event form
     $("#editEventForm").show();
-	
 }));
+
+/* Handles clicking on the submit changes button */
+$("#EditAddNewEvent").click(function() {
+	editRequest(currentEventID);
+});
+
+
 
 // "Delete Event" option
 $(document).on('click', '#deleteEvent', (function() {
 	console.log("Delete event clicked!");
-
+    deleteEvent(currentEventID);
 }));
 
-/* Handles editing an event */
-$("#EditAddNewEvent").click(function() {
-	console.log("Editing new event...");
-	editEventPost(currentEventID);
-}); // end add new click handler
 
 /* genre dropdown, multi selection */
 $(".gDropdown dt yy").on('click', function() {
@@ -103,32 +106,13 @@ function getPlaylistURI(eventID) {
 	return uri;
 }
 
-/**
- * Displays the playlist for a given event.
- */
-function displayCustomizePlaylist(eventID){
-    document.getElementById('view-playlist-panel').style.display = "block";   
-}
 
 /**
- * Displays options for a users Spotify Playlist.
- */
-function displaySpotifyPlaylist(eventID){
-    document.getElementById('customize-playlist-panel').style.display = "block";   
-}
-
-/**
- * Allows a user to edit an event.
+ * Edits an event on the front-end by updating the calendar and appending
+ * a new list item
+ * @param  {CalendarEvent} editedEvent - the event object you want to add in
  */
 function editEvent(editedEvent){
-	//var elt =  document.getElementById(eventID);
-
-	console.log("edit event: event details...");
-//	console.log(editedEvent);
-//
-//	console.log("Edited Event Name =" + editedEvent.name);
-//	console.log("Edited Event Start =" + editedEvent.start);
-
 	var timePeriod = "";
 	if(editedEvent.start.isAM){
 		timePeriod = "am";
@@ -137,66 +121,55 @@ function editEvent(editedEvent){
 	}
 
 	if (editedEvent) {
-		var newHTML = 
-//			"<li id='" + editedEvent.id + "' class='anEvent'> " +
-//			"<a href='#'>" +
-			"<a href='javascript:;' data-toggle='collapse' data-target='#demo'>" +
-			"<i class='fa fa-fw fa-arrows-v'></i> " +
-			editedEvent.start.hour + timePeriod + " | " + editedEvent.name + " " +
-			"<i class='fa fa-fw fa-caret-down'></i></a>" +
-			"<ul id= 'demo'" + "class='collapse'>" +
-			"<li id='viewPlaylist'>" +
-			"<a href='#'>View Playlist" + editedEvent.start.hour + "</a>" +
-			"</li>" +
-			"<li id='customizePlaylist'>" +
-			"<a href='#'>Customize Playlist</a>" +
-			"</li>" +
-			"<li id='usePlaylist'>" +
-			"<a href='#'>Use Spotify Playlist</a>" +
-			"</li>" +
-			"<li id='editEvent'>" +
-			"<a href='#'>Edit Event</a>" +
-			"</li>" +
-			"<li id='deleteEvent'>" +
-			"<a href='#'>Delete Event</a>" +
-			"</li>" +
-			"</ul>" +
-			"</a>"
-//			"</li>";
+		var dataTargetID = "dropdown-" + currentEventID;
+		var newHTML = htmlDropdown(dataTargetID, timePeriod, editedEvent);
 		
-		var eventLI = document.getElementById(currentEventID);
-		console.log(newHTML);
-		console.log("inner html of event LI...");
-		console.log(eventLI);
-		console.log(eventLI.innerHTML);
-		eventLI.innerHTML = newHTML;      
-//		console.log("After");
-//		console.log(eventLI.html());
-//		console.log("Selection id: " + eventLI.attr("id"));
-//		console.log("Text: " + eventLI.text());
+		var eventLI = $('#' + currentEventID);
 
-	}
-    
-    //document.getElementById('use-spotify-playlist-panel').style.display = "block";   
+		// Replaces the html of the old event with the info from the new one
+		eventLI.html(newHTML);
+	    $("#editEventForm").hide();
+	}	
+}
+
+/**
+ * Sends a post request to the back-end to delete an event.
+ * @param  {String} id - id of the event you want to delete
+ */
+function deleteEvent(id) {
+	var postParam = {eventID: id};
 	
+	// The backend responds with a string: 
+	// "SUCCESS" or "FAILED: [error message]"
+	$.post('/deleteEvent', postParam, function(response) {
+		console.log("postdelete");
+		otherContent.html(""); // Replace what's already in other content
+
+		if (response != "SUCCESS") {
+			// do some stuff
+			alert(response);
+		} else {
+			$("#" + id).remove();
+			// The same as <p class='contentMsg' id='successMsg'>Deletion successful!</p>
+			var $msg = $("<p/>", {class: "contentMsg", id: "successMsg"});
+			$msg.append("Deletion successful!");
+			otherContent.html($msg);
+		    otherContent.fadeIn('slow');
+		    setTimeout(function() {
+			    otherContent.fadeOut('slow');
+		    }, 2000);
+		}
+	});
+
+
 }
 
 /**
- * Allows the user to delete an event.
- * @param  {String} eventID - the ID of the event you clicked on
+ * Edits an event by sending a post request to the back-end 
+ * and updates the calendar
+ * @param  {String} eventID - the ID of the event
  */
-function deleteEvent(eventID){
-    var jqueryEventID = "#" + eventID;
-    $("#" + eventID).remove();
-    // TODO: Send deletion request to the back-end
-}
-
-/**
- * Edits an event and changes it on the 
- * list of events on the front-end
- */
-function editEventPost(eventID) {
-	console.log("edit Event...");
+function editRequest(eventID) {
 	// necessary for some browser problems (saw on jquery's website)
 		$.valHooks.textarea = {
 		  get: function( elem ) {
@@ -254,18 +227,11 @@ function editEventPost(eventID) {
 	    		// 2. Get calendar event from the calendar array
 	    		editableEvent = new CalendarEvent(responseObject);
 
-	    		
-//	    		editableEvent.start = startTime;
-//	    		editableEvent.end = endTime;
-//	    		editableEvent.name = eventName;
-//	    		editableEvent.start.hour = 
-//	    		editableEvent.id = currentEventID;
 	    		console.log("Editable: ");
 	    		console.log(editableEvent);
 	    		console.log(editableEvent.start);
 	    		console.log(editableEvent.end);
 
-	    		
 	    		// 3. Remove the old event from the eventsArray
 	    		for (var i = 0; i < eventsArray.length; i++) {
 	    			if (eventsArray[i].id === eventID) {
@@ -273,16 +239,14 @@ function editEventPost(eventID) {
 	    			}
 	    		}
 	    		
-	    		// 3. Add new calendar event to user's list
+	    		// 4. Add new calendar event to user's list
 	    		eventsArray.push(editableEvent);
 	    		
-	    		// 4. sort the list 
+	    		// 5. sort the list of events
 	    		eventsArray.sort(eventComparator);
 	    		
 	    		editEvent(editableEvent);
-	
 	    	});
-
 		}
 }
 

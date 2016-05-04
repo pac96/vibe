@@ -1,8 +1,9 @@
 package edu.brown.cs.cjps.music;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 
-import com.echonest.api.v4.Playlist;
 import com.wrapper.spotify.Api;
 import com.wrapper.spotify.models.User;
 
@@ -22,7 +23,8 @@ public class PlaylistHQ {
     sc = new SpotifyConverter();
   }
 
-  public void generateFromTag(String eventID) {
+  public void generateFromTag(String eventID, Api api, User curentUser,
+      String accessToken) {
     Tag tag = this.findTag(eventID);
     Settings defaults;
     switch (tag) {
@@ -43,11 +45,15 @@ public class PlaylistHQ {
       defaults = def.getRestfulDefaults();
     }
 
-    Playlist p = pg.makePlaylist(defaults);
-
-    VibePlaylist newVPlaylist = new VibePlaylist(p);
-    VibeCache.getPlaylistCache().put(eventID, newVPlaylist);
-
+    VibePlaylist p;
+    try {
+      p = pg.makePlaylist(defaults, api, curentUser, accessToken);
+      VibeCache.getPlaylistCache().put(eventID, p);
+    } catch (MalformedURLException e) {
+      VibeCache.getPlaylistCache().put(eventID, null);
+    } catch (IOException e) {
+      VibeCache.getPlaylistCache().put(eventID, null);
+    }
   }
 
   public void generateCustom(List<String> params) {

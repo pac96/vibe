@@ -3,8 +3,11 @@ package edu.brown.cs.cjps.db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.brown.cs.cjps.calendar.CalendarEvent;
 
@@ -31,10 +34,8 @@ public class UserDBCreator {
     
     //These delete the tables if they exist.
     Statement stat = conn.createStatement();
-    stat.execute("DROP TABLE IF EXISTS users");
-    stat.execute("DROP TABLE IF EXISTS playlists");
-    stat.execute("DROP TABLE IF EXISTS playlistSongs");
-    stat.execute("DROP TABLE IF EXISTS songs");
+    stat.execute("DROP TABLE IF EXISTS USERS");
+    stat.execute("DROP TABLE IF EXISTS USEREVENTS");
     stat.close();
     
     
@@ -42,28 +43,26 @@ public class UserDBCreator {
     PreparedStatement prep;
     
     //Fill in the schema for the table called user
-    String schema = "Create TABLE users ( "
+    String schema = "Create TABLE USERS ( "
         + " userid TEXT , "
         + " name TEXT "
         + " ); ";
     buildTable(schema);
         
     //Fill in the schema to create a table called playlist
-    schema = "Create TABLE userEvents ( "
-        + " userid TEXT , "
+    schema = "Create TABLE USEREVENTS ( "
+        + " userid TEXT ,"
+        + " eventname TEXT , "
         + " eventid TEXT , "
         + " playlistid TEXT , "
-        + " starttime TEXT , "
-        + " endtime TEXT , "
-        + " BIT starAMorPM , "
-        + " BIT endAMorPM );";
+        + " starthour int , "
+        + " endhour int , "
+        + " startminute int , "
+        + " endminute int , "
+        + " starAMorPM int, "
+        + " endAMorPM int ); ";
     buildTable(schema);  
   }
-  
-  public void insertCalendarEvent(CalendarEvent event) throws SQLException {
-    String query = "INSERT INTO userEvents VALUES (?, ?, ?, ?, ?, ?, ?)";
-  }
-
   
   /**
    * Creates a new table according to the schema

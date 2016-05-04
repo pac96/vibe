@@ -29,6 +29,7 @@ h1 span {
 
 #date {
   color: white;
+  text-align: center;
 }
 
 #sidebar-wrapper {
@@ -42,6 +43,31 @@ h1 span {
   padding: .1em;
 }
 
+div.other-content {
+  width: 500px;
+  margin: auto;
+}
+
+p.contentMsg {
+  font-weight: bold;
+  font-size: 1.2em;
+  border-radius: 5px;
+  text-align: center;
+  padding: .7em;
+}
+
+#successMsg {
+  color: green;
+  background-color: #AFD39D;
+}
+
+#errorMsg {
+  color: red;
+  background-color: #DDDFDC;
+}
+
+
+/* Spotify Playlist Stuff */
 iframe {
   width: 1000px;
   height: 600px;

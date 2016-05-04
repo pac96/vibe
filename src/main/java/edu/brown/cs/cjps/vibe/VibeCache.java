@@ -64,4 +64,9 @@ public class VibeCache {
     return tags;
   }
 
+  // List of genres:
+  // alternative", "blues", "classical", "country", "dancehall", "electronic",
+  // "folk", "funk", "gospel", "hip-hop", "indie", "jazz", "k-pop", "pop",
+  // "r-n-b", "reggae", "reggaeton", "rock", "soul", "spanish"
+
 }

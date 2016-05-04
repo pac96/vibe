@@ -2,6 +2,8 @@ var name = "";
 var eventsArray = [];
 var currentEvent;
 var currentEventID;
+var otherContent = $("div.other-content");
+
 
 var eventComparator = function(eventA, eventB) {
 	if (eventA == null || eventB == null) {
@@ -38,9 +40,11 @@ var eventComparator = function(eventA, eventB) {
 
 
 if (window.location.pathname === "/playlists") {
+	otherContent.hide();
 	$("#editEventForm").hide();
 	// First, set the logout link 
-	$("#logoutLink").attr('href', "http://localhost:" + window.location.port + "/vibe");
+	$("#logoutLink").attr('href', 
+		"http://localhost:" + window.location.port + "/vibe");
 
 	// If the cookie doesn't have the code already
 	// Next, retrieve the user's code to send to the back-end from the URL	
@@ -84,7 +88,6 @@ if (window.location.pathname === "/playlists") {
 
 
 	$(document).on('click', '.anEvent', function() {
-		console.log("Clicked on an event");
 		currentEventID = this.id;
 		console.log("Current event id: " + currentEventID);
 		createDropdown(currentEventID);
@@ -122,7 +125,7 @@ function CalendarEvent(event) {
  * @param  {CalendarEvent} event - the calendar event object 
  *                               we got from the backend
  */
-function renderCalander(event){
+function renderCalendar(event){
 	var timePeriod = "";
 	if(event.start.isAM){
 		timePeriod = "am";
@@ -130,31 +133,15 @@ function renderCalander(event){
 		timePeriod = "pm";
 	}
 	
-	var eventTimeline = $('#calanderEvents');
+	var eventTimeline = $('#calendarEvents');
 	var eventTimelineItems = eventTimeline.children();
-	var eventHTMLString = 
-		"<li id='" + event.id + "' class='anEvent'> " +
-			"<a href='javascript:;' data-toggle='collapse' data-target='#demo'>" +
-				"<i class='fa fa-fw fa-arrows-v'></i> " +
-				event.start.hour + timePeriod + " | " + event.name + " " +
-				"<i class='fa fa-fw fa-caret-down'></i></a>" +
-				"<ul id= 'demo'" + "class='collapse'>" +
+	console.log("Event id: " + event.id);
+	var targetID = "dropdown-" + event.id;
 
-					"<li id='viewPlaylist'>" +
-						"<a href='#'>View Playlist" + event.start.hour + "</a>" +
-					"</li>" +
-					"<li id='customizePlaylist'>" +
-						"<a href='#'>Customize Playlist</a>" +
-					"</li>" +
-					"<li id='editEvent'>" +
-						"<a href='#'>Edit Event</a>" +
-					"</li>" +
-					"<li id='deleteEvent'>" +
-						"<a href='#'>Delete Event</a>" +
-					"</li>" +
-				"</ul>" +
-			"</a>" +
-		"</li>";
+	var htmlCode = htmlDropdown(targetID, timePeriod, event);
+
+	var eventHTMLString = "<li id='" + event.id + "' class='anEvent'>"
+	 + htmlCode + "</li>";
 
 	eventTimeline.append(eventHTMLString);
 	
@@ -256,8 +243,42 @@ function addEvent() {
 	    		eventsArray.sort(eventComparator);
 
 	    		//5. Render calendar
-	    		renderCalander(newEvent);
+	    		renderCalendar(newEvent);
 	    	});
 		}
 }
 
+/**
+ * Creates a string of html code necessary for dropdown creation
+ * @param  {String} dataTargetID - id needed for data-target
+ * @param  {String} timePeriod   - "am" or "pm"
+ * @param  {CalendarEvent} event  - the event you need to get info from
+ * @return {String}              - the html code necessary for dropdown creation
+ */
+function htmlDropdown(dataTargetID, timePeriod, event) {
+	var htmlStr = 
+	"<a href='javascript:;' data-toggle='collapse' data-target='#" + dataTargetID + "'>" +
+		"<i class='fa fa-fw fa-arrows-v'></i> " +
+		event.start.hour + timePeriod + " | " + event.name + " " +
+		"<i class='fa fa-fw fa-caret-down'></i></a>" +
+		"<ul id='" + dataTargetID + "' class='collapse'>" +
+			"<li id='viewPlaylist'>" +
+				"<a href='#'>View Playlist" + "</a>" +
+			"</li>" +
+			"<li id='customizePlaylist'>" +
+				"<a href='#'>Customize Playlist</a>" +
+			"</li>" +
+			"<li id='usePlaylist'>" +
+				"<a href='#'>Use Spotify Playlist</a>" +
+			"</li>" +
+			"<li id='editEvent'>" +
+				"<a href='#'>Edit Event</a>" +
+			"</li>" +
+			"<li id='deleteEvent'>" +
+				"<a href='#'>Delete Event</a>" +
+			"</li>" +
+		"</ul>" +
+	"</a>";
+
+	return htmlStr;
+}

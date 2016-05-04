@@ -88,6 +88,7 @@ public final class Main {
 
   private String accessToken;
   private String refreshToken;
+  private EventProcessor eventProcessor;
 
   /**
    * Google's GSON instance variable that helps with sending and retrieving
@@ -113,6 +114,7 @@ public final class Main {
   private void run() {
     // Instantiate HQ
     hq = new PlaylistHQ();
+    eventProcessor = new EventProcessor();
 
     System.out.println("Starting Vibe...");
     OptionParser parser = new OptionParser();
@@ -203,7 +205,7 @@ public final class Main {
     FreeMarkerEngine freeMarker = createEngine();
 
     // Setup Spark Routes
-    Spark.get("/vibe", new FrontHandler(), freeMarker);
+    Spark.get("/vibe", new HomepageHandler(), freeMarker);
     Spark.get("/login", new LoginHandler());
     Spark.get("/playlists", new PlaylistPageHandler(), freeMarker);
     Spark.post("/code", new CodeHandler());
@@ -220,7 +222,7 @@ public final class Main {
    * @author cjps
    *
    */
-  private class FrontHandler implements TemplateViewRoute {
+  private class HomepageHandler implements TemplateViewRoute {
     @Override
     public ModelAndView handle(Request req, Response res) {
       Map<String, Object> variables = ImmutableMap.of("title", "Vibe");
@@ -334,44 +336,24 @@ public final class Main {
    * 
    * Handles adding an event to a user's calendar.
    * 
-   * */
+   */
   private class AddEventHandler implements Route {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-
-      // Parse the start time to hour and minute.
-
-      System.out.println("********** ADD EVENT HANDLER *********");
-      // Parse the start time to hour and minute.
-      String startTime = qm.value("start");
-      String[] startTimeSplit = startTime.split(":");
-      Integer startHour = Integer.parseInt(startTimeSplit[0]);
-      Integer startMinute = Integer.parseInt(startTimeSplit[1]);
+      
+      // Retrieve event information from the front-end
+      String start = qm.value("start");
       Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
-      EventTime start = new EventTime(startHour, startMinute, amOrPm);
-
-      // Parse the end time to hour and minute.
-      String endTime = qm.value("end");
-      String[] endTimeSplit = endTime.split(":");
-      Integer endHour = Integer.parseInt(endTimeSplit[0]);
-      Integer endMinute = Integer.parseInt(endTimeSplit[1]);
-      Boolean endAMorPM = Boolean.parseBoolean(qm.value("endAMPM"));
-      EventTime end = new EventTime(endHour, endMinute, endAMorPM);
-
-      // Parse the name from the front end.
-      String name = qm.value("name");
-      System.out.println("Event name: " + name);
-      System.out.println("Event start time: " + start.toString());
-      System.out.println("Event end time: " + end.toString());
-
-      // Create a calendar event
-      CalendarEvent newEvent = new CalendarEvent(name, start, end);
-
-      // Send the event to the frontend.
-
+      String end = qm.value("end");
+      Boolean endAmOrPm = Boolean.parseBoolean(qm.value("endAMPM"));
+      String eventName = qm.value("name");
+      
+      CalendarEvent newEvent = eventProcessor
+    		  .addEvent(start, amOrPm, end, endAmOrPm, eventName);
+      
+      // Return an event object to the front-end
       return GSON.toJson(newEvent);
-
     }
   }
 
@@ -404,8 +386,15 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
+      String response = "SUCCESS";
 
-      return null;
+      String eventID = qm.value("eventID");
+      
+      eventProcessor.deleteEvent(eventID);
+      
+      // TODO: catch an error and store the response if there's an issue
+      
+      return response;
     }
   }
   
@@ -418,8 +407,16 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-
-      return null;
+      String start = qm.value("start");
+      Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
+      String end = qm.value("end");
+      Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
+      String eventName = qm.value("name");
+      
+      CalendarEvent editedEvent = eventProcessor
+    		  .editEvent(start, amOrPm, end, endAMOrPM, eventName);
+      
+      return editedEvent;
     }
   }
   

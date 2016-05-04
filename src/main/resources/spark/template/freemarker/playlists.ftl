@@ -1,10 +1,9 @@
 <#assign content>
 
-
 <div id="wrapper">
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper">
-	    <ul class="sidebar-nav" id="calanderEvents">
+	    <ul class="sidebar-nav" id="calendarEvents">
 	        <li class="sidebar-brand" id="date">
 	            <a href="#">
 	    	    <script>
@@ -16,7 +15,7 @@
 	        </li>
 	        
 	        <hr>
-	        <form id='eventForm' form method="POST" action="/newEvent">
+	        <form id='eventForm' method="POST" action="/newEvent">
 	            <label for='name' >Event Name: </label>
 	            <input type='text' name='name' id='name' maxlength="30" class="form-textbox"/>
 	            <br/><br/>
@@ -35,8 +34,6 @@
 
 	            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
 	            <input type='button' name='AddNewEvent' value='Add New Event' id="AddNewEvent" class="form-button"/>
-	            <ul id="calendarEvents">
-	            </ul>
 	        </form>
 	        <hr>
 	    </ul>
@@ -213,6 +210,7 @@
 	    
 		<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>
 	    </div>
+   
 	</div>
 	<!-- /#page-content-wrapper -->
 </div>

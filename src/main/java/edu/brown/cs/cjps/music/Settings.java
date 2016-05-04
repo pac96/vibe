@@ -3,8 +3,11 @@ package edu.brown.cs.cjps.music;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.brown.cs.cjps.vibe.MusicEventTag.Tag;
+
 public class Settings {
 
+  private Tag tag;
   private List<String> genres;
   private String mood;
   private float hotness;
@@ -13,6 +16,7 @@ public class Settings {
   // Empty constructor
   public Settings() {
 
+    tag = Tag.RESTFUL;
     genres = new ArrayList<String>();
     mood = null;
     hotness = 0;
@@ -21,16 +25,19 @@ public class Settings {
   }
 
   // All in one constructor
-  public Settings(List<String> initG, String m, float h, float e) {
+  public Settings(Tag t, List<String> initG, String m, float h, float e) {
+    tag = t;
     genres = initG;
     mood = m;
     hotness = h;
     energy = e;
   }
 
+  public void setTag(Tag t) {
+    tag = t;
+  }
+
   public void addGenre(String genre) {
-    // TODO: There should be a master list/hashset of genres somewhere to check
-    // these against
     genres.add(genre);
   }
 

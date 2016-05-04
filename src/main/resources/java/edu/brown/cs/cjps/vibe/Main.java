@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,9 +33,10 @@ import com.wrapper.spotify.models.AuthorizationCodeCredentials;
 import com.wrapper.spotify.models.User;
 
 import edu.brown.cs.cjps.calendar.CalendarEvent;
+import edu.brown.cs.cjps.calendar.EventTime;
+import edu.brown.cs.cjps.music.NewSpotifyTester;
 import edu.brown.cs.cjps.music.PlaylistHQ;
 import edu.brown.cs.cjps.music.SpotifyConverter;
-import edu.brown.cs.cjps.music.VibePlaylist;
 import freemarker.template.Configuration;
 
 /**
@@ -140,35 +142,39 @@ public final class Main {
 
   // TODO: Call this method from some sort of handler
   private String generatePlaylist() {
-
-    System.out.println("In g playlist");
-    SpotifyConverter spotconv = new SpotifyConverter();
-
-    // NewSpotifyTester t = new NewSpotifyTester(api, currentUser, accessToken);
-    // String track = null;
-    // List<String> list = new ArrayList<>();
-    hq.generateFromTag("test", api, currentUser, accessToken);
-    System.out.println("survived generate from tag");
-    VibePlaylist p1 = VibeCache.getPlaylistCache().get("test");
-    System.out.println("~~~THE TRACKS~~~");
-    System.out.println(p1.getTracks());
+    // System.out.println("in generate playlist");
+    // PlaylistGenerator generator = new PlaylistGenerator();
+    // List<String> tracks = null;
     // try {
-    // list = t.recommendations();
-    // } catch (MalformedURLException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // } catch (IOException e) {
+    // System.out.println("try in main");
+    // tracks = generator.playlistTest();
+    // } catch (EchoNestException e) {
     // // TODO Auto-generated catch block
     // e.printStackTrace();
     // }
+    // System.out.println("after the try in main");
+    // // Generate a playlist based on something
+    SpotifyConverter spotconv = new SpotifyConverter();
+
+    NewSpotifyTester t = new NewSpotifyTester(api, currentUser, accessToken);
+    String track = null;
+    List<String> list = new ArrayList<>();
+    try {
+      list = t.recommendations();
+    } catch (MalformedURLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     // System.out.println("Track from main : " + track.toString());
 
-    // String playlistURI = spotconv.makeSpotifyPlaylist(api, currentUser,
-    // list);
+    String playlistURI = spotconv.makeSpotifyPlaylist(api, currentUser, list);
     // System.out.println("through generate playlist in main");
 
-    // return playlistURI;
-    return null;
+    return playlistURI;
+    // return null;
   }
 
   /**
@@ -199,7 +205,7 @@ public final class Main {
     FreeMarkerEngine freeMarker = createEngine();
 
     // Setup Spark Routes
-    Spark.get("/vibe", new FrontHandler(), freeMarker);
+    Spark.get("/vibe", new HomepageHandler(), freeMarker);
     Spark.get("/login", new LoginHandler());
     Spark.get("/playlists", new PlaylistPageHandler(), freeMarker);
     Spark.post("/code", new CodeHandler());
@@ -216,7 +222,7 @@ public final class Main {
    * @author cjps
    *
    */
-  private class FrontHandler implements TemplateViewRoute {
+  private class HomepageHandler implements TemplateViewRoute {
     @Override
     public ModelAndView handle(Request req, Response res) {
       Map<String, Object> variables = ImmutableMap.of("title", "Vibe");
@@ -335,11 +341,6 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-<<<<<<< HEAD
-
-      CalendarEvent newEvent = eventProcessor.addEvent(qm);
-
-=======
       
       // Retrieve event information from the front-end
       String start = qm.value("start");
@@ -352,7 +353,6 @@ public final class Main {
     		  .addEvent(start, amOrPm, end, endAmOrPm, eventName);
       
       // Return an event object to the front-end
->>>>>>> df7208be9361c8e4f880ba701b78af42e53e3f1b
       return GSON.toJson(newEvent);
     }
   }
@@ -386,8 +386,15 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
+      String response = "SUCCESS";
 
-      return null;
+      String eventID = qm.value("eventID");
+      
+      eventProcessor.deleteEvent(eventID);
+      
+      // TODO: catch an error and store the response if there's an issue
+      
+      return response;
     }
   }
   
@@ -400,8 +407,16 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-
-      return null;
+      String start = qm.value("start");
+      Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
+      String end = qm.value("end");
+      Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
+      String eventName = qm.value("name");
+      
+      CalendarEvent editedEvent = eventProcessor
+    		  .editEvent(start, amOrPm, end, endAMOrPM, eventName);
+      
+      return editedEvent;
     }
   }
   

@@ -6,10 +6,12 @@ $(document).on('click', '#viewPlaylist', (function() {
 	// showPlaylist(playlistURI);
 }));
 
+
 // "Customize Playlist" option
 $(document).on('click', '#customizePlaylist', (function() {
 	console.log("Customize playlist clicked!");
 }));
+
 
 // "Edit Event" option
 $(document).on('click', '#editEvent', (function() {
@@ -19,14 +21,58 @@ $(document).on('click', '#editEvent', (function() {
 
 /* Handles clicking on the submit changes button */
 $("#EditAddNewEvent").click(function() {
-	editEventPost(currentEventID);
+	editRequest(currentEventID);
 });
+
+
 
 // "Delete Event" option
 $(document).on('click', '#deleteEvent', (function() {
 	console.log("Delete event clicked!");
-    // deleteEvent(currentEventID);
+    deleteEvent(currentEventID);
 }));
+
+
+/* genre dropdown, multi selection */
+$(".gDropdown dt yy").on('click', function() {
+	  $(".gDropdown dd ul").slideToggle('fast');
+	});
+
+	$(".gDropdown dd ul li yy").on('click', function() {
+	  $(".gDropdown dd ul").hide();
+	});
+
+	function getSelectedValue(id) {
+	  return $("#" + id).find("dt yy span.value").html();
+	}
+
+	$(document).bind('click', function(e) {
+	  var $clicked = $(e.target);
+	  if (!$clicked.parents().hasClass("gDropdown")) $(".gDropdown dd ul").hide();
+	});
+
+	$('.mutliSelect input[type="checkbox"]').on('click', function() {
+
+	  var title = $(this).closest('.mutliSelect').find('input[type="checkbox"]').val(),
+	    title = $(this).val() + ",";
+
+	  if ($(this).is(':checked')) {
+	    var html = '<span title="' + title + '">' + title + '</span>';
+	    $('.multiSelection').append(html);
+	    $(".hida").hide();
+	  } else {
+	    $('span[title="' + title + '"]').remove();
+	    var ret = $(".hida");
+	    $('.dropdown dt yy').append(ret);
+
+	  }
+	});
+	
+	/** slider functions **/
+	
+	$('#popularitySlider').data('slider').getValue()
+	$('#energySlider').data('slider').getValue()
+
 
 
 ///////////////////////////////////////////
@@ -60,19 +106,6 @@ function getPlaylistURI(eventID) {
 	return uri;
 }
 
-/**
- * Displays the playlist for a given event.
- */
-function displayCustomizePlaylist(eventID){
-    document.getElementById('view-playlist-panel').style.display = "block";   
-}
-
-/**
- * Displays options for a users Spotify Playlist.
- */
-function displaySpotifyPlaylist(eventID){
-    document.getElementById('customize-playlist-panel').style.display = "block";   
-}
 
 /**
  * Edits an event on the front-end by updating the calendar and appending
@@ -92,9 +125,6 @@ function editEvent(editedEvent){
 		var newHTML = htmlDropdown(dataTargetID, timePeriod, editedEvent);
 		
 		var eventLI = $('#' + currentEventID);
-		console.log(newHTML);
-		console.log("inner html of event LI...");
-		console.log(eventLI.html());
 
 		// Replaces the html of the old event with the info from the new one
 		eventLI.html(newHTML);
@@ -103,13 +133,35 @@ function editEvent(editedEvent){
 }
 
 /**
- * Allows the user to delete an event.
- * @param  {String} eventID - the ID of the event you clicked on
+ * Sends a post request to the back-end to delete an event.
+ * @param  {String} id - id of the event you want to delete
  */
-function deleteEvent(eventID){
-    var jqueryEventID = "#" + eventID;
-    $("#" + eventID).remove();
-    // TODO: Send deletion request to the back-end
+function deleteEvent(id) {
+	var postParam = {eventID: id};
+	
+	// The backend responds with a string: 
+	// "SUCCESS" or "FAILED: [error message]"
+	$.post('/deleteEvent', postParam, function(response) {
+		console.log("postdelete");
+		otherContent.html(""); // Replace what's already in other content
+
+		if (response != "SUCCESS") {
+			// do some stuff
+			alert(response);
+		} else {
+			$("#" + id).remove();
+			// The same as <p class='contentMsg' id='successMsg'>Deletion successful!</p>
+			var $msg = $("<p/>", {class: "contentMsg", id: "successMsg"});
+			$msg.append("Deletion successful!");
+			otherContent.html($msg);
+		    otherContent.fadeIn('slow');
+		    setTimeout(function() {
+			    otherContent.fadeOut('slow');
+		    }, 2000);
+		}
+	});
+
+
 }
 
 /**
@@ -117,7 +169,7 @@ function deleteEvent(eventID){
  * and updates the calendar
  * @param  {String} eventID - the ID of the event
  */
-function editEventPost(eventID) {
+function editRequest(eventID) {
 	// necessary for some browser problems (saw on jquery's website)
 		$.valHooks.textarea = {
 		  get: function( elem ) {

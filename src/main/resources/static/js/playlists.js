@@ -2,6 +2,8 @@ var name = "";
 var eventsArray = [];
 var currentEvent;
 var currentEventID;
+var otherContent = $("div.other-content");
+
 
 var eventComparator = function(eventA, eventB) {
 	if (eventA == null || eventB == null) {
@@ -38,6 +40,7 @@ var eventComparator = function(eventA, eventB) {
 
 
 if (window.location.pathname === "/playlists") {
+	otherContent.hide();
 	$("#editEventForm").hide();
 	// First, set the logout link 
 	$("#logoutLink").attr('href', 
@@ -247,10 +250,10 @@ function addEvent() {
 
 /**
  * Creates a string of html code necessary for dropdown creation
- * @param  {[type]} dataTargetID - id needed for data-target
+ * @param  {String} dataTargetID - id needed for data-target
  * @param  {String} timePeriod   - "am" or "pm"
- * @param  {[type]} event  - the event you need to get info from
- * @return {[type]}              - the html code necessary for dropdown creation
+ * @param  {CalendarEvent} event  - the event you need to get info from
+ * @return {String}              - the html code necessary for dropdown creation
  */
 function htmlDropdown(dataTargetID, timePeriod, event) {
 	var htmlStr = 

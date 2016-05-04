@@ -199,7 +199,7 @@ public final class Main {
     FreeMarkerEngine freeMarker = createEngine();
 
     // Setup Spark Routes
-    Spark.get("/vibe", new FrontHandler(), freeMarker);
+    Spark.get("/vibe", new HomepageHandler(), freeMarker);
     Spark.get("/login", new LoginHandler());
     Spark.get("/playlists", new PlaylistPageHandler(), freeMarker);
     Spark.post("/code", new CodeHandler());
@@ -216,7 +216,7 @@ public final class Main {
    * @author cjps
    *
    */
-  private class FrontHandler implements TemplateViewRoute {
+  private class HomepageHandler implements TemplateViewRoute {
     @Override
     public ModelAndView handle(Request req, Response res) {
       Map<String, Object> variables = ImmutableMap.of("title", "Vibe");
@@ -386,8 +386,15 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
+      String response = "SUCCESS";
 
-      return null;
+      String eventID = qm.value("eventID");
+      
+      eventProcessor.deleteEvent(eventID);
+      
+      // TODO: catch an error and store the response if there's an issue
+      
+      return response;
     }
   }
   
@@ -400,8 +407,16 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-
-      return null;
+      String start = qm.value("start");
+      Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
+      String end = qm.value("end");
+      Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
+      String eventName = qm.value("name");
+      
+      CalendarEvent editedEvent = eventProcessor
+    		  .editEvent(start, amOrPm, end, endAMOrPM, eventName);
+      
+      return editedEvent;
     }
   }
   

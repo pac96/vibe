@@ -147,28 +147,15 @@ public final class Main {
     // NewSpotifyTester t = new NewSpotifyTester(api, currentUser, accessToken);
     // String track = null;
     // List<String> list = new ArrayList<>();
-    hq.generateFromTag("test", api, currentUser, accessToken);
+    VibePlaylist p1 = hq.generateFromTag("test", api, currentUser, accessToken);
     System.out.println("survived generate from tag");
-    VibePlaylist p1 = VibeCache.getPlaylistCache().get("test");
+    // VibePlaylist p1 = VibeCache.getPlaylistCache().get("test");
     System.out.println("~~~THE TRACKS~~~");
     System.out.println(p1.getTracks());
-    // try {
-    // list = t.recommendations();
-    // } catch (MalformedURLException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // } catch (IOException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    // System.out.println("Track from main : " + track.toString());
+    String playlistURI = hq.convertForSpotify(p1, "test", api, currentUser);
 
-    // String playlistURI = spotconv.makeSpotifyPlaylist(api, currentUser,
-    // list);
-    // System.out.println("through generate playlist in main");
-
-    // return playlistURI;
-    return null;
+    return playlistURI;
+    // return null;
   }
 
   /**
@@ -335,24 +322,21 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-<<<<<<< HEAD
 
-      CalendarEvent newEvent = eventProcessor.addEvent(qm);
+      // CalendarEvent newEvent = eventProcessor.addEvent(qm);
 
-=======
-      
       // Retrieve event information from the front-end
       String start = qm.value("start");
       Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
       String end = qm.value("end");
       Boolean endAmOrPm = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
-      
-      CalendarEvent newEvent = eventProcessor
-    		  .addEvent(start, amOrPm, end, endAmOrPm, eventName);
-      
+
+      CalendarEvent newEvent = eventProcessor.addEvent(start, amOrPm, end,
+          endAmOrPm, eventName);
+
       // Return an event object to the front-end
->>>>>>> df7208be9361c8e4f880ba701b78af42e53e3f1b
+
       return GSON.toJson(newEvent);
     }
   }
@@ -368,15 +352,16 @@ public final class Main {
       QueryParamsMap qm = req.queryMap();
 
       // Retrieve the event ID and find the associated playlist
-      String eventID = qm.value("eventID");
-      String uri = hq.convertForSpotify(eventID, api, currentUser);
+      // String eventID = qm.value("eventID");
+      // String uri = hq.convertForSpotify(eventID, api, currentUser);
 
-      System.out.println("Cached playlist: " + uri);
+      // System.out.println("Cached playlist: " + uri);
 
-      return uri;
+      return null;
+      // return uri;
     }
   }
-  
+
   /**
    * 
    * Handles deleting a specific event.
@@ -389,15 +374,15 @@ public final class Main {
       String response = "SUCCESS";
 
       String eventID = qm.value("eventID");
-      
+
       eventProcessor.deleteEvent(eventID);
-      
+
       // TODO: catch an error and store the response if there's an issue
-      
+
       return response;
     }
   }
-  
+
   /**
    * 
    * Handles editing a specific event.
@@ -412,16 +397,14 @@ public final class Main {
       String end = qm.value("end");
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
-      
-      CalendarEvent editedEvent = eventProcessor
-    		  .editEvent(start, amOrPm, end, endAMOrPM, eventName);
-      
+
+      CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm, end,
+          endAMOrPM, eventName);
+
       return editedEvent;
     }
   }
-  
-  
-  
+
   /**
    * Handles printing out exceptions to the GUI
    * 

@@ -75,7 +75,7 @@ if (window.location.pathname === "/playlists") {
 		$("#displayname").html(name);
 	  }
 
-	  // $("#playlist").attr('src', playlistURI);
+	  $("#playlist").attr('src', playlistURI);
 	
 	}); // end access token code post
 

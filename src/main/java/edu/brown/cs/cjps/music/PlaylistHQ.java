@@ -22,7 +22,7 @@ public class PlaylistHQ {
     sc = new SpotifyConverter();
   }
 
-  public void generateFromTag(String eventID, Api api, User curentUser,
+  public VibePlaylist generateFromTag(String eventID, Api api, User curentUser,
       String accessToken) {
     // Tag tag = this.findTag(eventID); --- BROKEN SOMEHOW
     Tag tag = Tag.RESTFUL;
@@ -43,17 +43,15 @@ public class PlaylistHQ {
       break;
     // Restful is default
     default:
-      System.out.println("hit the default");
-      defaults = def.getRestfulDefaults();
+      defaults = def.getExerciseDefaults();
     }
 
     VibePlaylist p;
 
-    System.out.println("In the try");
     p = pg.makePlaylist(defaults, api, curentUser, accessToken);
-    VibeCache.getPlaylistCache().put(eventID, p);
-    System.out.println("through the try");
-
+    // VibeCache.getPlaylistCache().put(eventID, p);
+    System.out.println("returning from HQ");
+    return p;
   }
 
   public void generateCustom(List<String> params) {
@@ -68,11 +66,10 @@ public class PlaylistHQ {
    * @param spotifyUser
    * @return
    */
-  public String convertForSpotify(String eventID, Api spotifyAPI,
-      User spotifyUser) {
-    VibeCache.getPlaylistCache().get(eventID);
-    List<String> trackIDs = null;
-    // TODO get trackids somehow
+  public String convertForSpotify(VibePlaylist p, String eventID,
+      Api spotifyAPI, User spotifyUser) {
+    // VibeCache.getPlaylistCache().get(eventID);
+    List<String> trackIDs = p.getTracks();
     String uri = sc.makeSpotifyPlaylist(spotifyAPI, spotifyUser, trackIDs);
     return uri;
   }

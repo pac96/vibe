@@ -68,10 +68,10 @@ $(".gDropdown dt yy").on('click', function() {
 	  }
 	});
 	
-	$("#ex9").slider({
-		precision: 2,
-		value: 8.115 // Slider will instantiate showing 8.12 due to specified precision
-	});
+	/** slider functions **/
+	
+	$('#popularitySlider').data('slider').getValue()
+	$('#energySlider').data('slider').getValue()
 
 
 

@@ -30,6 +30,47 @@ $("#EditAddNewEvent").click(function() {
 	editEventPost(currentEventID);
 }); // end add new click handler
 
+/* genre dropdown, multi selection */
+$(".gDropdown dt yy").on('click', function() {
+	  $(".gDropdown dd ul").slideToggle('fast');
+	});
+
+	$(".gDropdown dd ul li yy").on('click', function() {
+	  $(".gDropdown dd ul").hide();
+	});
+
+	function getSelectedValue(id) {
+	  return $("#" + id).find("dt yy span.value").html();
+	}
+
+	$(document).bind('click', function(e) {
+	  var $clicked = $(e.target);
+	  if (!$clicked.parents().hasClass("gDropdown")) $(".gDropdown dd ul").hide();
+	});
+
+	$('.mutliSelect input[type="checkbox"]').on('click', function() {
+
+	  var title = $(this).closest('.mutliSelect').find('input[type="checkbox"]').val(),
+	    title = $(this).val() + ",";
+
+	  if ($(this).is(':checked')) {
+	    var html = '<span title="' + title + '">' + title + '</span>';
+	    $('.multiSelection').append(html);
+	    $(".hida").hide();
+	  } else {
+	    $('span[title="' + title + '"]').remove();
+	    var ret = $(".hida");
+	    $('.dropdown dt yy').append(ret);
+
+	  }
+	});
+	
+	$("#ex9").slider({
+		precision: 2,
+		value: 8.115 // Slider will instantiate showing 8.12 due to specified precision
+	});
+
+
 
 ///////////////////////////////////////////
 // Function Declarations

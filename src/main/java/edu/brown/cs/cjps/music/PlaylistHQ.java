@@ -1,9 +1,8 @@
 package edu.brown.cs.cjps.music;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.List;
 
+import com.google.common.collect.Multimap;
 import com.wrapper.spotify.Api;
 import com.wrapper.spotify.models.User;
 
@@ -25,7 +24,9 @@ public class PlaylistHQ {
 
   public void generateFromTag(String eventID, Api api, User curentUser,
       String accessToken) {
-    Tag tag = this.findTag(eventID);
+    // Tag tag = this.findTag(eventID); --- BROKEN SOMEHOW
+    Tag tag = Tag.RESTFUL;
+    // System.out.println("tag is " + tag);
     Settings defaults;
     switch (tag) {
     case WORKSTUDY:
@@ -42,18 +43,17 @@ public class PlaylistHQ {
       break;
     // Restful is default
     default:
+      System.out.println("hit the default");
       defaults = def.getRestfulDefaults();
     }
 
     VibePlaylist p;
-    try {
-      p = pg.makePlaylist(defaults, api, curentUser, accessToken);
-      VibeCache.getPlaylistCache().put(eventID, p);
-    } catch (MalformedURLException e) {
-      VibeCache.getPlaylistCache().put(eventID, null);
-    } catch (IOException e) {
-      VibeCache.getPlaylistCache().put(eventID, null);
-    }
+
+    System.out.println("In the try");
+    p = pg.makePlaylist(defaults, api, curentUser, accessToken);
+    VibeCache.getPlaylistCache().put(eventID, p);
+    System.out.println("through the try");
+
   }
 
   public void generateCustom(List<String> params) {
@@ -77,17 +77,30 @@ public class PlaylistHQ {
     return uri;
   }
 
+  // TODO: THIS IS BROKEN FOR SOME UNKNOWN REASON
   private Tag findTag(String eventID) {
+    Multimap<Tag, String> wtf = VibeCache.getTagMap();
+    System.out.println(wtf);
+    System.out.println("why is this happening");
+    System.out.println(wtf.containsValue("test"));
+    System.out.println("In find tag??");
+    System.out.println("event ID" + eventID);
     String[] idArray = eventID.split(" ");
+    System.out.println(idArray.length);
     for (int i = 0; i < idArray.length; i++) {
+      System.out.println("In for loop");
+      System.out.println("This piece is " + idArray[i]);
       if (VibeCache.getTagMap().containsValue(idArray[i])) {
+        System.out.println("in the if");
         for (Tag t : VibeCache.getTagMap().keys()) {
           if (VibeCache.getTagMap().containsEntry(t, idArray[i])) {
             return t;
           }
         }
       }
+      System.out.println("made it through the if");
     }
+    System.out.println("returning null");
     return null;
   }
 }

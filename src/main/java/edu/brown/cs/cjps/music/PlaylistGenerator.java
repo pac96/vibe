@@ -24,43 +24,17 @@ public class PlaylistGenerator {
   public PlaylistGenerator() {
     _echoNest = new EchoNestAPI(API_KEY);
 
-    // try {
-    // //this.playlistTest();
-    // } catch (EchoNestException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-
   }
 
   // Returns a list of track URIs
   public VibePlaylist makePlaylist(Settings s, Api api, User curentUser,
-      String accessToken) throws MalformedURLException, IOException {
+      String accessToken) {
+    System.out.println("Makin a playlist");
     List<String> genres = s.getGenres();
-    String mood = s.getMood();
+    float mood = s.getMood();
     float hotness = s.getHotness();
     float energy = s.getEnergy();
     int numTracks = 20;
-
-    // Hotness ranges
-    float min_hot = hotness - 30;
-    if (min_hot < 0) {
-      min_hot = 0;
-    }
-    float max_hot = hotness + 30;
-    if (max_hot > 100) {
-      max_hot = 100;
-    }
-
-    // Energy ranges
-    float min_e = energy - 30;
-    if (min_e < 0) {
-      min_e = 0;
-    }
-    float max_e = energy + 30;
-    if (max_e > 100) {
-      max_e = 100;
-    }
 
     // Convert the genre list into a string
     String genreString = "";
@@ -71,25 +45,47 @@ public class PlaylistGenerator {
     genreString = genreString + genres.get(genres.size() - 1);
     System.out.println(genreString);
 
+    // FOR TESTS
+    int inthotness = 30;
     // Connection to recommendations
-    String recString = "https://api.spotify.com/v1/recommendations?min_energy="
-        + String.valueOf(min_e) + "&max_popularity=" + String.valueOf(max_hot)
-        + "&limit=20&seed_genres=" + genreString + "min_popularity="
-        + String.valueOf(min_hot) + "&market=US&max_energy="
-        + String.valueOf(max_e);
+    String recString = "https://api.spotify.com/v1/recommendations?target_energy="
+        + String.valueOf(energy)
+        + "&target_popularity="
+        + String.valueOf(inthotness)
+        + "&target_valence="
+        + mood
+        + "&limit=20&seed_genres=" + genreString + "&market=US";
 
-    URLConnection connection = new URL(recString).openConnection();
+    System.out.println("where are we sticking");
+    URLConnection connection = null;
+    try {
+      connection = new URL(recString).openConnection();
+    } catch (MalformedURLException e1) {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    } catch (IOException e1) {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    }
+    System.out.println("running out of options");
     connection.setRequestProperty("Host", "api.spotify.com");
     connection.setRequestProperty("Accept", "application/json");
     connection.setRequestProperty("Content-Type", "application/json");
     connection.setRequestProperty("Authorization", "Bearer " + accessToken);
     connection.setRequestProperty("User-Agent", "Spotify API Console v0.1");
-    InputStream response = connection.getInputStream();
-
+    System.out.println("for places we might be stuck");
+    InputStream response = null;
+    try {
+      response = connection.getInputStream();
+    } catch (IOException e) {
+      System.out.println("FOUND YOU");
+      e.printStackTrace();
+    }
+    System.out.println(response);
     java.util.Scanner scanner = new java.util.Scanner(response)
         .useDelimiter("\\A");
     String stringVersion = scanner.hasNext() ? scanner.next() : "";
-
+    System.out.println(stringVersion);
     JsonParser jparser = new JsonParser();
     JsonElement je = jparser.parse(stringVersion);
     JsonObject jo = je.getAsJsonObject();
@@ -103,7 +99,7 @@ public class PlaylistGenerator {
     }
 
     VibePlaylist vp = new VibePlaylist(trackList, s);
-
+    System.out.println("End of playlist making");
     return vp;
   }
 

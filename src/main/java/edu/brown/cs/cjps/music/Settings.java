@@ -9,7 +9,7 @@ public class Settings {
 
   private Tag tag;
   private List<String> genres;
-  private String mood;
+  private float mood;
   private float hotness;
   private float energy;
 
@@ -18,14 +18,14 @@ public class Settings {
 
     tag = Tag.RESTFUL;
     genres = new ArrayList<String>();
-    mood = null;
+    mood = 0;
     hotness = 0;
     energy = 0;
 
   }
 
   // All in one constructor
-  public Settings(Tag t, List<String> initG, String m, float h, float e) {
+  public Settings(Tag t, List<String> initG, float m, float h, float e) {
     tag = t;
     genres = initG;
     mood = m;
@@ -41,7 +41,7 @@ public class Settings {
     genres.add(genre);
   }
 
-  public void setMood(String newMood) {
+  public void setMood(float newMood) {
     // TODO: Same with mood
     mood = newMood;
   }
@@ -58,7 +58,7 @@ public class Settings {
     return genres;
   }
 
-  public String getMood() {
+  public float getMood() {
     return mood;
   }
 

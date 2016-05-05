@@ -61,6 +61,7 @@ public class VibeCache {
   }
 
   public static ListMultimap<Tag, String> getTagMap() {
+    System.out.println("Returning tags");
     return tags;
   }
 

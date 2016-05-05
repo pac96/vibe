@@ -6,6 +6,7 @@ import java.util.List;
 import com.wrapper.spotify.Api;
 import com.wrapper.spotify.models.User;
 
+import edu.brown.cs.cjps.calendar.CalendarEvent;
 import edu.brown.cs.cjps.vibe.MusicEventTag.Tag;
 import edu.brown.cs.cjps.vibe.VibeCache;
 
@@ -22,9 +23,11 @@ public class PlaylistHQ {
     sc = new SpotifyConverter();
   }
 
-  public VibePlaylist generateFromTag(String eventID, Api api, User curentUser,
-      String accessToken) {
-    Tag tag = this.findTag(eventID);
+  // NOTE: this method caches the playlist
+  public VibePlaylist generateFromTag(CalendarEvent event, Api api,
+      User curentUser, String accessToken) {
+    String eventName = event.getName();
+    Tag tag = this.findTag(eventName);
     // Tag tag = Tag.RESTFUL;
     System.out.println("tag is " + tag);
     if (tag == null) {
@@ -53,8 +56,7 @@ public class PlaylistHQ {
     VibePlaylist p;
 
     p = pg.makePlaylist(defaults, api, curentUser, accessToken);
-    VibeCache.getPlaylistCache().put(eventID, p);
-    System.out.println("returning from HQ");
+    VibeCache.getPlaylistCache().put(event.getId(), p);
     return p;
   }
 
@@ -70,18 +72,18 @@ public class PlaylistHQ {
    * @param spotifyUser
    * @return
    */
-  public String convertForSpotify(VibePlaylist p, String eventID,
+  public String convertForSpotify(VibePlaylist p, String eventName,
       Api spotifyAPI, User spotifyUser) {
-    VibeCache.getPlaylistCache().get(eventID);
     List<String> trackIDs = p.getTracks();
-    String uri = sc.makeSpotifyPlaylist(eventID, spotifyAPI, spotifyUser,
+    String uri = sc.makeSpotifyPlaylist(eventName, spotifyAPI, spotifyUser,
         trackIDs);
     return uri;
   }
 
-  private Tag findTag(String eventID) {
+  private Tag findTag(String eventname) {
+    eventname = eventname.toLowerCase();
     HashMap<String, Tag> tagmap = VibeCache.getTagMap();
-    String[] idArray = eventID.split(" ");
+    String[] idArray = eventname.split(" ");
     for (int i = 0; i < idArray.length; i++) {
       for (String s : tagmap.keySet()) {
         if (idArray[i].contains(s)) {

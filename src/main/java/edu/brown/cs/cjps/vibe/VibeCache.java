@@ -3,6 +3,7 @@ package edu.brown.cs.cjps.vibe;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import edu.brown.cs.cjps.music.VibePlaylist;
 import edu.brown.cs.cjps.vibe.MusicEventTag.Tag;
@@ -15,7 +16,7 @@ import edu.brown.cs.cjps.vibe.MusicEventTag.Tag;
  */
 public class VibeCache {
 
-  private static HashMap<String, VibePlaylist> playlistCache;
+  private static HashMap<UUID, VibePlaylist> playlistCache;
   // private static ListMultimap<Tag, String> tags;
   private static HashMap<String, Tag> tags;
 
@@ -23,7 +24,7 @@ public class VibeCache {
    * Constuctor just initializes the HashMap cache.
    */
   public VibeCache() {
-    playlistCache = new HashMap<String, VibePlaylist>();
+    playlistCache = new HashMap<UUID, VibePlaylist>();
 
     // Music tags
     // tags = ArrayListMultimap.create();
@@ -65,7 +66,7 @@ public class VibeCache {
    *
    * @return the cache HashMap
    */
-  public static HashMap<String, VibePlaylist> getPlaylistCache() {
+  public static HashMap<UUID, VibePlaylist> getPlaylistCache() {
     return playlistCache;
   }
 

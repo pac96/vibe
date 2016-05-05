@@ -22,13 +22,13 @@ public class SpotifyConverter {
     // this.makeSpotifyPlaylist(api, user, trackList);
   }
 
-  public String makeSpotifyPlaylist(String eventID, Api api, User user,
+  public String makeSpotifyPlaylist(String eventName, Api api, User user,
       List<String> trackList) {
 
     // MAKING THE PLAYLIST
 
     final PlaylistCreationRequest request = api
-        .createPlaylist(user.getId(), eventID).publicAccess(true).build();
+        .createPlaylist(user.getId(), eventName).publicAccess(true).build();
     String playlistID = null;
     String playlistURI = "";
     Playlist playlist = null;

@@ -4,6 +4,11 @@ var currentEvent;
 var currentEventID;
 var otherContent = $("div.other-content");
 
+// setInterval(function() {
+// 	var date = new Date();
+// 	console.log(d.getSeconds());
+// }), 5000;
+
 
 var eventComparator = function(eventA, eventB) {
 	if (eventA == null || eventB == null) {
@@ -40,6 +45,10 @@ var eventComparator = function(eventA, eventB) {
 
 
 if (window.location.pathname === "/playlists") {
+	var d = new Date();
+	document.getElementById("date").innerHTML = d.toDateString();
+
+
 	otherContent.hide();
 	$("#editEventForm").hide();
 	// First, set the logout link 
@@ -125,7 +134,7 @@ function CalendarEvent(event) {
  * @param  {CalendarEvent} event - the calendar event object 
  *                               we got from the backend
  */
-function renderCalendar(event){
+function renderCalendar(event, moment){
 	var timePeriod = "";
 	if(event.start.isAM){
 		timePeriod = "am";
@@ -138,7 +147,7 @@ function renderCalendar(event){
 	console.log("Event id: " + event.id);
 	var targetID = "dropdown-" + event.id;
 
-	var htmlCode = htmlDropdown(targetID, timePeriod, event);
+	var htmlCode = htmlDropdown(targetID, timePeriod, event, moment);
 
 	var eventHTMLString = "<li id='" + event.id + "' class='anEvent'>"
 	 + htmlCode + "</li>";
@@ -235,7 +244,17 @@ function addEvent() {
 
 	    		// 2. Make calendar event object from responseObject
 	    		var newEvent = new CalendarEvent(responseObject);
-	    		
+
+	    		// Use moment.js to set up times
+	    		var eventMoment = moment();
+	    		eventMoment.hour(newEvent.start.hour);
+	    		eventMoment.minute(newEvent.start.minute);
+	    		eventMoment.startOf('second');
+
+
+	    		var m = eventMoment.format("h:mm");
+	    		console.log("New event moment: " + m);
+
 	    		// 3. Add new calendar event to user's list
 	    		eventsArray.push(newEvent);
 	    		
@@ -243,7 +262,7 @@ function addEvent() {
 	    		eventsArray.sort(eventComparator);
 
 	    		//5. Render calendar
-	    		renderCalendar(newEvent);
+	    		renderCalendar(newEvent, eventMoment);
 	    	});
 		}
 }
@@ -255,11 +274,13 @@ function addEvent() {
  * @param  {CalendarEvent} event  - the event you need to get info from
  * @return {String}              - the html code necessary for dropdown creation
  */
-function htmlDropdown(dataTargetID, timePeriod, event) {
+function htmlDropdown(dataTargetID, timePeriod, cEvent, eventMoment) {
 	var htmlStr = 
 	"<a href='javascript:;' data-toggle='collapse' data-target='#" + dataTargetID + "'>" +
 		"<i class='fa fa-fw fa-arrows-v'></i> " +
-		event.start.hour + timePeriod + " | " + event.name + " " +
+		// event.start.hour + ":" +  event.start.minute 
+		eventMoment.format("h:mm") + " " + timePeriod 
+		+ " | " + cEvent.name + " " +
 		"<i class='fa fa-fw fa-caret-down'></i></a>" +
 		"<ul id='" + dataTargetID + "' class='collapse'>" +
 			"<li id='viewPlaylist'>" +

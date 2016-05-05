@@ -5,13 +5,7 @@
 	<div id="sidebar-wrapper">
 	    <ul class="sidebar-nav" id="calendarEvents">
 	        <li class="sidebar-brand" id="date">
-	            <a href="#">
-	    	    <script>
-		            var d = new Date();
-		            document.getElementById("date").innerHTML = d.toDateString();
-				</script>
-	            <p id="date"></p>
-	            </a>
+	            <a href="#"><p id="date"></p></a>
 	        </li>
 	        
 	        <hr>

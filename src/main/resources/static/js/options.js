@@ -28,7 +28,6 @@ $("#EditAddNewEvent").click(function() {
 
 // "Delete Event" option
 $(document).on('click', '#deleteEvent', (function() {
-	console.log("Delete event clicked!");
     deleteEvent(currentEventID);
 }));
 
@@ -54,7 +53,7 @@ $(".gDropdown dt yy").on('click', function() {
 	$('.mutliSelect input[type="checkbox"]').on('click', function() {
 
 	  var title = $(this).closest('.mutliSelect').find('input[type="checkbox"]').val(),
-	    title = $(this).val() + ",";
+	  title = $(this).val() + ",";
 
 	  if ($(this).is(':checked')) {
 	    var html = '<span title="' + title + '">' + title + '</span>';
@@ -217,10 +216,11 @@ function editRequest(eventID) {
 				end : endTime ,
 				startAMPM : startAP ,
 				endAMPM : endAP,
-				name : eventName
+				name : eventName,
+				id : eventID
 	    	};
 	    	
-	    	$.post("/newEvent", postParameters, function(response) {
+	    	$.post("/editEvent", postParameters, function(response) {
 	    		// 1. send stuff to back end and store in responseObject
 	    		var responseObject = JSON.parse(response);
 

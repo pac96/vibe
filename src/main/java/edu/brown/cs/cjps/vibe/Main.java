@@ -98,7 +98,7 @@ public final class Main {
 
   /**
    * Constructor for our Main class.
-   * 
+   *
    * @param args
    *          - the command line arguments
    */
@@ -173,7 +173,7 @@ public final class Main {
 
   /**
    * Creates a new templating engine for free marker
-   * 
+   *
    * @return a new free marker engine
    */
   private static FreeMarkerEngine createEngine() {
@@ -212,7 +212,7 @@ public final class Main {
 
   /**
    * Handles creating the GUI for the homepage
-   * 
+   *
    * @author cjps
    *
    */
@@ -226,7 +226,7 @@ public final class Main {
 
   /**
    * Handles creating the GUI for processing login requests
-   * 
+   *
    * @author cjps
    *
    */
@@ -235,7 +235,7 @@ public final class Main {
     public Object handle(Request req, Response res) {
       /*
        * Set the necessary scopes that the application will need from the user
-       * 
+       *
        * Vibe can read the user's email and modify public and private playlists
        */
       final List<String> scopes = Arrays.asList("user-read-email",
@@ -254,7 +254,7 @@ public final class Main {
   /**
    * Handles acquiring and utilizing the code for the user to create an access
    * token
-   * 
+   *
    * @author cjps
    *
    */
@@ -314,7 +314,7 @@ public final class Main {
 
   /**
    * Handles creating the GUI for processing login requests
-   * 
+   *
    * @author cjps
    *
    */
@@ -327,40 +327,34 @@ public final class Main {
   }
 
   /**
-   * 
+   *
    * Handles adding an event to a user's calendar.
-   * 
+   *
    */
   private class AddEventHandler implements Route {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-<<<<<<< HEAD
 
-      CalendarEvent newEvent = eventProcessor.addEvent(qm);
-
-=======
-      
       // Retrieve event information from the front-end
       String start = qm.value("start");
       Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
       String end = qm.value("end");
       Boolean endAmOrPm = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
-      
+
       CalendarEvent newEvent = eventProcessor
     		  .addEvent(start, amOrPm, end, endAmOrPm, eventName);
-      
+
       // Return an event object to the front-end
->>>>>>> df7208be9361c8e4f880ba701b78af42e53e3f1b
       return GSON.toJson(newEvent);
     }
   }
 
   /**
-   * 
+   *
    * Handles retrieving a playlist for a specific event.
-   * 
+   *
    * */
   private class GetPlaylistHandler implements Route {
     @Override
@@ -376,11 +370,11 @@ public final class Main {
       return uri;
     }
   }
-  
+
   /**
-   * 
+   *
    * Handles deleting a specific event.
-   * 
+   *
    * */
   private class DeleteEventHandler implements Route {
     @Override
@@ -389,19 +383,19 @@ public final class Main {
       String response = "SUCCESS";
 
       String eventID = qm.value("eventID");
-      
+
       eventProcessor.deleteEvent(eventID);
-      
+
       // TODO: catch an error and store the response if there's an issue
-      
+
       return response;
     }
   }
-  
+
   /**
-   * 
+   *
    * Handles editing a specific event.
-   * 
+   *
    * */
   private class EditEventHandler implements Route {
     @Override
@@ -412,19 +406,19 @@ public final class Main {
       String end = qm.value("end");
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
-      
+
       CalendarEvent editedEvent = eventProcessor
     		  .editEvent(start, amOrPm, end, endAMOrPM, eventName);
-      
+
       return editedEvent;
     }
   }
-  
-  
-  
+
+
+
   /**
    * Handles printing out exceptions to the GUI
-   * 
+   *
    * @author cjps
    *
    */

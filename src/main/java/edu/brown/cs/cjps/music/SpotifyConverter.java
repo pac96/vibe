@@ -1,6 +1,5 @@
 package edu.brown.cs.cjps.music;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.wrapper.spotify.Api;
@@ -23,12 +22,13 @@ public class SpotifyConverter {
     // this.makeSpotifyPlaylist(api, user, trackList);
   }
 
-  public String makeSpotifyPlaylist(Api api, User user, List<String> trackList) {
+  public String makeSpotifyPlaylist(String eventID, Api api, User user,
+      List<String> trackList) {
 
     // MAKING THE PLAYLIST
 
     final PlaylistCreationRequest request = api
-        .createPlaylist(user.getId(), "title").publicAccess(true).build();
+        .createPlaylist(user.getId(), eventID).publicAccess(true).build();
     String playlistID = null;
     String playlistURI = "";
     Playlist playlist = null;
@@ -51,15 +51,6 @@ public class SpotifyConverter {
 
     // Index starts at 0
     final int insertIndex = 0;
-    // for (int i = 0; i < trackList.size(); i++) {
-    List<String> testList = new ArrayList<>();
-
-    testList.add("spotify:track:5JZcX7TTLx4l0xFIXJ3DBt");
-    System.out.println("hard coded is " + testList.get(0));
-    System.out.println("not hard coded is " + trackList.get(0));
-    // trackList.set(0,
-    // trackList.get(0).substring(1, trackList.get(0).length() - 1));
-    // System.out.println("not hard coded take 2 is " + trackList.get(0));
 
     final AddTrackToPlaylistRequest addRequest = api
         .addTracksToPlaylist(user.getId(), playlistID, trackList)
@@ -74,7 +65,6 @@ public class SpotifyConverter {
     }
     // }
     System.out.println("Tracklist: " + trackList);
-    System.out.println(playlist.getTracks().toString());
     return playlistURI;
   }
 

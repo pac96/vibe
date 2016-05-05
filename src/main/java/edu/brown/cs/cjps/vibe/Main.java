@@ -111,6 +111,7 @@ public final class Main {
    */
   private void run() {
     // Instantiate HQ
+    VibeCache vc = new VibeCache();
     hq = new PlaylistHQ();
     eventProcessor = new EventProcessor();
 
@@ -147,12 +148,15 @@ public final class Main {
     // NewSpotifyTester t = new NewSpotifyTester(api, currentUser, accessToken);
     // String track = null;
     // List<String> list = new ArrayList<>();
-    VibePlaylist p1 = hq.generateFromTag("test", api, currentUser, accessToken);
+    // VibePlaylist p1 =
+    String playlistName = "sleep";
+    hq.generateFromTag(playlistName, api, currentUser, accessToken);
     System.out.println("survived generate from tag");
-    // VibePlaylist p1 = VibeCache.getPlaylistCache().get("test");
+    VibePlaylist p2 = VibeCache.getPlaylistCache().get(playlistName);
     System.out.println("~~~THE TRACKS~~~");
-    System.out.println(p1.getTracks());
-    String playlistURI = hq.convertForSpotify(p1, "test", api, currentUser);
+    System.out.println(p2.getTracks());
+    String playlistURI = hq.convertForSpotify(p2, playlistName, api,
+        currentUser);
 
     return playlistURI;
     // return null;

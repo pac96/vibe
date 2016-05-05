@@ -1,8 +1,8 @@
 package edu.brown.cs.cjps.music;
 
+import java.util.HashMap;
 import java.util.List;
 
-import com.google.common.collect.Multimap;
 import com.wrapper.spotify.Api;
 import com.wrapper.spotify.models.User;
 
@@ -24,9 +24,13 @@ public class PlaylistHQ {
 
   public VibePlaylist generateFromTag(String eventID, Api api, User curentUser,
       String accessToken) {
-    // Tag tag = this.findTag(eventID); --- BROKEN SOMEHOW
-    Tag tag = Tag.RESTFUL;
-    // System.out.println("tag is " + tag);
+    Tag tag = this.findTag(eventID);
+    // Tag tag = Tag.RESTFUL;
+    System.out.println("tag is " + tag);
+    if (tag == null) {
+      tag = Tag.RESTFUL;
+    }
+
     Settings defaults;
     switch (tag) {
     case WORKSTUDY:
@@ -43,13 +47,13 @@ public class PlaylistHQ {
       break;
     // Restful is default
     default:
-      defaults = def.getExerciseDefaults();
+      defaults = def.getRestfulDefaults();
     }
 
     VibePlaylist p;
 
     p = pg.makePlaylist(defaults, api, curentUser, accessToken);
-    // VibeCache.getPlaylistCache().put(eventID, p);
+    VibeCache.getPlaylistCache().put(eventID, p);
     System.out.println("returning from HQ");
     return p;
   }
@@ -68,36 +72,23 @@ public class PlaylistHQ {
    */
   public String convertForSpotify(VibePlaylist p, String eventID,
       Api spotifyAPI, User spotifyUser) {
-    // VibeCache.getPlaylistCache().get(eventID);
+    VibeCache.getPlaylistCache().get(eventID);
     List<String> trackIDs = p.getTracks();
-    String uri = sc.makeSpotifyPlaylist(spotifyAPI, spotifyUser, trackIDs);
+    String uri = sc.makeSpotifyPlaylist(eventID, spotifyAPI, spotifyUser,
+        trackIDs);
     return uri;
   }
 
-  // TODO: THIS IS BROKEN FOR SOME UNKNOWN REASON
   private Tag findTag(String eventID) {
-    Multimap<Tag, String> wtf = VibeCache.getTagMap();
-    System.out.println(wtf);
-    System.out.println("why is this happening");
-    System.out.println(wtf.containsValue("test"));
-    System.out.println("In find tag??");
-    System.out.println("event ID" + eventID);
+    HashMap<String, Tag> tagmap = VibeCache.getTagMap();
     String[] idArray = eventID.split(" ");
-    System.out.println(idArray.length);
     for (int i = 0; i < idArray.length; i++) {
-      System.out.println("In for loop");
-      System.out.println("This piece is " + idArray[i]);
-      if (VibeCache.getTagMap().containsValue(idArray[i])) {
-        System.out.println("in the if");
-        for (Tag t : VibeCache.getTagMap().keys()) {
-          if (VibeCache.getTagMap().containsEntry(t, idArray[i])) {
-            return t;
-          }
+      for (String s : tagmap.keySet()) {
+        if (idArray[i].contains(s)) {
+          return tagmap.get(s);
         }
       }
-      System.out.println("made it through the if");
     }
-    System.out.println("returning null");
     return null;
   }
 }

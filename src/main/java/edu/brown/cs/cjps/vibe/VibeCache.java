@@ -4,9 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
-
 import edu.brown.cs.cjps.music.VibePlaylist;
 import edu.brown.cs.cjps.vibe.MusicEventTag.Tag;
 
@@ -20,7 +17,7 @@ public class VibeCache {
 
   private static HashMap<String, VibePlaylist> playlistCache;
   // private static ListMultimap<Tag, String> tags;
-  private static ListMultimap<Tag, String> tags;
+  private static HashMap<String, Tag> tags;
 
   /**
    * Constuctor just initializes the HashMap cache.
@@ -29,25 +26,37 @@ public class VibeCache {
     playlistCache = new HashMap<String, VibePlaylist>();
 
     // Music tags
-    tags = ArrayListMultimap.create();
+    // tags = ArrayListMultimap.create();
+    tags = new HashMap<String, Tag>();
     List<String> workwords = Arrays.asList("study", "review", "meeting",
         "read", "study", "revise", "essay", "assignemnt", "class", "test",
-        "exam", "quiz", "prepare");
+        "exam", "quiz", "prepare", "library");
     List<String> partywords = Arrays.asList("party", "turn up", "lit", "jam",
-        "rager", " birhtday", "celebration", "dance");
-    List<String> eatwords = Arrays.asList("snack", "dinner", "friends",
+        "rager", " birthday", "celebration", "dance");
+    List<String> eatwords = Arrays.asList("eat", "snack", "dinner", "friends",
         "lunch", "breakfast");
     List<String> restwords = Arrays.asList("sleep", "relax", "rest", "calm",
         "meditate", "nap", "chill");
     List<String> exercisewords = Arrays.asList("exercise", "run", "job",
         "work out", "weight", "lift", "practice", "sport", "swim", "train",
-        "marathon", "football", "tennis", "soccer", "baseball", "basketball");
-    tags.putAll(Tag.WORKSTUDY, workwords);
-    tags.putAll(Tag.PARTY, partywords);
-    tags.putAll(Tag.EATSOCIAL, eatwords);
-    tags.putAll(Tag.RESTFUL, restwords);
-    tags.putAll(Tag.EXERCISE, exercisewords);
+        "marathon", "football", "tennis", "soccer", "baseball", "basketball",
+        "shower");
 
+    for (String s : workwords) {
+      tags.put(s, Tag.WORKSTUDY);
+    }
+    for (String s : partywords) {
+      tags.put(s, Tag.PARTY);
+    }
+    for (String s : eatwords) {
+      tags.put(s, Tag.EATSOCIAL);
+    }
+    for (String s : restwords) {
+      tags.put(s, Tag.RESTFUL);
+    }
+    for (String s : exercisewords) {
+      tags.put(s, Tag.EXERCISE);
+    }
   }
 
   /**
@@ -60,8 +69,7 @@ public class VibeCache {
     return playlistCache;
   }
 
-  public static ListMultimap<Tag, String> getTagMap() {
-    System.out.println("Returning tags");
+  public static HashMap<String, Tag> getTagMap() {
     return tags;
   }
 

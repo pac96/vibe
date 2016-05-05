@@ -33,7 +33,6 @@ import com.wrapper.spotify.models.User;
 
 import edu.brown.cs.cjps.calendar.CalendarEvent;
 import edu.brown.cs.cjps.music.PlaylistHQ;
-import edu.brown.cs.cjps.music.SpotifyConverter;
 import edu.brown.cs.cjps.music.VibePlaylist;
 import freemarker.template.Configuration;
 
@@ -142,13 +141,6 @@ public final class Main {
   // TODO: Call this method from some sort of handler
   private String generatePlaylist() {
 
-    System.out.println("In g playlist");
-    SpotifyConverter spotconv = new SpotifyConverter();
-
-    // NewSpotifyTester t = new NewSpotifyTester(api, currentUser, accessToken);
-    // String track = null;
-    // List<String> list = new ArrayList<>();
-    // VibePlaylist p1 =
     String playlistName = "sleep";
     hq.generateFromTag(playlistName, api, currentUser, accessToken);
     System.out.println("survived generate from tag");
@@ -159,7 +151,6 @@ public final class Main {
         currentUser);
 
     return playlistURI;
-    // return null;
   }
 
   /**

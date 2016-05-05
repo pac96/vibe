@@ -78,30 +78,30 @@
 			
 			<!-- Event Tags -->
 			<div id="eTagWrapper">
-			<div>
+			<span>
 				<input type="radio" name="radio" id="radio1" class="radio" checked/>
 				<label for="radio1">Eat/Social</label>
-			</div>
+			</span>
 			
-			<div>
+			<span>
 				<input type="radio" name="radio" id="radio2" class="radio"/>
 				<label for="radio2">Work/Study</label>
-			</div>
+			</span>
 			  
-			<div>	
+			<span>	
 				<input type="radio" name="radio" id="radio3" class="radio"/>
 				<label for="radio3">Exercise</label>
-			</div>
+			</span>
 			
-			<div>	
+			<span>	
 				<input type="radio" name="radio" id="radio4" class="radio"/>
 				<label for="radio4">Party</label>
-			</div>
+			</span>
 			
-			<div>	
+			<span>	
 				<input type="radio" name="radio" id="radio5" class="radio"/>
 				<label for="radio5">Restful</label>
-			</div>
+			</span>
 		</div>
 			
 			

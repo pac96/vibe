@@ -342,14 +342,16 @@ yy {
 }
 
 #eTagWrapper div {
-	clear: both;
+	/**clear: both;**/
 	margin: 0 50px;
+	float: left;
 }
 
 #eTagWrapper label {
   width: 200px;
   border-radius: 3px;
-  border: 1px solid #D1D3D4
+  border: 1px solid white;
+  color: white;
 }
 
 /* hide input */
@@ -403,7 +405,7 @@ input.radio:empty ~ label:before {
 }
 
 #eTagWrapper input.radio:checked ~ label {
-	color: #777;
+	color: white;
 }
 
 /* radio focus */
@@ -411,6 +413,83 @@ input.radio:empty ~ label:before {
 	box-shadow: 0 0 0 3px #999;
 }
 
+
+/* Mood Tag */
+#mTagWrapper.form {
+	margin: 40px 0;
+}
+
+#mTagWrapper div {
+	/**clear: both;**/
+	margin: 0 50px;
+	float: left;
+}
+
+#mTagWrapper label {
+  width: 200px;
+  border-radius: 3px;
+  border: 1px solid white;
+  color: white;
+}
+
+/* hide input */
+#mTagWrapper input.radio:empty {
+	margin-left: -999px;
+}
+
+/* style label */
+#mTagWrapper input.radio:empty ~ label {
+	position: relative;
+	float: left;
+	line-height: 2.5em;
+	text-indent: 3.25em;
+	margin-top: 2em;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+input.radio:empty ~ label:before {
+	position: absolute;
+	display: block;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	content: '';
+	width: 2.5em;
+	background: #D1D3D4;
+	border-radius: 3px 0 0 3px;
+}
+
+/* toggle hover */
+#mTagWrapper input.radio:hover:not(:checked) ~ label:before {
+	content:'\2714';
+	text-indent: .9em;
+	color: #C2C2C2;
+}
+
+#mTagWrapper input.radio:hover:not(:checked) ~ label {
+	color: #888;
+}
+
+/* toggle on */
+#mTagWrapper input.radio:checked ~ label:before {
+	content:'\2714';
+	text-indent: .9em;
+	color: #9CE2AE;
+	background-color: #4DCB6D;
+}
+
+#mTagWrapper input.radio:checked ~ label {
+	color: white;
+}
+
+/* radio focus */
+#mTagWrapper input.radio:focus ~ label:before {
+	box-shadow: 0 0 0 3px #999;
+}
 
 /** range sliders **/
 

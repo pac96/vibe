@@ -4,10 +4,11 @@ var currentEvent;
 var currentEventID;
 var otherContent = $("div.other-content");
 
-// setInterval(function() {
-// 	var date = new Date();
-// 	console.log(d.getSeconds());
-// }), 5000;
+setInterval(function() {
+	var m = moment();
+	var isSameMin = m.isSame(moment("") , "minute");
+
+}), 1000;
 
 
 var eventComparator = function(eventA, eventB) {

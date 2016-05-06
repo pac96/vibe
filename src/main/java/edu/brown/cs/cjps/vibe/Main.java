@@ -280,13 +280,7 @@ public final class Main {
         System.out.println("ERROR: issue retrieving current user");
       }
 
-      String display = "";
-
-      if (currentUser.getDisplayName() == null) {
-        display = currentUser.getId();
-      } else {
-        display = currentUser.getDisplayName();
-      }
+      String display = currentUser.getId();
 
       List<String> params = new ArrayList<>();
 
@@ -297,7 +291,7 @@ public final class Main {
 
       System.out.printf("User: %s\n", display);
 
-      return params;
+      return display;
     }
   }
 
@@ -325,8 +319,6 @@ public final class Main {
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
 
-      // CalendarEvent newEvent = eventProcessor.addEvent(qm);
-
       // Retrieve event information from the front-end
       String start = qm.value("start");
       Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
@@ -338,12 +330,12 @@ public final class Main {
           endAmOrPm, eventName);
 
       // Generate the playlist associated with this event
-      hq.generateFromTag(newEvent, api, currentUser, accessToken);
+//      hq.generateFromTag(newEvent, api, currentUser, accessToken);
 
       // These lines are only for testing
-      VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
-      System.out.println("~~~THE TRACKS~~~");
-      System.out.println(p2.getTracks());
+//      VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
+//      System.out.println("~~~THE TRACKS~~~");
+//      System.out.println(p2.getTracks());
 
       // Return an event object to the front-end
 

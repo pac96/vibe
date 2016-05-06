@@ -4,11 +4,28 @@ var currentEvent;
 var currentEventID;
 var otherContent = $("div.other-content");
 
-// setInterval(function() {
-// 	var m = moment();
-// 	var isSameMin = m.isSame(moment("") , "minute");
+//setInterval(function() {
+//	var timeNow = new Date().getTime();
+//	console.log(timeNow);
+//	for (var i = 0; i < eventsArray.length; i++) {
+//		if (d === eventsArray[i].startDate) {
+//			alert("It's time for " + eventsArray[i].name);
+//		}
+//	}
+//
+// }, 1000);
 
-// }), 1000;
+function alertUserForEvent(calendarEvent) {
+	alert("It's time for " + calendarEvent.name);
+}
+
+//for (var i = 0; i < eventsArray.length; i++) {
+//	var timeNow = new Date().getTime();
+//	console.log(timeNow);
+//	var offsetMillis = eventsArray[i].startDate.getTime() - timeNow;
+//	setTimeout(alertUserForEvent, offsetMillis);
+//}
+
 
 function compareEvents(eventA, eventB) {
 	if (eventA == null || eventB == null) {
@@ -18,53 +35,16 @@ function compareEvents(eventA, eventB) {
 	var eventAMoment = eventA.moment;
 	var eventBMoment = eventB.moment;
 
-	// If event A is in the AM and event B is in the PM, event A comes before event B
-	// if (eventA.isAM && !eventB.isAM) {
-	// 	return -1;
-	// } 
-
-	// // If event G is in the AM and event A is in the PM, event B comes before event A
-	// if (eventB.isAM && !eventA.isPM) {
-	// 	return 1;
-	// }
-
 	console.log("EA " + eventA.startDate);
 	console.log("EB " + eventB.startDate);
 
 	if (eventA.startDate < eventB.startDate) {
-		console.log(eventA.name  + " is before " + eventB.name);
+		// console.log(eventA.name  + " is before " + eventB.name);
 		return -1;
 	} else {
-		console.log(eventA.name  + " is after " + eventB.name);
+		// console.log(eventA.name  + " is after " + eventB.name);
 		return 1;
 	}
-
-	// var eventAStartTime = eventA.start;
-	// var eventBStartTime = eventB.start;
-	
-	// //Case where eventA and eventB are both in the AM or both PM
-	// if (eventAStartTime.isAM && eventBStartTime.isAM 
-	// 		|| (!eventAStartTime.isAM && !eventBStartTime.isAM)) {	
-	// 	if (eventAStartTime.hour < eventBStartTime.hour) {
-	// 		return -1;
-	// 	} else if (eventAStartTime.hour > eventBStartTime.hour) {
-	// 		return 1;
-	// 	} else {
-	// 		if (eventAStartTime.minute <= eventBStartTime.minute) {
-	// 			return -1;
-	// 		} else if (eventAStartTime.minute > eventBStartTime.minute) {
-	// 			return 1;
-	// 		}			
-	// 	} 
-	
-	// } else if (eventAStartTime.isAM && !eventBStartTime.isAM) {
-	// 	//eventA comes before eventB
-	// 	return -1;	
-	// //Case where eventA is in the PM and eventA is in the AM	
-	// } else {
-	// 	//eventA comes after eventB
-	// 	return 1;
-	// }
 }
 
 var eventComparator = function(eventA, eventB) {
@@ -139,46 +119,48 @@ if (window.location.pathname === "/playlists") {
 	var codeFromURL = urlParams.code;
 	var postParams = {code: JSON.stringify(codeFromURL)};
 
-	$.post("/code", postParams, function(responseJSON) {
+	// Retrieve the username from the back-end
+	$.post("/code", postParams, function(username) {
 	  // Back-end sends back the user's display name
-	  var backendParams = responseJSON.split(",");
-
-	  if (backendParams === "") {
-	  	alert("Error loading user information. Please logout and login again!");
-	  }
-
-	  var username = backendParams[0].slice(1, backendParams[0].length).trim(); // remove the [
-	  var playlistURI = "https://embed.spotify.com/?uri=" 
-	  + backendParams[1].slice(0, backendParams[1].length - 1).trim(); // remove the ]
-
-	  document.cookie = "name=" + username; // Store the username in a cookie
-
-	  console.log("user: " + username);
-	  console.log("playlist: " + playlistURI);
-
-	  if (backendParams != null) {
-	    name = username;
-		$("#displayname").html(name);
-	  }
-
-	  $("#playlist").attr('src', playlistURI);
+//	  var backendParams = responseJSON.split(",");
+//
+//	  if (backendParams === "") {
+//	  	alert("Error loading user information. Please logout and login again!");
+//	  }
+//
+//	  var username = backendParams[0].slice(1, backendParams[0].length).trim(); // remove the [
+//	  var playlistURI = "https://embed.spotify.com/?uri=" 
+//	  + backendParams[1].slice(0, backendParams[1].length - 1).trim(); // remove the ]
+//
+//	  document.cookie = "name=" + username; // Store the username in a cookie
+//
+//	  console.log("user: " + username);
+//	  console.log("playlist: " + playlistURI);
+//
+//	  if (backendParams != null) {
+//	    name = username;
+//		$("#displayname").html(name);
+//	  }
+//
+//	  $("#playlist").attr('src', playlistURI);
+		
+	  console.log("Username: " + username);
+	  $("#displayname").html(username);
 	
 	}); // end access token code post
-
-	
-	/* Handles adding an event */
-	$("#AddNewEvent").click(function() {
-		console.log("Adding new event...");
-		addEvent();
-    }); // end add new click handler
-
-
-	$(document).on('click', '.anEvent', function() {
-		currentEventID = this.id;
-		console.log("Current event id: " + currentEventID);
-		createDropdown(currentEventID);
-	}); // end click on event handler
 }
+
+/* Handles adding an event */
+$("#AddNewEvent").click(function() {
+	console.log("Adding new event...");
+	addEvent();
+}); // end add new click handler
+
+
+$(document).on('click', '.anEvent', function() {
+	currentEventID = this.id;
+	createDropdown(currentEventID);
+}); // end click on event handler
 
 
 /////////////////////////////////////
@@ -222,8 +204,10 @@ function CalendarEvent(event) {
 
 	m.minute(this.start.minute);
 	m.second(0);
+//	m.millisecond(0);
 	startD.setMinutes(this.start.minute);
 	startD.setSeconds(0);
+	startD.setMilliseconds(0);
 
 	this.moment = m;
 	this.startDate = startD;
@@ -248,14 +232,10 @@ function renderCalendar(event){
 	}
 	
 	var eventTimeline = $('#calendarEvents');
-	var numEventItems = eventTimeline.children().length;
 
 	var targetID = "dropdown-" + event.id;
 
 	var htmlCode = htmlDropdown(targetID, timePeriod, event);
-
-	var eventHTMLString = "<li id='" + event.id + "' class='anEvent'>"
-	 + htmlCode + "</li>";
 
 	var $eventHTML = $("<li>").attr({
 		id: event.id,
@@ -263,25 +243,28 @@ function renderCalendar(event){
 	});
 
 	$eventHTML.append(htmlCode);
-	eventTimeline.append($eventHTML);
 
-	// if (numEventItems == 0) {
-		// eventTimeline.append($eventHTML);
-	// } 
-	// else {
-		for(var i = 0; i < numEventItems; i++){
-			var currEvent = eventsArray[i];
-			if (compareEvents(event, currEvent) == -1){
-				$eventHTML.insertBefore(eventTimeline.find("#" + currEvent.id));
-				// continue;
+	// Find all li tags and dynamically remove the bullet points
+	$(".collapse").find("li").css('list-style-type', 'none');;
 
-			} else {
-				// $eventHTML.insertAfter(eventTimeline.find("#" + currEvent.id));
-				continue;
-			}
-		}	
-	// }
-	
+	// Fix cursor
+	eventTimeline.find("li").css('cursor', 'pointer');
+	var appended = false;
+
+	for(var i = 0; i < eventsArray.length; i++){
+		var currEvent = eventsArray[i];
+		if (compareEvents(event, currEvent) == -1){
+			$eventHTML.insertBefore(eventTimeline.find("#" + currEvent.id));
+			appended = true;
+			break;
+		} else {
+			continue;
+		}
+	}	
+
+	if (!appended) {
+		eventTimeline.append($eventHTML);
+	}	
 }
 
 
@@ -389,24 +372,24 @@ function htmlDropdown(dataTargetID, timePeriod, cEvent) {
 	"<a href='javascript:;' data-toggle='collapse' data-target='#" + dataTargetID + "'>" +
 		"<i class='fa fa-fw fa-arrows-v'></i> " +
 		// event.start.hour + ":" +  event.start.minute 
-		cEvent.moment.format("h:mm") /*eventMoment.format("h:mm")*/ + " " + timePeriod 
-		+ " | " + cEvent.name + " " +
+		"<p class='eventDesc'>" + cEvent.moment.format("h:mm") + " " + timePeriod 
+		+ " | " + cEvent.name + " </p>" +
 		"<i class='fa fa-fw fa-caret-down'></i></a>" +
 		"<ul id='" + dataTargetID + "' class='collapse'>" +
 			"<li id='viewPlaylist'>" +
-				"<a href='#'>View Playlist" + "</a>" +
+				"<a>View Playlist" + "</a>" +
 			"</li>" +
 			"<li id='customizePlaylist'>" +
-				"<a href='#'>Customize Playlist</a>" +
+				"<a>Customize Playlist</a>" +
 			"</li>" +
 			"<li id='usePlaylist'>" +
-				"<a href='#'>Use Spotify Playlist</a>" +
+				"<a>Use Spotify Playlist</a>" +
 			"</li>" +
 			"<li id='editEvent'>" +
-				"<a href='#'>Edit Event</a>" +
+				"<a>Edit Event</a>" +
 			"</li>" +
 			"<li id='deleteEvent'>" +
-				"<a href='#'>Delete Event</a>" +
+				"<a>Delete Event</a>" +
 			"</li>" +
 		"</ul>" +
 	"</a>";

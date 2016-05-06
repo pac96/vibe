@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -112,7 +113,11 @@ public final class Main {
   private void run() {
     // Instantiate HQ
     hq = new PlaylistHQ();
-    eventProcessor = new EventProcessor();
+
+    //Grab the database from the command line args.
+    String db = args[0];
+    //Run should take in a database
+    eventProcessor = new EventProcessor(db);
 
     System.out.println("Starting Vibe...");
     OptionParser parser = new OptionParser();
@@ -343,8 +348,14 @@ public final class Main {
       Boolean endAmOrPm = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
 
-      CalendarEvent newEvent = eventProcessor
-    		  .addEvent(start, amOrPm, end, endAmOrPm, eventName);
+      CalendarEvent newEvent = new CalendarEvent();
+      try {
+        newEvent = eventProcessor
+        	  .addEvent(start, amOrPm, end, endAmOrPm, eventName, currentUser.getId());
+      } catch (SQLException e) {
+        System.out.println("Error in adding event");
+        e.printStackTrace();
+      }
 
       // Return an event object to the front-end
       return GSON.toJson(newEvent);
@@ -384,7 +395,12 @@ public final class Main {
 
       String eventID = qm.value("eventID");
 
-      eventProcessor.deleteEvent(eventID);
+      try {
+        eventProcessor.deleteEvent(eventID, currentUser.getId());
+      } catch (SQLException e) {
+        System.out.println("Error: delteEvent failed");
+        e.printStackTrace();
+      }
 
       // TODO: catch an error and store the response if there's an issue
 
@@ -407,8 +423,9 @@ public final class Main {
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
 
+      CalendarEvent event = new CalendarEvent();
       CalendarEvent editedEvent = eventProcessor
-    		  .editEvent(start, amOrPm, end, endAMOrPM, eventName);
+    		  .editEvent(start, amOrPm, end, endAMOrPM, eventName, event);
 
       return editedEvent;
     }

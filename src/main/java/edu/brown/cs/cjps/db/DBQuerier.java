@@ -28,6 +28,16 @@ public class DBQuerier {
     this.conn = conn;
   }
 
+  public boolean userIsInDatabase(String userid) throws SQLException {
+    //(1): Write query as a string.
+    String query = "SELECT * FROM USER where userid = ?";
+    PreparedStatement ps = conn.prepareStatement(query);
+    ResultSet res = ps.executeQuery();
+
+    return res.first();
+  }
+
+
   public void insertCalendarEvent(CalendarEvent event, String userId) throws SQLException {
 
     //(1): Write query as a string.
@@ -85,18 +95,21 @@ public class DBQuerier {
     //(3): Execute the query.
     ps.executeUpdate();
   }
-  public void deleteCalendarEventFromEventsTable(CalendarEvent event) throws SQLException {
-    String eventid = event.getId().toString();
+
+
+  public void deleteCalendarEventFromEventsTable(String eventid, String userid) throws SQLException {
 
     //(1): Write query as String
     String query = "DELETE from USEREVENTS "
-        + " WHERE eventid = ? ;";
+        + " WHERE eventid = ?  AND userid = ? ;";
 
     //(2): Create a preparedstatement.
     PreparedStatement ps = conn.prepareStatement(query);
 
     //(3): Set the arguments to be used in the query.
     ps.setString(1, eventid);
+
+    ps.setString(2, userid);
 
     //(4): Execute the query.
     ps.execute();

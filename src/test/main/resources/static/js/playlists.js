@@ -32,10 +32,10 @@ function compareEvents(eventA, eventB) {
 	console.log("EB " + eventB.startDate);
 
 	if (eventA.startDate < eventB.startDate) {
-		console.log(eventA.name  + " is before " + eventB.name);
+		// console.log(eventA.name  + " is before " + eventB.name);
 		return -1;
 	} else {
-		console.log(eventA.name  + " is after " + eventB.name);
+		// console.log(eventA.name  + " is after " + eventB.name);
 		return 1;
 	}
 
@@ -248,7 +248,7 @@ function renderCalendar(event){
 	}
 	
 	var eventTimeline = $('#calendarEvents');
-	var numEventItems = eventTimeline.children().length;
+	// var numEventItems = eventTimeline.children().length;
 
 	var targetID = "dropdown-" + event.id;
 
@@ -263,25 +263,22 @@ function renderCalendar(event){
 	});
 
 	$eventHTML.append(htmlCode);
-	eventTimeline.append($eventHTML);
+	var eltAdded = false;
 
-	// if (numEventItems == 0) {
-		// eventTimeline.append($eventHTML);
-	// } 
-	// else {
-		for(var i = 0; i < numEventItems; i++){
-			var currEvent = eventsArray[i];
-			if (compareEvents(event, currEvent) == -1){
-				$eventHTML.insertBefore(eventTimeline.find("#" + currEvent.id));
-				// continue;
+	for(var i = 0; i < eventsArray.length; i++){
+		var currEvent = eventsArray[i];
+		if (compareEvents(event, currEvent) == -1){
+			$eventHTML.insertBefore(eventTimeline.find("#" + currEvent.id));
+			eltAdded = true;
+			break;
+		} else {
+			continue;
+		}
+	}	
 
-			} else {
-				// $eventHTML.insertAfter(eventTimeline.find("#" + currEvent.id));
-				continue;
-			}
-		}	
-	// }
-	
+	if (!eltAdded) {
+		eventTimeline.append($eventHTML);
+	}
 }
 
 
@@ -368,8 +365,9 @@ function addEvent() {
 	    		
 	    		// 4. sort the list 
 	    		eventsArray.sort(compareEvents);
-	    		console.log("Sorted eventsArray");
-	    		console.log(eventsArray);
+	    		for (var i = 0; i < eventsArray.length; i++) {
+	    			console.log(i+1 + ". " + eventsArray[i].start.hour + ":" + eventsArray[i].start.minute);
+	    		}
 
 	    		//5. Render calendar
 	    		renderCalendar(newEvent);

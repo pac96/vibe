@@ -7,11 +7,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -33,10 +33,8 @@ import com.wrapper.spotify.models.AuthorizationCodeCredentials;
 import com.wrapper.spotify.models.User;
 
 import edu.brown.cs.cjps.calendar.CalendarEvent;
-import edu.brown.cs.cjps.calendar.EventTime;
-import edu.brown.cs.cjps.music.NewSpotifyTester;
 import edu.brown.cs.cjps.music.PlaylistHQ;
-import edu.brown.cs.cjps.music.SpotifyConverter;
+import edu.brown.cs.cjps.music.VibePlaylist;
 import freemarker.template.Configuration;
 
 /**
@@ -113,6 +111,7 @@ public final class Main {
    */
   private void run() {
     // Instantiate HQ
+    VibeCache vc = new VibeCache();
     hq = new PlaylistHQ();
     eventProcessor = new EventProcessor();
 
@@ -142,39 +141,17 @@ public final class Main {
 
   // TODO: Call this method from some sort of handler
   private String generatePlaylist() {
-    // System.out.println("in generate playlist");
-    // PlaylistGenerator generator = new PlaylistGenerator();
-    // List<String> tracks = null;
-    // try {
-    // System.out.println("try in main");
-    // tracks = generator.playlistTest();
-    // } catch (EchoNestException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    // System.out.println("after the try in main");
-    // // Generate a playlist based on something
-    SpotifyConverter spotconv = new SpotifyConverter();
 
-    NewSpotifyTester t = new NewSpotifyTester(api, currentUser, accessToken);
-    String track = null;
-    List<String> list = new ArrayList<>();
-    try {
-      list = t.recommendations();
-    } catch (MalformedURLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    // System.out.println("Track from main : " + track.toString());
+    // String playlistName = "Party";
+    // hq.generateFromTag(playlistName, api, currentUser, accessToken);
+    // VibePlaylist p2 = VibeCache.getPlaylistCache().get(playlistName);
+    // System.out.println("~~~THE TRACKS~~~");
+    // System.out.println(p2.getTracks());
+    // String playlistURI = hq.convertForSpotify(p2, playlistName, api,
+    // currentUser);
 
-    String playlistURI = spotconv.makeSpotifyPlaylist(api, currentUser, list);
-    // System.out.println("through generate playlist in main");
-
-    return playlistURI;
-    // return null;
+    // return playlistURI;
+    return null;
   }
 
   /**
@@ -231,7 +208,13 @@ public final class Main {
   }
 
   /**
-   * Handles creating the GUI for processing login requests
+   * Handles creating the GUI for procString playlistName = "Party"; //
+   * hq.generateFromTag(playlistName, api, currentUser, accessToken); //
+   * VibePlaylist p2 = VibeCache.getPlaylistCache().get(playlistName); //
+   * System.out.println("~~~THE TRACKS~~~"); //
+   * System.out.println(p2.getTracks()); // String playlistURI =
+   * hq.convertForSpotify(p2, playlistName, api, // currentUser);essing login
+   * requests
    * 
    * @author cjps
    *
@@ -308,9 +291,9 @@ public final class Main {
       List<String> params = new ArrayList<>();
 
       // generatePlaylist();
-      String playlistURI = generatePlaylist();
-      params.add(display);
-      params.add(playlistURI);
+      // String playlistURI = generatePlaylist();
+      // params.add(display);
+      // params.add(playlistURI);
 
       System.out.printf("User: %s\n", display);
 
@@ -341,18 +324,29 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-      
+
+      // CalendarEvent newEvent = eventProcessor.addEvent(qm);
+
       // Retrieve event information from the front-end
       String start = qm.value("start");
       Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
       String end = qm.value("end");
       Boolean endAmOrPm = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
-      
-      CalendarEvent newEvent = eventProcessor
-    		  .addEvent(start, amOrPm, end, endAmOrPm, eventName);
-      
+
+      CalendarEvent newEvent = eventProcessor.addEvent(start, amOrPm, end,
+          endAmOrPm, eventName);
+
+      // Generate the playlist associated with this event
+      hq.generateFromTag(newEvent, api, currentUser, accessToken);
+
+      // These lines are only for testing
+      VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
+      System.out.println("~~~THE TRACKS~~~");
+      System.out.println(p2.getTracks());
+
       // Return an event object to the front-end
+
       return GSON.toJson(newEvent);
     }
   }
@@ -368,15 +362,23 @@ public final class Main {
       QueryParamsMap qm = req.queryMap();
 
       // Retrieve the event ID and find the associated playlist
-      String eventID = qm.value("eventID");
-      String uri = hq.convertForSpotify(eventID, api, currentUser);
+      UUID eventID = UUID.fromString(qm.value("eventID"));
+      VibePlaylist playlist = VibeCache.getPlaylistCache().get(eventID);
 
-      System.out.println("Cached playlist: " + uri);
+      // TODO: Need to get the name from the eventID
+      String eventName = "eventName";
 
-      return uri;
+      String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
+
+      // params.add(display);
+      // params.add(playlistURI);
+      // System.out.println("Cached playlist: " + uri);
+
+      return null;
+      // return uri;
     }
   }
-  
+
   /**
    * 
    * Handles deleting a specific event.
@@ -389,15 +391,15 @@ public final class Main {
       String response = "SUCCESS";
 
       String eventID = qm.value("eventID");
-      
+
       eventProcessor.deleteEvent(eventID);
-      
+
       // TODO: catch an error and store the response if there's an issue
-      
+
       return response;
     }
   }
-  
+
   /**
    * 
    * Handles editing a specific event.
@@ -412,16 +414,14 @@ public final class Main {
       String end = qm.value("end");
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
-      
-      CalendarEvent editedEvent = eventProcessor
-    		  .editEvent(start, amOrPm, end, endAMOrPM, eventName);
-      
+
+      CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm, end,
+          endAMOrPM, eventName);
+
       return editedEvent;
     }
   }
-  
-  
-  
+
   /**
    * Handles printing out exceptions to the GUI
    * 

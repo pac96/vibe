@@ -29,7 +29,6 @@ public class PlaylistGenerator {
   // Returns a list of track URIs
   public VibePlaylist makePlaylist(Settings s, Api api, User curentUser,
       String accessToken) {
-    System.out.println("Makin a playlist");
     List<String> genres = s.getGenres();
     float mood = s.getMood();
     float hotness = s.getHotness();
@@ -56,7 +55,6 @@ public class PlaylistGenerator {
         + mood
         + "&limit=20&seed_genres=" + genreString + "&market=US";
 
-    System.out.println("where are we sticking");
     URLConnection connection = null;
     try {
       connection = new URL(recString).openConnection();
@@ -67,25 +65,20 @@ public class PlaylistGenerator {
       // TODO Auto-generated catch block
       e1.printStackTrace();
     }
-    System.out.println("running out of options");
     connection.setRequestProperty("Host", "api.spotify.com");
     connection.setRequestProperty("Accept", "application/json");
     connection.setRequestProperty("Content-Type", "application/json");
     connection.setRequestProperty("Authorization", "Bearer " + accessToken);
     connection.setRequestProperty("User-Agent", "Spotify API Console v0.1");
-    System.out.println("for places we might be stuck");
     InputStream response = null;
     try {
       response = connection.getInputStream();
     } catch (IOException e) {
-      System.out.println("FOUND YOU");
       e.printStackTrace();
     }
-    System.out.println(response);
     java.util.Scanner scanner = new java.util.Scanner(response)
         .useDelimiter("\\A");
     String stringVersion = scanner.hasNext() ? scanner.next() : "";
-    System.out.println(stringVersion);
     JsonParser jparser = new JsonParser();
     JsonElement je = jparser.parse(stringVersion);
     JsonObject jo = je.getAsJsonObject();

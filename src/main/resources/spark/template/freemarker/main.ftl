@@ -21,6 +21,8 @@
 
 
     <script src="js/URI.min.js"></script>
+    <script src="js/moment.min.js"></script>
+    <!-- <script src="js/URI.min.js"></script> -->
     <script src="js/login.js"></script>
     <script src="js/playlists.js"></script>
     <script src="js/options.js"></script>

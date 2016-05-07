@@ -22,7 +22,7 @@ public class PlaylistGeneratorTest {
   @Test
   public void basicSettingsTest() {
     Settings set = new Settings(Tag.RESTFUL, Arrays.asList("classical"), 0.5f,
-        50f, 0.5f);
+        50, 0.5f);
 
   }
 

@@ -27,14 +27,23 @@ public class PlaylistGenerator {
   }
 
   // Returns a list of track URIs
-  public VibePlaylist makePlaylist(Settings s, Api api, User curentUser,
-      String accessToken) {
-    System.out.println("Makin a playlist");
+  public VibePlaylist makePlaylist(Settings s, int length, Api api,
+      User curentUser, String accessToken) {
     List<String> genres = s.getGenres();
+    System.out.println(genres);
     float mood = s.getMood();
-    float hotness = s.getHotness();
+    System.out.println(mood);
+    int hotness = s.getHotness();
+    System.out.println(hotness);
     float energy = s.getEnergy();
-    int numTracks = 20;
+    System.out.println(energy);
+    int numTracks = length / 3;
+    if (numTracks > 100) {
+      numTracks = 100;
+    }
+    if (numTracks < 1) {
+      numTracks = 1;
+    }
 
     // Convert the genre list into a string
     String genreString = "";
@@ -45,18 +54,16 @@ public class PlaylistGenerator {
     genreString = genreString + genres.get(genres.size() - 1);
     System.out.println(genreString);
 
-    // FOR TESTS
-    int inthotness = 30;
     // Connection to recommendations
     String recString = "https://api.spotify.com/v1/recommendations?target_energy="
         + String.valueOf(energy)
         + "&target_popularity="
-        + String.valueOf(inthotness)
+        + String.valueOf(hotness)
         + "&target_valence="
         + mood
-        + "&limit=20&seed_genres=" + genreString + "&market=US";
+        + "&limit="
+        + numTracks + "&seed_genres=" + genreString + "&market=US";
 
-    System.out.println("where are we sticking");
     URLConnection connection = null;
     try {
       connection = new URL(recString).openConnection();
@@ -65,27 +72,23 @@ public class PlaylistGenerator {
       e1.printStackTrace();
     } catch (IOException e1) {
       // TODO Auto-generated catch block
+      System.out.println(e1.getMessage());
       e1.printStackTrace();
     }
-    System.out.println("running out of options");
     connection.setRequestProperty("Host", "api.spotify.com");
     connection.setRequestProperty("Accept", "application/json");
     connection.setRequestProperty("Content-Type", "application/json");
     connection.setRequestProperty("Authorization", "Bearer " + accessToken);
     connection.setRequestProperty("User-Agent", "Spotify API Console v0.1");
-    System.out.println("for places we might be stuck");
     InputStream response = null;
     try {
       response = connection.getInputStream();
     } catch (IOException e) {
-      System.out.println("FOUND YOU");
       e.printStackTrace();
     }
-    System.out.println(response);
     java.util.Scanner scanner = new java.util.Scanner(response)
         .useDelimiter("\\A");
     String stringVersion = scanner.hasNext() ? scanner.next() : "";
-    System.out.println(stringVersion);
     JsonParser jparser = new JsonParser();
     JsonElement je = jparser.parse(stringVersion);
     JsonObject jo = je.getAsJsonObject();

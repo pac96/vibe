@@ -27,6 +27,12 @@ h1 span {
 
 }
 
+ul#calendarEvents {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+
 #date {
   color: white;
   text-align: center;
@@ -36,11 +42,8 @@ h1 span {
   color: white;
 }
 
-#eventDesc {
+.eventDesc {
   color: white;
-  font-size: 1.1em;
-  text-align: center;
-  padding: .1em;
 }
 
 div.other-content {
@@ -57,8 +60,9 @@ p.contentMsg {
 }
 
 #successMsg {
-  color: green;
+  color: #004D2A;
   background-color: #AFD39D;
+  /*background-color: #D0F8FF;*/
 }
 
 #errorMsg {
@@ -73,4 +77,18 @@ iframe {
   height: 600px;
   margin: none;
   border: none;
+}
+
+
+/* Modal CSS */
+h4#modal-event-name {
+  color: black;
+  font-weight: bold;
+  font-family: 'Rockwell', 'Times';
+}
+
+p#modal-msg {
+  color: black;
+  font-size: 1.1em;
+
 }

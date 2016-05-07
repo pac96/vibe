@@ -27,13 +27,23 @@ public class PlaylistGenerator {
   }
 
   // Returns a list of track URIs
-  public VibePlaylist makePlaylist(Settings s, Api api, User curentUser,
-      String accessToken) {
+  public VibePlaylist makePlaylist(Settings s, int length, Api api,
+      User curentUser, String accessToken) {
     List<String> genres = s.getGenres();
+    System.out.println(genres);
     float mood = s.getMood();
-    float hotness = s.getHotness();
+    System.out.println(mood);
+    int hotness = s.getHotness();
+    System.out.println(hotness);
     float energy = s.getEnergy();
-    int numTracks = 20;
+    System.out.println(energy);
+    int numTracks = length / 3;
+    if (numTracks > 100) {
+      numTracks = 100;
+    }
+    if (numTracks < 1) {
+      numTracks = 1;
+    }
 
     // Convert the genre list into a string
     String genreString = "";
@@ -44,16 +54,15 @@ public class PlaylistGenerator {
     genreString = genreString + genres.get(genres.size() - 1);
     System.out.println(genreString);
 
-    // FOR TESTS
-    int inthotness = 30;
     // Connection to recommendations
     String recString = "https://api.spotify.com/v1/recommendations?target_energy="
         + String.valueOf(energy)
         + "&target_popularity="
-        + String.valueOf(inthotness)
+        + String.valueOf(hotness)
         + "&target_valence="
         + mood
-        + "&limit=20&seed_genres=" + genreString + "&market=US";
+        + "&limit="
+        + numTracks + "&seed_genres=" + genreString + "&market=US";
 
     URLConnection connection = null;
     try {

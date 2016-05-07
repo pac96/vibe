@@ -110,6 +110,39 @@ $('.mutliSelect input[type="checkbox"]').on('click', function() {
 });
 
 
+// if (eventsArray.length > 0) {
+// 	console.log("It's time to get the next important event");
+// 	var nextEvent = calculateNextImportantEvent();
+// 	var nextTime = nextEvent.startDate.getTime();
+// 	var timeNow = new Date().getTime();
+
+// 	var millisecondOffset = timeNow - nextTime;
+// 	console.log("Millisecond offset: " + millisecondOffset);
+
+// 	setTimeout(function() {
+// 		console.log("--------------------------");
+// 		console.log("--------------------------");
+// 		console.log("IT'S TIME FOR THIS EVENT");
+// 		console.log("--------------------------");
+// 		console.log("--------------------------");
+// 	}, millisecondOffset);
+// }
+
+
+
+function calculateNextImportantEvent() {
+	var nextEvent;
+
+	for (var i = 0; i < eventsArray.length; i++) {
+		var dateNow = new Date();
+		if (eventsArray[i].startDate > dateNow) {
+			nextEvent = eventsArray[i];
+			break;
+		}
+	}
+
+	return nextEvent;
+}
 
 
 ///////////////////////////////////////////

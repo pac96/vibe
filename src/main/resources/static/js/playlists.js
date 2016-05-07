@@ -19,27 +19,20 @@ var eventModal;
 // }, 1000);
 
 function alertUserForEvent(calendarEvent) {
-	console.log("It's time for " + calendarEvent.name);
+	// console.log("It's time for " + calendarEvent.name);
+	var m = moment();
+	var m1Format = m.format("h:mm a");
+	var calendarMFormat = calendarEvent.moment.format("h:mm a");
+
+	console.log(m1Format);
+	console.log(calendarMFormat);
+
+	if (m.isSame(calendarEvent.moment)) {
+		console.log("IT IS TIME FOR " + calendarEvent.name);
+	}
+
 }
 
-//for (var i = 0; i < eventsArray.length; i++) {
-	if (eventsArray.length == 1) {
-		var timeNow = new Date();
-		console.log("Now: " + timeNow.toTimeString());
-		console.log("Event: " + eventsArray[0].startDate.toTimeString());
-
-		var offsetMillis = eventsArray[0].startDate.getTime() - timeNow.getTime();
-		// if (timeNow.getTime() === eventsArray[0].startDate.getTime()) {
-		// 	console.log("EQUAL");
-		// 	$(document).on('show.bs.modal', function() {
-		// 		console.log("Modal shown");
-		// 	});
-		// }
-		setTimeout(alertUserForEvent(eventsArray[0]), offsetMillis);	
-	}
-	
-	
-//}
 
 
 function compareEvents(eventA, eventB) {
@@ -362,11 +355,27 @@ function addEvent() {
 	    		
 	    		// 4. sort the list 
 	    		eventsArray.sort(compareEvents);
-	    		console.log("Sorted eventsArray");
-	    		console.log(eventsArray);
 
 	    		//5. Render calendar
 	    		renderCalendar(newEvent);
+
+				console.log("It's time to get the next important event");
+				var nextEvent = calculateNextImportantEvent();
+				var nextTime = nextEvent.startDate.getTime();
+				var timeNow = new Date().getTime();
+
+				var millisecondOffset = nextTime - timeNow;
+				console.log("Millisecond offset: " + millisecondOffset);
+
+				setTimeout(function() {
+					console.log("--------------------------");
+					console.log("--------------------------");
+					console.log("IT'S TIME FOR THIS EVENT");
+					console.log("--------------------------");
+					console.log("--------------------------");
+				}, millisecondOffset);
+
+
 	    	});
 		}
 }

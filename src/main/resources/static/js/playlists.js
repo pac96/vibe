@@ -2,7 +2,10 @@ var name = "";
 var eventsArray = [];
 var currentEvent;
 var currentEventID;
-var otherContent = $("div.other-content");
+var otherContent = $("div.otherContent");
+var editEventForm;
+var customizePlaylistForm;
+var eventModal;
 
 //setInterval(function() {
 //	var timeNow = new Date().getTime();
@@ -16,14 +19,26 @@ var otherContent = $("div.other-content");
 // }, 1000);
 
 function alertUserForEvent(calendarEvent) {
-	alert("It's time for " + calendarEvent.name);
+	console.log("It's time for " + calendarEvent.name);
 }
 
 //for (var i = 0; i < eventsArray.length; i++) {
-//	var timeNow = new Date().getTime();
-//	console.log(timeNow);
-//	var offsetMillis = eventsArray[i].startDate.getTime() - timeNow;
-//	setTimeout(alertUserForEvent, offsetMillis);
+	if (eventsArray.length == 1) {
+		var timeNow = new Date();
+		console.log("Now: " + timeNow.toTimeString());
+		console.log("Event: " + eventsArray[0].startDate.toTimeString());
+
+		var offsetMillis = eventsArray[0].startDate.getTime() - timeNow.getTime();
+		// if (timeNow.getTime() === eventsArray[0].startDate.getTime()) {
+		// 	console.log("EQUAL");
+		// 	$(document).on('show.bs.modal', function() {
+		// 		console.log("Modal shown");
+		// 	});
+		// }
+		setTimeout(alertUserForEvent(eventsArray[0]), offsetMillis);	
+	}
+	
+	
 //}
 
 
@@ -32,17 +47,9 @@ function compareEvents(eventA, eventB) {
 		return -1;
 	}
 
-	var eventAMoment = eventA.moment;
-	var eventBMoment = eventB.moment;
-
-	console.log("EA " + eventA.startDate);
-	console.log("EB " + eventB.startDate);
-
 	if (eventA.startDate < eventB.startDate) {
-		// console.log(eventA.name  + " is before " + eventB.name);
 		return -1;
 	} else {
-		// console.log(eventA.name  + " is after " + eventB.name);
 		return 1;
 	}
 }
@@ -105,9 +112,12 @@ if (window.location.pathname === "/playlists") {
 	var d = new Date();
 	document.getElementById("date").innerHTML = d.toDateString();
 
-
 	otherContent.hide();
-	$("#editEventForm").hide();
+	editEventForm = $("#editEventForm");
+	editEventForm.hide();
+	customizePlaylistForm = $("#customizePlaylistForm");
+	customizePlaylistForm.hide();
+
 	// First, set the logout link 
 	$("#logoutLink").attr('href', 
 		"http://localhost:" + window.location.port + "/vibe");

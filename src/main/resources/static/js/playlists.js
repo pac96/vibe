@@ -1,11 +1,13 @@
 var name = "";
 var eventsArray = [];
+var occurrenceArray = [];
 var currentEvent;
 var currentEventID;
 var otherContent = $("div.otherContent");
 var editEventForm;
 var customizePlaylistForm;
 var eventModal;
+var eventToTimeout = new Map();
 
 //setInterval(function() {
 //	var timeNow = new Date().getTime();
@@ -19,27 +21,20 @@ var eventModal;
 // }, 1000);
 
 function alertUserForEvent(calendarEvent) {
-	console.log("It's time for " + calendarEvent.name);
+	// console.log("It's time for " + calendarEvent.name);
+	var m = moment();
+	var m1Format = m.format("h:mm a");
+	var calendarMFormat = calendarEvent.moment.format("h:mm a");
+
+	console.log(m1Format);
+	console.log(calendarMFormat);
+
+	if (m.isSame(calendarEvent.moment)) {
+		console.log("IT IS TIME FOR " + calendarEvent.name);
+	}
+
 }
 
-//for (var i = 0; i < eventsArray.length; i++) {
-	if (eventsArray.length == 1) {
-		var timeNow = new Date();
-		console.log("Now: " + timeNow.toTimeString());
-		console.log("Event: " + eventsArray[0].startDate.toTimeString());
-
-		var offsetMillis = eventsArray[0].startDate.getTime() - timeNow.getTime();
-		// if (timeNow.getTime() === eventsArray[0].startDate.getTime()) {
-		// 	console.log("EQUAL");
-		// 	$(document).on('show.bs.modal', function() {
-		// 		console.log("Modal shown");
-		// 	});
-		// }
-		setTimeout(alertUserForEvent(eventsArray[0]), offsetMillis);	
-	}
-	
-	
-//}
 
 
 function compareEvents(eventA, eventB) {
@@ -170,6 +165,7 @@ $("#AddNewEvent").click(function() {
 $(document).on('click', '.anEvent', function() {
 	currentEventID = this.id;
 	createDropdown(currentEventID);
+	
 }); // end click on event handler
 
 
@@ -358,14 +354,16 @@ function addEvent() {
 
 	    		// 3. Add new calendar event to user's list
 	    		eventsArray.push(newEvent);
+	    		occurrenceArray.push(newEvent);
 	    		
 	    		// 4. sort the list 
 	    		eventsArray.sort(compareEvents);
-	    		console.log("Sorted eventsArray");
-	    		console.log(eventsArray);
+	    		occurrenceArray.push(compareEvents);
 
 	    		//5. Render calendar
 	    		renderCalendar(newEvent);
+
+   				nextEventPopup();
 	    	});
 		}
 }
@@ -392,9 +390,6 @@ function htmlDropdown(dataTargetID, timePeriod, cEvent) {
 			"<li id='customizePlaylist'>" +
 				"<a>Customize Playlist</a>" +
 			"</li>" +
-			"<li id='usePlaylist'>" +
-				"<a>Use Spotify Playlist</a>" +
-			"</li>" +
 			"<li id='editEvent'>" +
 				"<a>Edit Event</a>" +
 			"</li>" +
@@ -405,4 +400,63 @@ function htmlDropdown(dataTargetID, timePeriod, cEvent) {
 	"</a>";
 
 	return htmlStr;
+}
+
+
+/**
+ * Initiates the search for a next event 
+ */
+function nextEventPopup() {
+	var foundNext = true;
+	console.log("It's time to get the next important event");
+	var nextEvent = findNextEvent();
+
+	if (nextEvent == null) {
+		foundNext = false;
+	}
+
+	if (foundNext) {
+		console.log("Next event time: " + nextEvent.startDate.toTimeString());
+
+		var nextTime = nextEvent.startDate.getTime();
+		var timeNow = new Date().getTime();
+
+		var millisecondOffset = nextTime - timeNow;
+		console.log("Num ms till next event: " + millisecondOffset);
+		// Remove this event from the occurrence array now that 
+		occurrenceArray.splice(occurrenceArray.indexOf(nextEvent), 1);
+		// Sort the array again to make sure everything is still in order
+		occurrenceArray.sort(compareEvents);
+
+		var timeout = setTimeout(function() {
+			// 1. Write the text to display within the box
+			$("#modal-event-name").text(nextEvent.name + " is happening now!");
+			$("#modal-msg").html("REMINDER: <strong>" 
+				+ nextEvent.name + "</strong> is happening right now!");
+
+			// 2. Show the popup box
+			$("#vibe-modal").modal('show');
+		}, millisecondOffset);
+
+		console.log("Timeout handler/id " + timeout);
+		eventToTimeout.set(nextEvent.id, timeout);
+	}
+}
+
+/**
+ * Looks through the occurrence array to 
+ * find the next event (timewise)
+ */
+function findNextEvent() {
+	var nextEvent;
+
+	for (var i = 0; i < occurrenceArray.length; i++) {
+		var dateNow = new Date();
+		if (occurrenceArray[i].startDate > dateNow) {
+			nextEvent = occurrenceArray[i];
+			break;
+		}
+	}
+
+	return nextEvent;
 }

@@ -2,8 +2,21 @@
 $(document).on('click', '#viewPlaylist', (function() {
 	console.log("View playlist clicked!");
     // Retrieve the playlist URI from the backend and show it
-	// var playlistURI = getPlaylistURI(currentEventID);
-	// showPlaylist(playlistURI);
+	var playlistURI = getPlaylistURI(currentEventID);
+	showPlaylist(playlistURI);
+	
+	// show name of event at top of page 
+	var eventName = $('#name').val();
+	var startTime = $('#startTime').val();
+	var endTime = $('#endTime').val();
+	var eventDIV = document.getElementById('view-playlist-panel');
+	eventDIV.innerHTML = eventName + ' | ' + startTime + ' - ' + endTime;
+	console.log(eventName);
+	$('#view-playlist-panel').show();
+	
+	//hide unneded divs
+	$("#customizePlaylistForm").hide();
+	$("#editEventForm").hide();
 }));
 
 
@@ -12,6 +25,10 @@ $(document).on('click', '#customizePlaylist', (function() {
 	console.log("Customize playlist clicked!");
 	$("#customizePlaylistForm").show();
 	customize(currentEventID);
+	
+	//hide unneeded divs
+	$('#view-playlist-panel').hide();
+	$("#editEventForm").hide();
 }));
 
 
@@ -19,11 +36,15 @@ $(document).on('click', '#customizePlaylist', (function() {
 $(document).on('click', '#editEvent', (function() {
 	// Show the edit event form
     $("#editEventForm").show();
+    
+    // hide unneeded divs
+    $("#customizePlaylistForm").hide();
+    $('#view-playlist-panel').hide();
 }));
 
 /* Handles clicking on the submit changes button */
 $("#EditAddNewEvent").click(function() {
-	editRequest(currentEventID);
+	requestEdit(currentEventID);
 	var $msg = $("<p>", {
 		class: "contentMsg", 
 		id: "successMsg"
@@ -42,6 +63,12 @@ $("#EditAddNewEvent").click(function() {
 // "Delete Event" option
 $(document).on('click', '#deleteEvent', (function() {
     deleteEvent(currentEventID);
+
+
+    // hide unneeded divs
+    $("#editEventForm").hide();
+    $("#customizePlaylistForm").hide();
+    $('#view-playlist-panel').hide();
 }));
 
 
@@ -82,11 +109,24 @@ $('.mutliSelect input[type="checkbox"]').on('click', function() {
   }
 });
 
-/** slider functions **/
 
-$('#popularitySlider').data('slider').getValue();
-$('#energySlider').data('slider').getValue();
+// if (eventsArray.length > 0) {
+// 	console.log("It's time to get the next important event");
+// 	var nextEvent = calculateNextImportantEvent();
+// 	var nextTime = nextEvent.startDate.getTime();
+// 	var timeNow = new Date().getTime();
 
+// 	var millisecondOffset = timeNow - nextTime;
+// 	console.log("Millisecond offset: " + millisecondOffset);
+
+// 	setTimeout(function() {
+// 		console.log("--------------------------");
+// 		console.log("--------------------------");
+// 		console.log("IT'S TIME FOR THIS EVENT");
+// 		console.log("--------------------------");
+// 		console.log("--------------------------");
+// 	}, millisecondOffset);
+// }
 
 
 
@@ -127,7 +167,7 @@ function getPlaylistURI(eventID) {
  * a new list item
  * @param  {CalendarEvent} editedEvent - the event object you want to add in
  */
-function editEvent(editedEvent){
+function editCalendarEvent(editedEvent){
 	var timePeriod = "";
 	if(editedEvent.start.isAM){
 		timePeriod = "am";
@@ -144,6 +184,7 @@ function editEvent(editedEvent){
 		// Replaces the html of the old event with the info from the new one
 		eventLI.html(newHTML);
 	    $("#editEventForm").hide();
+
 	}	
 }
 
@@ -178,11 +219,26 @@ function deleteEvent(id) {
 			    otherContent.fadeOut('slow');
 		    }, 2000);
 
+		    // Remove the event from both the events and occurrences arrays
 		    for (var i = 0; i < eventsArray.length; i++) {
     			if (eventsArray[i].id === id) {
     				eventsArray.splice(i,1);
     			}
     		}
+
+    		for (var j = 0; j < occurrenceArray.length; j++) {
+    			if (occurrenceArray[j].id === id) {
+    				occurrenceArray.splice(j,1);
+    			}
+    		}
+
+    		var toClear = eventToTimeout.get(id);
+    		console.log("Timeout to clear: " + toClear);
+    		clearTimeout(toClear);
+    		// TODO: CLEAR TIMEOUT RELATED TO EVENT THAT YOU DELETED
+    		// SO THE POPUP DOES NOT APPEAR
+
+			nextEventPopup();
 		}
 	});
 
@@ -191,11 +247,11 @@ function deleteEvent(id) {
 
 
 /**
- * Edits an event by sending a post request to the back-end 
- * and updates the calendar
+ * Sends a post request to the backend to edit the event
+ * and updates the calendar accordingly
  * @param  {String} eventID - the ID of the event
  */
-function editRequest(eventID) {
+function requestEdit(eventID) {
 	// necessary for some browser problems (saw on jquery's website)
 		$.valHooks.textarea = {
 		  get: function( elem ) {
@@ -254,30 +310,95 @@ function editRequest(eventID) {
 	    		// 2. Get calendar event from the calendar array
 	    		editableEvent = new CalendarEvent(responseObject);
 
-	    		console.log("Editable: ");
-	    		console.log(editableEvent);
-	    		console.log(editableEvent.start);
-	    		console.log(editableEvent.end);
-
 	    		// 3. Remove the old event from the eventsArray
 	    		for (var i = 0; i < eventsArray.length; i++) {
 	    			if (eventsArray[i].id === eventID) {
 	    				eventsArray.splice(i,1);
 	    			}
 	    		}
+
+	    		// 3a. Remove the old event from the occurrenceArray
+	    		for (var j = 0; j < occurrenceArray.length; j++) {
+	    			if (occurrenceArray[j].id === eventID) {
+	    				occurrenceArray.splice(j,1);
+	    			}
+	    		}
 	    		
 	    		// 4. Add new calendar event to user's list
 	    		eventsArray.push(editableEvent);
+	    		occurrenceArray.push(newEvent);
+
 	    		
 	    		// 5. sort the list of events
-	    		eventsArray.sort(eventComparator);
+	    		eventsArray.sort(compareEvents);
+	    		occurrenceArray.sort(compareEvents);
 	    		
-	    		editEvent(editableEvent);
+	    		// 6. Find out when the next event is and set the popup
+	    		editCalendarEvent(editableEvent);
+	    		
+		    	nextEventPopup();
 	    	});
 		}
 }
 
 
-function customize(eventID) {
+/** Object to mirror Customization from the backend **/
+function Customization(preferences) {
+	this.tag = preferences.event;
+	this.mood = preferences.mood;
+	this.popularity = preferences.popularity;
+	this.energy = preferences.energy;
+	this.genre = prefereces.genre;
+	this.playlist = preferences.playlist;
 
 }
+
+/**
+ * Customizes an event's music settings and returns
+ * a new playlist based on those customizations
+ */
+/**function customizePlaylist() {
+	// necessary for some browser problems (saw on jquery's website)
+		$.valHooks.textarea = {
+		  get: function( elem ) {
+		    return elem.value.replace( /\r?\n/g, "\r\n" );
+		  }
+		};
+
+		var eventTag = $('input[name=eTradio]:checked', '#myForm').val()
+		var eventMood = $('input[name=mSradio]:checked', '#myForm').val()
+		var popularityPref = $('#popularitySlider').data('slider').getValue();
+		var energyPref = $('#energySlider').data('slider').getValue();
+		var genreSelection = $('#genre-selector').val();
+		var playlistSelection = $('#select-your-playlist').val();
+		
+		var customize = (eventTag != null  || eventMood != null  ||)
+						popularityPref != null || energyPref != null ||
+						genreSelection != null) ;
+						
+
+		
+		if(playlistSelection != null && customize) {
+			alert("You must either customize or select Spotify playlists");
+		} else {
+	    	var postParameters = {
+				event : eventTag ,
+				mood : eventMood ,
+				popularity : popularityPref ,
+				energy : energyPref,
+				genre : genreSelection,
+				playlist : playlistSelection
+				
+	    	};
+	    	
+	    	$.post("/customizePlaylist", postParameters, function(response) {
+	    		// 1. Send information to the back end, store in responseObject
+	    		var responseObject = JSON.parse(response);
+
+	    		// 2. Make customization object from responseObject
+	    		var custom = new Customization(responseObject);
+
+	    	});
+		}
+}
+**/

@@ -23,6 +23,7 @@ public class CalendarEvent {
     this.id = UUID.randomUUID();
   }
 
+
   public EventTime getStart() {
     return start;
   }
@@ -55,6 +56,7 @@ public class CalendarEvent {
     this.playListId = playListID;
   }
 
+
   public void setStart(int newHour, int newMinute, boolean amOrPm) {
     start.update(newHour, newMinute, amOrPm);
 
@@ -79,7 +81,6 @@ public class CalendarEvent {
     int startTime = this.getTimeInMins(start);
     int endTime = this.getTimeInMins(end);
     int duration = endTime - startTime;
-    System.out.println(duration);
     return duration;
   }
 
@@ -97,7 +98,6 @@ public class CalendarEvent {
       startH = 0;
     }
     int startinMins = startH * 60 + startM;
-    System.out.println(startinMins);
     return startinMins;
   }
 
@@ -127,7 +127,7 @@ public class CalendarEvent {
 
   /**
    * JSON representation of a CalendarEvent.
-   * 
+   *
    * */
   public Map<String, Object> toJson() {
     return ImmutableMap.of("name", name, "start", start.toJson(), "end",

@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +34,7 @@ import com.wrapper.spotify.models.User;
 
 import edu.brown.cs.cjps.calendar.CalendarEvent;
 import edu.brown.cs.cjps.music.PlaylistHQ;
-import edu.brown.cs.cjps.music.Settings;
 import edu.brown.cs.cjps.music.VibePlaylist;
-import edu.brown.cs.cjps.vibe.MusicEventTag.Tag;
 import freemarker.template.Configuration;
 
 /**
@@ -104,7 +102,7 @@ public final class Main {
 
   /**
    * Constructor for our Main class.
-   * 
+   *
    * @param args
    *          - the command line arguments
    */
@@ -119,7 +117,11 @@ public final class Main {
     // Instantiate HQ
     VibeCache vc = new VibeCache();
     hq = new PlaylistHQ();
-    eventProcessor = new EventProcessor();
+
+    //Grab the database from the command line args.
+    String db = args[0];
+    //Run should take in a database
+    eventProcessor = new EventProcessor(db);
 
     System.out.println("Starting Vibe...");
     OptionParser parser = new OptionParser();
@@ -162,7 +164,7 @@ public final class Main {
 
   /**
    * Creates a new templating engine for free marker
-   * 
+   *
    * @return a new free marker engine
    */
   private static FreeMarkerEngine createEngine() {
@@ -201,7 +203,7 @@ public final class Main {
 
   /**
    * Handles creating the GUI for the homepage
-   * 
+   *
    * @author cjps
    *
    */
@@ -215,6 +217,10 @@ public final class Main {
   }
 
   /**
+<<<<<<< HEAD
+   * Handles creating the GUI for processing login requests
+   *
+=======
    * Handles creating the GUI for procString playlistName = "Party"; //
    * hq.generateFromTag(playlistName, api, currentUser, accessToken); //
    * VibePlaylist p2 = VibeCache.getPlaylistCache().get(playlistName); //
@@ -222,7 +228,8 @@ public final class Main {
    * System.out.println(p2.getTracks()); // String playlistURI =
    * hq.convertForSpotify(p2, playlistName, api, // currentUser);essing login
    * requests
-   * 
+   *
+>>>>>>> dc754504b841c8cf1e7d3228ca2262ad00a38d5b
    * @author cjps
    *
    */
@@ -231,7 +238,7 @@ public final class Main {
     public Object handle(Request req, Response res) {
       /*
        * Set the necessary scopes that the application will need from the user
-       * 
+       *
        * Vibe can read the user's email and modify public and private playlists
        */
       final List<String> scopes = Arrays.asList("user-read-email",
@@ -250,7 +257,7 @@ public final class Main {
   /**
    * Handles acquiring and utilizing the code for the user to create an access
    * token
-   * 
+   *
    * @author cjps
    *
    */
@@ -297,7 +304,7 @@ public final class Main {
       String display = currentUser.getDisplayName();
 
       if (display == null) {
-    	  display = currentUser.getId();
+        display = currentUser.getId();
       }
       System.out.printf("Current User: %s\n", display);        
 
@@ -307,7 +314,7 @@ public final class Main {
 
   /**
    * Handles creating the GUI for processing login requests
-   * 
+   *
    * @author cjps
    *
    */
@@ -320,15 +327,15 @@ public final class Main {
   }
 
   /**
-   * 
+   *
    * Handles adding an event to a user's calendar.
-   * 
+   *
    */
   private class AddEventHandler implements Route {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-      // CalendarEvent newEvent = eventProcessor.addEvent(qm);
+
 
       // Retrieve event information from the front-end
       String start = qm.value("start");
@@ -336,26 +343,28 @@ public final class Main {
       String end = qm.value("end");
       Boolean endAmOrPm = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
+      CalendarEvent newEvent = null;
+      try {
+       newEvent = eventProcessor
+        	  .addEvent(start, amOrPm, end, endAmOrPm, eventName, currentUser.getId());
+      } catch (SQLException e) {
+        System.out.println("Error in adding event");
+        e.printStackTrace();
+      }
 
-      CalendarEvent newEvent = eventProcessor.addEvent(start, amOrPm, end,
-          endAmOrPm, eventName);
 
-//       Generate the playlist associated with this event
-//      VibePlaylist p = hq.generateFromTag(newEvent, api, currentUser, accessToken);
-//      VibeCache.getPlaylistCache().put(newEvent.getId(), p);
-//      hq.generateFromTag(newEvent, api, currentUser, accessToken);
-      
-//      Settings testSettings = new Settings(Tag.PARTY, Arrays.asList("rock"),
-//          0.1f, 10, 0.1f);
-//      hq.generateCustom(testSettings, newEvent, api, currentUser, accessToken);
 
-      // These lines are only for testing
-//      VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
-//      String tempURI = hq.convertForSpotify(p2, newEvent.getName(), api,
-//          currentUser);
-//      System.out.println("~~~THE TRACKS~~~");
-//      System.out.println(p2.getTracks());
-//      System.out.println(p2.getTracks().size());
+      // Generate the playlist associated with this event
+      hq.generateFromTag(newEvent, api, currentUser, accessToken);
+
+      // ~~~~~~~~~These lines are only for testing
+      VibePlaylist p = VibeCache.getPlaylistCache().get(newEvent.getId());
+      // String tempURI = hq.convertForSpotify(p2, newEvent.getName(), api,
+      // currentUser);
+      System.out.println("~~~THE TRACKS~~~");
+      System.out.println(p.getTracks());
+      System.out.println(p.getTracks().size());
+      // ~~~~~end of testing
 
       // Return an event object to the front-end
 
@@ -364,9 +373,9 @@ public final class Main {
   }
 
   /**
-   * 
+   *
    * Handles retrieving a playlist for a specific event.
-   * 
+   *
    * */
   private class GetPlaylistHandler implements Route {
     @Override
@@ -378,18 +387,18 @@ public final class Main {
       VibePlaylist playlist = VibeCache.getPlaylistCache().get(eventID);
 
       // TODO: Need to get the name from the eventID
-      String eventName = "event";
-
+      String eventName = qm.value("event");
+      System.out.println("the event is called" + eventName);
       String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
 
-       return uri;
+      return uri;
     }
   }
 
   /**
-   * 
+   *
    * Handles deleting a specific event.
-   * 
+   *
    * */
   private class DeleteEventHandler implements Route {
     @Override
@@ -399,7 +408,14 @@ public final class Main {
 
       String eventID = qm.value("eventID");
 
-      eventProcessor.deleteEvent(eventID);
+      try {
+        eventProcessor.deleteEvent(eventID, currentUser.getId());
+      } catch (SQLException e) {
+        System.out.println("Error: delteEvent failed");
+        response = "FAILURE";
+        e.printStackTrace();
+      }
+
 
       // TODO: catch an error and store the response if there's an issue
 
@@ -408,9 +424,9 @@ public final class Main {
   }
 
   /**
-   * 
+   *
    * Handles editing a specific event.
-   * 
+   *
    * */
   private class EditEventHandler implements Route {
     @Override
@@ -424,12 +440,12 @@ public final class Main {
       String eventID = qm.value("eventID");
      
 
-      CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm, end,
-          endAMOrPM, eventName);
+      CalendarEvent event = null;
+      CalendarEvent editedEvent = eventProcessor
+    		  .editEvent(start, amOrPm, end, endAMOrPM, eventName, event);
 
       // Generate the playlist associated with this event
       hq.generateFromTag(editedEvent, api, currentUser, accessToken);
-
       // These lines are only for testing
       VibePlaylist p2 = VibeCache.getPlaylistCache().get(editedEvent.getId());
       System.out.println("~~~THE TRACKS~~~");
@@ -439,10 +455,11 @@ public final class Main {
     }
   }
 
+
   /**
    * Class to handle adding custom playlists to events. I'm assuming that the
    * event and the settings will be passed back.
-   * 
+   *
    * @author smayfiel
    *
    */
@@ -457,8 +474,12 @@ public final class Main {
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
 
-      CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm, end,
-          endAMOrPM, eventName);
+
+
+      //Create a new event and add it to the database
+//      CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm, end,
+//          endAMOrPM, eventName);
+      CalendarEvent newEvent = null;
 
       // Playlist stuff
       String tag = qm.value("tag");
@@ -486,7 +507,7 @@ public final class Main {
 
   /**
    * Handles printing out exceptions to the GUI
-   * 
+   *
    * @author cjps
    *
    */

@@ -367,8 +367,8 @@ public final class Main {
       VibePlaylist playlist = VibeCache.getPlaylistCache().get(eventID);
 
       // TODO: Need to get the name from the eventID
-      String eventName = "event";
-
+      String eventName = qm.value("event");
+      System.out.println("the event is called" + eventName);
       String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
 
       return uri;
@@ -410,13 +410,10 @@ public final class Main {
       String end = qm.value("end");
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
-
       CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm, end,
           endAMOrPM, eventName);
-
       // Generate the playlist associated with this event
       hq.generateFromTag(editedEvent, api, currentUser, accessToken);
-
       // These lines are only for testing
       VibePlaylist p2 = VibeCache.getPlaylistCache().get(editedEvent.getId());
       System.out.println("~~~THE TRACKS~~~");

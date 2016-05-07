@@ -33,7 +33,7 @@ public class VibeCache {
         "read", "study", "revise", "essay", "assignemnt", "class", "test",
         "exam", "quiz", "prepare", "library");
     List<String> partywords = Arrays.asList("party", "turn up", "lit", "jam",
-        "rager", " birthday", "celebration", "dance");
+        "rager", " birthday", "celebration", "dance", "pregame");
     List<String> eatwords = Arrays.asList("eat", "snack", "dinner", "friends",
         "lunch", "breakfast");
     List<String> restwords = Arrays.asList("sleep", "relax", "rest", "calm",

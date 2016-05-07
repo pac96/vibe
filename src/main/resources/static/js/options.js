@@ -10,6 +10,8 @@ $(document).on('click', '#viewPlaylist', (function() {
 // "Customize Playlist" option
 $(document).on('click', '#customizePlaylist', (function() {
 	console.log("Customize playlist clicked!");
+	$("#customizePlaylistForm").show();
+	customize(currentEventID);
 }));
 
 
@@ -22,6 +24,17 @@ $(document).on('click', '#editEvent', (function() {
 /* Handles clicking on the submit changes button */
 $("#EditAddNewEvent").click(function() {
 	editRequest(currentEventID);
+	var $msg = $("<p>", {
+		class: "contentMsg", 
+		id: "successMsg"
+	});
+
+	$msg.append("Event edit successful!");
+	otherContent.html($msg);
+    otherContent.fadeIn('slow');
+    setTimeout(function() {
+	    otherContent.fadeOut('slow');
+    }, 2000);
 });
 
 
@@ -176,6 +189,7 @@ function deleteEvent(id) {
 
 }
 
+
 /**
  * Edits an event by sending a post request to the back-end 
  * and updates the calendar
@@ -263,11 +277,7 @@ function editRequest(eventID) {
 		}
 }
 
-function getEvent(eventID){
-	console.log("get Event...")
-	for (var i = 0; i < eventsArray.length; i++) {
-		if(eventsArray[i].id === eventID){
-			return eventsArray[i];
-		}
-	}
+
+function customize(eventID) {
+
 }

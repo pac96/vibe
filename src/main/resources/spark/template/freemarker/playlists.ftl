@@ -37,6 +37,35 @@
 
 	<!-- /#sidebar-wrapper -->
 
+	<!-- Modal -->
+	<div class="modal fade" id="vibe-modal" role="dialog">
+		<!-- Modal dialog -->
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title" id="modal-event-name"></h4>
+				</div>
+
+				<div class="modal-body">
+					<p id="modal-msg"></p>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+				</div>
+			</div>
+			<!-- end modal content -->
+		</div>
+		<!-- end modal dialog -->
+	</div>
+	<!-- end modal -->
+
+    <div class="otherContent"></div>
+
+
+
 	<!-- Page Content -->
 	<div id="page-content-wrapper">
 	    <div class="container-fluid">
@@ -55,9 +84,7 @@
 		<div id='view-playlist-panel'> 
 			<!--TODO: Display the name of the event --> 
 		</div>	    
-		
-	    <div class="otherContent"></div>
-	    
+			    
 			    	
 		<!-- Choosing a Playlist from Exisiting Spotify Playlist for Event -->
 		<div id='customize-playlist-panel'> 
@@ -80,7 +107,7 @@
 		<br>
 				
 		<!-- Customize Form -->
-		<form id='customizePlaylist' form method="POST" action="/customPlaylist">
+		<form id='customizePlaylistForm' form method="POST" action="/customPlaylist">
 			<!-- Event Tags -->
 			<div id="eTagWrapper">
 				<div>

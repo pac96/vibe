@@ -82,32 +82,41 @@
 	    
 
 		<div id='view-playlist-panel'> 
-			<!--TODO: Display the name of the event --> 
+			<!-- Displays the name of the event --> 
 		</div>	    
 			    
-			    	
-		<!-- Choosing a Playlist from Exisiting Spotify Playlist for Event -->
-		<div id='customize-playlist-panel'> 
-			<div class="btn-group">
-				<button type="button" class="form-control btn btn-default dropdown-toggle" data-toggle="dropdown">
-					Select Playlist 
-					<span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu" role="menu">
-					<!--<li><a href="#">small</a></li>
-					<li><a href="#">medium</a></li>
-					<li><a href="#">large</a></li>-->
-				</ul>
-			</div>
-		</div>
-
-		<!-- Horizontal Line -->
-		<br>
-		<hr color='white' size='2' width='100%'>
-		<br>
 				
 		<!-- Customize Form -->
 		<form id='customizePlaylistForm' form method="POST" action="/customPlaylist">
+		
+			<!-- Customization Panel Title -->
+			<div id='customizeTitle' class ='scustomizeTitle'> 
+				<text color = "white"> 
+					Customize Your Playlist Settings 
+				</text> 
+			</div>
+		
+			<!-- Choosing a Playlist from Existing Spotify Playlist for Event -->
+			<!-- Horizontal Line -->
+			<hr color='white' size='2' width='800%'>
+			<dl id = 'select-your-playlist' class="plDropdown"> 
+			 
+			<dt>
+			<yy href="#">
+			  <span class="hida">Use Your Own Playlist</span>    
+			  <p class="plmultiSelection"></p>  
+			</yy>
+			</dt>
+
+			<dd>
+			    <div class="plmutliSelect">
+			        <ul>
+			            <!-- add in li elements for each playlist you have -->
+			        </ul>
+			    </div>
+			</dd>
+			</dl>
+			
 			<!-- Event Tags -->
 			<div id="eTagWrapper">
 				<div>
@@ -137,7 +146,7 @@
 			</div>
 			
 			<!-- Horizontal Line -->
-			<hr color='white' size='2' width='100%'>
+			<!-- <hr color='white' size='2' width='100%'> -->
 			
 			<!-- Mood Selection -->
 			<div id="mTagWrapper">
@@ -168,14 +177,14 @@
 			</div>
 			
 			<!-- Horizontal Line -->
-			<hr color='white' size='2' width='100%'>
+			<!-- <hr color='white' size='2' width='100%'> -->
 
 			<!-- Genre Selection -->
-			<dl class="gDropdown"> 
+			<dl id='genre-selector' class="gDropdown"> 
 
 			<dt>
 			<yy href="#">
-			  <span class="hida">Select</span>    
+			  <span class="hida">Preferred Genre(s)</span>    
 			  <p class="multiSelection"></p>  
 			</yy>
 			</dt>
@@ -246,23 +255,39 @@
 			        </ul>
 			    </div>
 			</dd>
-			<button>Filter</button>
 			</dl>
 					
 			<!-- Range sliders for popularity and energy bars -->
 			<div class="container">
+			<p> 
+			
+			</p> 
+			
+			<p> 
+			
+			</p>
+					<span>
 					<div class="row">
 					<div class="col-xs-6">
+						<label for="popularitySlider" class='rangeSliderTitle'>Popularity</label>
 			  			<div class="range range-success">
 			    		<input type="range" name="range" min="0" max="10" value="5" onchange="popularitySlider.value=value">
 			    		<output id="popularitySlider">5</output>
 			  			</div>
+			  		</div>
+			  		<div class="col-xs-6">
+			  			<label for="energySlider" class='rangeSliderTitle'>Energy</label>
 			  			<div class="range range-success">
 			    			<input type="range" name="range" min="0" max="10" value="5" onchange="energySlider.value=value">
 			    			<output id="energySlider">5</output>
 			  			</div>
 					</div>
 					</div>
+					<span>
+			</div>
+			
+			<div id='customize-playlist-submit'>
+			<input type="button" class="cbutton" value="Generate Custom Playlist">
 			</div>
 		</form>
 

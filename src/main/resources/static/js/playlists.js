@@ -165,6 +165,7 @@ $("#AddNewEvent").click(function() {
 $(document).on('click', '.anEvent', function() {
 	currentEventID = this.id;
 	createDropdown(currentEventID);
+	
 }); // end click on event handler
 
 
@@ -388,9 +389,6 @@ function htmlDropdown(dataTargetID, timePeriod, cEvent) {
 			"</li>" +
 			"<li id='customizePlaylist'>" +
 				"<a>Customize Playlist</a>" +
-			"</li>" +
-			"<li id='usePlaylist'>" +
-				"<a>Use Spotify Playlist</a>" +
 			"</li>" +
 			"<li id='editEvent'>" +
 				"<a>Edit Event</a>" +

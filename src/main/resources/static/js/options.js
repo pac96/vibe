@@ -23,7 +23,7 @@ $(document).on('click', '#editEvent', (function() {
 
 /* Handles clicking on the submit changes button */
 $("#EditAddNewEvent").click(function() {
-	editRequest(currentEventID);
+	requestEdit(currentEventID);
 	var $msg = $("<p>", {
 		class: "contentMsg", 
 		id: "successMsg"
@@ -109,21 +109,6 @@ $('#energySlider').data('slider').getValue();
 
 
 
-function calculateNextImportantEvent() {
-	var nextEvent;
-
-	for (var i = 0; i < eventsArray.length; i++) {
-		var dateNow = new Date();
-		if (eventsArray[i].startDate > dateNow) {
-			nextEvent = eventsArray[i];
-			break;
-		}
-	}
-
-	return nextEvent;
-}
-
-
 ///////////////////////////////////////////
 // Function Declarations
 ///////////////////////////////////////////
@@ -161,7 +146,7 @@ function getPlaylistURI(eventID) {
  * a new list item
  * @param  {CalendarEvent} editedEvent - the event object you want to add in
  */
-function editEvent(editedEvent){
+function editCalendarEvent(editedEvent){
 	var timePeriod = "";
 	if(editedEvent.start.isAM){
 		timePeriod = "am";
@@ -178,6 +163,7 @@ function editEvent(editedEvent){
 		// Replaces the html of the old event with the info from the new one
 		eventLI.html(newHTML);
 	    $("#editEventForm").hide();
+
 	}	
 }
 
@@ -212,11 +198,26 @@ function deleteEvent(id) {
 			    otherContent.fadeOut('slow');
 		    }, 2000);
 
+		    // Remove the event from both the events and occurrences arrays
 		    for (var i = 0; i < eventsArray.length; i++) {
     			if (eventsArray[i].id === id) {
     				eventsArray.splice(i,1);
     			}
     		}
+
+    		for (var j = 0; j < occurrenceArray.length; j++) {
+    			if (occurrenceArray[j].id === id) {
+    				occurrenceArray.splice(j,1);
+    			}
+    		}
+
+    		var toClear = eventToTimeout.get(id);
+    		console.log("Timeout to clear: " + toClear);
+    		clearTimeout(toClear);
+    		// TODO: CLEAR TIMEOUT RELATED TO EVENT THAT YOU DELETED
+    		// SO THE POPUP DOES NOT APPEAR
+
+			nextEventPopup();
 		}
 	});
 
@@ -225,11 +226,11 @@ function deleteEvent(id) {
 
 
 /**
- * Edits an event by sending a post request to the back-end 
- * and updates the calendar
+ * Sends a post request to the backend to edit the event
+ * and updates the calendar accordingly
  * @param  {String} eventID - the ID of the event
  */
-function editRequest(eventID) {
+function requestEdit(eventID) {
 	// necessary for some browser problems (saw on jquery's website)
 		$.valHooks.textarea = {
 		  get: function( elem ) {
@@ -288,30 +289,33 @@ function editRequest(eventID) {
 	    		// 2. Get calendar event from the calendar array
 	    		editableEvent = new CalendarEvent(responseObject);
 
-	    		console.log("Editable: ");
-	    		console.log(editableEvent);
-	    		console.log(editableEvent.start);
-	    		console.log(editableEvent.end);
-
 	    		// 3. Remove the old event from the eventsArray
 	    		for (var i = 0; i < eventsArray.length; i++) {
 	    			if (eventsArray[i].id === eventID) {
 	    				eventsArray.splice(i,1);
 	    			}
 	    		}
+
+	    		// 3a. Remove the old event from the occurrenceArray
+	    		for (var j = 0; j < occurrenceArray.length; j++) {
+	    			if (occurrenceArray[j].id === eventID) {
+	    				occurrenceArray.splice(j,1);
+	    			}
+	    		}
 	    		
 	    		// 4. Add new calendar event to user's list
 	    		eventsArray.push(editableEvent);
+	    		occurrenceArray.push(newEvent);
+
 	    		
 	    		// 5. sort the list of events
-	    		eventsArray.sort(eventComparator);
+	    		eventsArray.sort(compareEvents);
+	    		occurrenceArray.sort(compareEvents);
 	    		
-	    		editEvent(editableEvent);
+	    		// 6. Find out when the next event is and set the popup
+	    		editCalendarEvent(editableEvent);
+	    		
+		    	nextEventPopup();
 	    	});
 		}
-}
-
-
-function customize(eventID) {
-
 }

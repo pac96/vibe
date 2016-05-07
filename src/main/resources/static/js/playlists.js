@@ -1,11 +1,13 @@
 var name = "";
 var eventsArray = [];
+var occurrenceArray = [];
 var currentEvent;
 var currentEventID;
 var otherContent = $("div.otherContent");
 var editEventForm;
 var customizePlaylistForm;
 var eventModal;
+var eventToTimeout = new Map();
 
 //setInterval(function() {
 //	var timeNow = new Date().getTime();
@@ -351,30 +353,16 @@ function addEvent() {
 
 	    		// 3. Add new calendar event to user's list
 	    		eventsArray.push(newEvent);
+	    		occurrenceArray.push(newEvent);
 	    		
 	    		// 4. sort the list 
 	    		eventsArray.sort(compareEvents);
+	    		occurrenceArray.push(compareEvents);
 
 	    		//5. Render calendar
 	    		renderCalendar(newEvent);
 
-				console.log("It's time to get the next important event");
-				var nextEvent = calculateNextImportantEvent();
-				var nextTime = nextEvent.startDate.getTime();
-				var timeNow = new Date().getTime();
-
-				var millisecondOffset = nextTime - timeNow;
-				console.log("Millisecond offset: " + millisecondOffset);
-
-				setTimeout(function() {
-					console.log("--------------------------");
-					console.log("--------------------------");
-					console.log("IT'S TIME FOR THIS EVENT");
-					console.log("--------------------------");
-					console.log("--------------------------");
-				}, millisecondOffset);
-
-
+   				nextEventPopup();
 	    	});
 		}
 }
@@ -414,4 +402,63 @@ function htmlDropdown(dataTargetID, timePeriod, cEvent) {
 	"</a>";
 
 	return htmlStr;
+}
+
+
+/**
+ * Initiates the search for a next event 
+ */
+function nextEventPopup() {
+	var foundNext = true;
+	console.log("It's time to get the next important event");
+	var nextEvent = findNextEvent();
+
+	if (nextEvent == null) {
+		foundNext = false;
+	}
+
+	if (foundNext) {
+		console.log("Next event time: " + nextEvent.startDate.toTimeString());
+
+		var nextTime = nextEvent.startDate.getTime();
+		var timeNow = new Date().getTime();
+
+		var millisecondOffset = nextTime - timeNow;
+		console.log("Num ms till next event: " + millisecondOffset);
+		// Remove this event from the occurrence array now that 
+		occurrenceArray.splice(occurrenceArray.indexOf(nextEvent), 1);
+		// Sort the array again to make sure everything is still in order
+		occurrenceArray.sort(compareEvents);
+
+		var timeout = setTimeout(function() {
+			// 1. Write the text to display within the box
+			$("#modal-event-name").text(nextEvent.name + " is happening now!");
+			$("#modal-msg").html("REMINDER: <strong>" 
+				+ nextEvent.name + "</strong> is happening right now!");
+
+			// 2. Show the popup box
+			$("#vibe-modal").modal('show');
+		}, millisecondOffset);
+
+		console.log("Timeout handler/id " + timeout);
+		eventToTimeout.set(nextEvent.id, timeout);
+	}
+}
+
+/**
+ * Looks through the occurrence array to 
+ * find the next event (timewise)
+ */
+function findNextEvent() {
+	var nextEvent;
+
+	for (var i = 0; i < occurrenceArray.length; i++) {
+		var dateNow = new Date();
+		if (occurrenceArray[i].startDate > dateNow) {
+			nextEvent = occurrenceArray[i];
+			break;
+		}
+	}
+
+	return nextEvent;
 }

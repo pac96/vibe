@@ -337,23 +337,22 @@ public final class Main {
       CalendarEvent newEvent = eventProcessor.addEvent(start, amOrPm, end,
           endAmOrPm, eventName);
 
-      // Generate the playlist associated with this event
-//<<<<<<< HEAD
+//       Generate the playlist associated with this event
 //      VibePlaylist p = hq.generateFromTag(newEvent, api, currentUser, accessToken);
 //      VibeCache.getPlaylistCache().put(newEvent.getId(), p);
-//=======
-      // hq.generateFromTag(newEvent, api, currentUser, accessToken);
-      Settings testSettings = new Settings(Tag.PARTY, Arrays.asList("rock"),
-          0.1f, 10, 0.1f);
+//      hq.generateFromTag(newEvent, api, currentUser, accessToken);
+      
+//      Settings testSettings = new Settings(Tag.PARTY, Arrays.asList("rock"),
+//          0.1f, 10, 0.1f);
 //      hq.generateCustom(testSettings, newEvent, api, currentUser, accessToken);
 
       // These lines are only for testing
-      VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
-      String tempURI = hq.convertForSpotify(p2, newEvent.getName(), api,
-          currentUser);
-      System.out.println("~~~THE TRACKS~~~");
-      System.out.println(p2.getTracks());
-      System.out.println(p2.getTracks().size());
+//      VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
+//      String tempURI = hq.convertForSpotify(p2, newEvent.getName(), api,
+//          currentUser);
+//      System.out.println("~~~THE TRACKS~~~");
+//      System.out.println(p2.getTracks());
+//      System.out.println(p2.getTracks().size());
 
       // Return an event object to the front-end
 

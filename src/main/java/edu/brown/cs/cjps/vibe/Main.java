@@ -290,10 +290,11 @@ public final class Main {
 
       List<String> params = new ArrayList<>();
 
+      // Old, I think?
       // generatePlaylist();
       // String playlistURI = generatePlaylist();
       // params.add(display);
-      // params.add(playlistURI);
+      // params.add(tempURI);
 
       System.out.printf("User: %s\n", display);
 
@@ -324,7 +325,6 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-
       // CalendarEvent newEvent = eventProcessor.addEvent(qm);
 
       // Retrieve event information from the front-end
@@ -342,8 +342,11 @@ public final class Main {
 
       // These lines are only for testing
       VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
+      String tempURI = hq.convertForSpotify(p2, newEvent.getName(), api,
+          currentUser);
       System.out.println("~~~THE TRACKS~~~");
       System.out.println(p2.getTracks());
+      System.out.println(p2.getTracks().size());
 
       // Return an event object to the front-end
 
@@ -417,6 +420,14 @@ public final class Main {
 
       CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm, end,
           endAMOrPM, eventName);
+
+      // Generate the playlist associated with this event
+      hq.generateFromTag(editedEvent, api, currentUser, accessToken);
+
+      // These lines are only for testing
+      VibePlaylist p2 = VibeCache.getPlaylistCache().get(editedEvent.getId());
+      System.out.println("~~~THE TRACKS~~~");
+      System.out.println(p2.getTracks());
 
       return editedEvent;
     }

@@ -7,11 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-<<<<<<< HEAD
 import java.sql.SQLException;
-import java.util.ArrayList;
-=======
->>>>>>> dc754504b841c8cf1e7d3228ca2262ad00a38d5b
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -227,7 +223,7 @@ public final class Main {
    * System.out.println(p2.getTracks()); // String playlistURI =
    * hq.convertForSpotify(p2, playlistName, api, // currentUser);essing login
    * requests
-   * 
+   *
 >>>>>>> dc754504b841c8cf1e7d3228ca2262ad00a38d5b
    * @author cjps
    *
@@ -336,10 +332,7 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-<<<<<<< HEAD
-=======
-      // CalendarEvent newEvent = eventProcessor.addEvent(qm);
->>>>>>> dc754504b841c8cf1e7d3228ca2262ad00a38d5b
+
 
       // Retrieve event information from the front-end
       String start = qm.value("start");
@@ -347,21 +340,16 @@ public final class Main {
       String end = qm.value("end");
       Boolean endAmOrPm = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
-
-<<<<<<< HEAD
-      CalendarEvent newEvent = new CalendarEvent();
+      CalendarEvent newEvent = null;
       try {
-        newEvent = eventProcessor
+       newEvent = eventProcessor
         	  .addEvent(start, amOrPm, end, endAmOrPm, eventName, currentUser.getId());
       } catch (SQLException e) {
         System.out.println("Error in adding event");
         e.printStackTrace();
       }
 
-      // Return an event object to the front-end
-=======
-      CalendarEvent newEvent = eventProcessor.addEvent(start, amOrPm, end,
-          endAmOrPm, eventName);
+
 
       // Generate the playlist associated with this event
       hq.generateFromTag(newEvent, api, currentUser, accessToken);
@@ -377,7 +365,6 @@ public final class Main {
 
       // Return an event object to the front-end
 
->>>>>>> dc754504b841c8cf1e7d3228ca2262ad00a38d5b
       return GSON.toJson(newEvent);
     }
   }
@@ -397,8 +384,8 @@ public final class Main {
       VibePlaylist playlist = VibeCache.getPlaylistCache().get(eventID);
 
       // TODO: Need to get the name from the eventID
-      String eventName = "event";
-
+      String eventName = qm.value("event");
+      System.out.println("the event is called" + eventName);
       String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
 
       return uri;
@@ -418,16 +405,14 @@ public final class Main {
 
       String eventID = qm.value("eventID");
 
-<<<<<<< HEAD
       try {
         eventProcessor.deleteEvent(eventID, currentUser.getId());
       } catch (SQLException e) {
         System.out.println("Error: delteEvent failed");
+        response = "FAILURE";
         e.printStackTrace();
       }
-=======
-      eventProcessor.deleteEvent(eventID);
->>>>>>> dc754504b841c8cf1e7d3228ca2262ad00a38d5b
+
 
       // TODO: catch an error and store the response if there's an issue
 
@@ -450,34 +435,26 @@ public final class Main {
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
 
-<<<<<<< HEAD
-      CalendarEvent event = new CalendarEvent();
+      CalendarEvent event = null;
       CalendarEvent editedEvent = eventProcessor
     		  .editEvent(start, amOrPm, end, endAMOrPM, eventName, event);
-=======
-      CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm, end,
-          endAMOrPM, eventName);
 
       // Generate the playlist associated with this event
       hq.generateFromTag(editedEvent, api, currentUser, accessToken);
-
       // These lines are only for testing
       VibePlaylist p2 = VibeCache.getPlaylistCache().get(editedEvent.getId());
       System.out.println("~~~THE TRACKS~~~");
       System.out.println(p2.getTracks());
->>>>>>> dc754504b841c8cf1e7d3228ca2262ad00a38d5b
 
       return editedEvent;
     }
   }
 
-<<<<<<< HEAD
 
-=======
   /**
    * Class to handle adding custom playlists to events. I'm assuming that the
    * event and the settings will be passed back.
-   * 
+   *
    * @author smayfiel
    *
    */
@@ -492,8 +469,12 @@ public final class Main {
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
 
-      CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm, end,
-          endAMOrPM, eventName);
+
+
+      //Create a new event and add it to the database
+//      CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm, end,
+//          endAMOrPM, eventName);
+      CalendarEvent newEvent = null;
 
       // Playlist stuff
       String tag = qm.value("tag");
@@ -518,7 +499,6 @@ public final class Main {
       return newEvent;
     }
   }
->>>>>>> dc754504b841c8cf1e7d3228ca2262ad00a38d5b
 
   /**
    * Handles printing out exceptions to the GUI

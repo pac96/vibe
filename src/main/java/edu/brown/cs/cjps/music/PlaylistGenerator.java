@@ -8,7 +8,6 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.echonest.api.v4.EchoNestAPI;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -18,12 +17,7 @@ import com.wrapper.spotify.models.User;
 
 public class PlaylistGenerator {
 
-  private static final String API_KEY = "OOT8LZ0VYRFYT5YYK";
-  EchoNestAPI _echoNest;
-
   public PlaylistGenerator() {
-    _echoNest = new EchoNestAPI(API_KEY);
-
   }
 
   // Returns a list of track URIs

@@ -81,7 +81,6 @@ public class CalendarEvent {
     int startTime = this.getTimeInMins(start);
     int endTime = this.getTimeInMins(end);
     int duration = endTime - startTime;
-    System.out.println(duration);
     return duration;
   }
 
@@ -99,7 +98,6 @@ public class CalendarEvent {
       startH = 0;
     }
     int startinMins = startH * 60 + startM;
-    System.out.println(startinMins);
     return startinMins;
   }
 

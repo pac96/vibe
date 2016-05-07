@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +33,7 @@ import com.wrapper.spotify.models.User;
 
 import edu.brown.cs.cjps.calendar.CalendarEvent;
 import edu.brown.cs.cjps.music.PlaylistHQ;
-import edu.brown.cs.cjps.music.Settings;
 import edu.brown.cs.cjps.music.VibePlaylist;
-import edu.brown.cs.cjps.vibe.MusicEventTag.Tag;
 import freemarker.template.Configuration;
 
 /**
@@ -285,7 +282,7 @@ public final class Main {
       String display = currentUser.getDisplayName();
 
       if (display == null) {
-    	  display = currentUser.getId();
+        display = currentUser.getId();
       }
 
       //
@@ -337,22 +334,17 @@ public final class Main {
       CalendarEvent newEvent = eventProcessor.addEvent(start, amOrPm, end,
           endAmOrPm, eventName);
 
-//       Generate the playlist associated with this event
-//      VibePlaylist p = hq.generateFromTag(newEvent, api, currentUser, accessToken);
-//      VibeCache.getPlaylistCache().put(newEvent.getId(), p);
-//      hq.generateFromTag(newEvent, api, currentUser, accessToken);
-      
-//      Settings testSettings = new Settings(Tag.PARTY, Arrays.asList("rock"),
-//          0.1f, 10, 0.1f);
-//      hq.generateCustom(testSettings, newEvent, api, currentUser, accessToken);
+      // Generate the playlist associated with this event
+      hq.generateFromTag(newEvent, api, currentUser, accessToken);
 
-      // These lines are only for testing
-//      VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
-//      String tempURI = hq.convertForSpotify(p2, newEvent.getName(), api,
-//          currentUser);
-//      System.out.println("~~~THE TRACKS~~~");
-//      System.out.println(p2.getTracks());
-//      System.out.println(p2.getTracks().size());
+      // ~~~~~~~~~These lines are only for testing
+      VibePlaylist p = VibeCache.getPlaylistCache().get(newEvent.getId());
+      // String tempURI = hq.convertForSpotify(p2, newEvent.getName(), api,
+      // currentUser);
+      System.out.println("~~~THE TRACKS~~~");
+      System.out.println(p.getTracks());
+      System.out.println(p.getTracks().size());
+      // ~~~~~end of testing
 
       // Return an event object to the front-end
 
@@ -375,11 +367,11 @@ public final class Main {
       VibePlaylist playlist = VibeCache.getPlaylistCache().get(eventID);
 
       // TODO: Need to get the name from the eventID
-      String eventName = "event";
-
+      String eventName = qm.value("event");
+      System.out.println("the event is called" + eventName);
       String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
 
-       return uri;
+      return uri;
     }
   }
 
@@ -418,13 +410,10 @@ public final class Main {
       String end = qm.value("end");
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
-
       CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm, end,
           endAMOrPM, eventName);
-
       // Generate the playlist associated with this event
       hq.generateFromTag(editedEvent, api, currentUser, accessToken);
-
       // These lines are only for testing
       VibePlaylist p2 = VibeCache.getPlaylistCache().get(editedEvent.getId());
       System.out.println("~~~THE TRACKS~~~");

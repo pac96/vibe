@@ -217,10 +217,11 @@ function editRequest(eventID) {
 				end : endTime ,
 				startAMPM : startAP ,
 				endAMPM : endAP,
-				name : eventName
+				name : eventName,
+				id : eventID
 	    	};
 	    	
-	    	$.post("/newEvent", postParameters, function(response) {
+	    	$.post("/editEvent", postParameters, function(response) {
 	    		// 1. send stuff to back end and store in responseObject
 	    		var responseObject = JSON.parse(response);
 

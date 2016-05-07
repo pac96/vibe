@@ -280,16 +280,18 @@ public final class Main {
         System.out.println("ERROR: issue retrieving current user");
       }
 
-      String display = currentUser.getId();
+      String display = currentUser.getDisplayName();
 
-      List<String> params = new ArrayList<>();
+      if (display == null) {
+    	  display = currentUser.getId();
+      }
 
       // generatePlaylist();
       // String playlistURI = generatePlaylist();
       // params.add(display);
       // params.add(playlistURI);
 
-      System.out.printf("User: %s\n", display);
+      System.out.printf("Current User: %s\n", display);
 
       return display;
     }
@@ -330,7 +332,8 @@ public final class Main {
           endAmOrPm, eventName);
 
       // Generate the playlist associated with this event
-//      hq.generateFromTag(newEvent, api, currentUser, accessToken);
+      VibePlaylist p = hq.generateFromTag(newEvent, api, currentUser, accessToken);
+      VibeCache.getPlaylistCache().put(newEvent.getId(), p);
 
       // These lines are only for testing
 //      VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
@@ -358,16 +361,11 @@ public final class Main {
       VibePlaylist playlist = VibeCache.getPlaylistCache().get(eventID);
 
       // TODO: Need to get the name from the eventID
-      String eventName = "eventName";
+      String eventName = "event";
 
       String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
 
-      // params.add(display);
-      // params.add(playlistURI);
-      // System.out.println("Cached playlist: " + uri);
-
-      return null;
-      // return uri;
+       return uri;
     }
   }
 

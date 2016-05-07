@@ -72,6 +72,7 @@ public class PlaylistGenerator {
       e1.printStackTrace();
     } catch (IOException e1) {
       // TODO Auto-generated catch block
+      System.out.println(e1.getMessage());
       e1.printStackTrace();
     }
     connection.setRequestProperty("Host", "api.spotify.com");

@@ -2,8 +2,21 @@
 $(document).on('click', '#viewPlaylist', (function() {
 	console.log("View playlist clicked!");
     // Retrieve the playlist URI from the backend and show it
-	// var playlistURI = getPlaylistURI(currentEventID);
-	// showPlaylist(playlistURI);
+	var playlistURI = getPlaylistURI(currentEventID);
+	showPlaylist(playlistURI);
+	
+	// show name of event at top of page 
+	var eventName = $('#name').val();
+	var startTime = $('#startTime').val();
+	var endTime = $('#endTime').val();
+	var eventDIV = document.getElementById('view-playlist-panel');
+	eventDIV.innerHTML = eventName + ' | ' + startTime + ' - ' + endTime;
+	console.log(eventName);
+	$('#view-playlist-panel').show();
+	
+	//hide unneded divs
+	$("#customizePlaylistForm").hide();
+	$("#editEventForm").hide();
 }));
 
 
@@ -12,6 +25,10 @@ $(document).on('click', '#customizePlaylist', (function() {
 	console.log("Customize playlist clicked!");
 	$("#customizePlaylistForm").show();
 	customize(currentEventID);
+	
+	//hide unneeded divs
+	$('#view-playlist-panel').hide();
+	$("#editEventForm").hide();
 }));
 
 
@@ -19,6 +36,10 @@ $(document).on('click', '#customizePlaylist', (function() {
 $(document).on('click', '#editEvent', (function() {
 	// Show the edit event form
     $("#editEventForm").show();
+    
+    // hide unneeded divs
+    $("#customizePlaylistForm").hide();
+    $('#view-playlist-panel').hide();
 }));
 
 /* Handles clicking on the submit changes button */
@@ -42,6 +63,12 @@ $("#EditAddNewEvent").click(function() {
 // "Delete Event" option
 $(document).on('click', '#deleteEvent', (function() {
     deleteEvent(currentEventID);
+
+
+    // hide unneeded divs
+    $("#editEventForm").hide();
+    $("#customizePlaylistForm").hide();
+    $('#view-playlist-panel').hide();
 }));
 
 
@@ -81,11 +108,6 @@ $('.mutliSelect input[type="checkbox"]').on('click', function() {
 
   }
 });
-
-/** slider functions **/
-
-$('#popularitySlider').data('slider').getValue();
-$('#energySlider').data('slider').getValue();
 
 
 
@@ -277,7 +299,63 @@ function editRequest(eventID) {
 		}
 }
 
-
-function customize(eventID) {
+/** Object to mirror Customization from the backend **/
+function Customization(preferences) {
+	this.tag = preferences.event;
+	this.mood = preferences.mood;
+	this.popularity = preferences.popularity;
+	this.energy = preferences.energy;
+	this.genre = prefereces.genre;
+	this.playlist = preferences.playlist;
 
 }
+
+/**
+ * Customizes an event's music settings and returns
+ * a new playlist based on those customizations
+ */
+/**function customizePlaylist() {
+	// necessary for some browser problems (saw on jquery's website)
+		$.valHooks.textarea = {
+		  get: function( elem ) {
+		    return elem.value.replace( /\r?\n/g, "\r\n" );
+		  }
+		};
+
+		var eventTag = $('input[name=eTradio]:checked', '#myForm').val()
+		var eventMood = $('input[name=mSradio]:checked', '#myForm').val()
+		var popularityPref = $('#popularitySlider').data('slider').getValue();
+		var energyPref = $('#energySlider').data('slider').getValue();
+		var genreSelection = $('#genre-selector').val();
+		var playlistSelection = $('#select-your-playlist').val();
+		
+		var customize = (eventTag != null  || eventMood != null  ||)
+						popularityPref != null || energyPref != null ||
+						genreSelection != null) ;
+						
+
+		
+		if(playlistSelection != null && customize) {
+			alert("You must either customize or select Spotify playlists");
+		} else {
+	    	var postParameters = {
+				event : eventTag ,
+				mood : eventMood ,
+				popularity : popularityPref ,
+				energy : energyPref,
+				genre : genreSelection,
+				playlist : playlistSelection
+				
+	    	};
+	    	
+	    	$.post("/customizePlaylist", postParameters, function(response) {
+	    		// 1. Send information to the back end, store in responseObject
+	    		var responseObject = JSON.parse(response);
+
+	    		// 2. Make customization object from responseObject
+	    		var custom = new Customization(responseObject);
+
+	    	});
+		}
+}
+**/

@@ -74,6 +74,33 @@ public class CalendarEvent {
     }
   }
 
+  // returns duration of event in minutes
+  public int getDuration() {
+    int startTime = this.getTimeInMins(start);
+    int endTime = this.getTimeInMins(end);
+    int duration = endTime - startTime;
+    System.out.println(duration);
+    return duration;
+  }
+
+  // returns the time in military minutes from midnight
+  public int getTimeInMins(EventTime time) {
+    int startH = time.getHour();
+    int startM = time.getMinute();
+    boolean isAm = time.IsAm();
+    // If PM and not 12pm, add 12 hours
+    if ((!isAm && (startH != 12))) {
+      startH = startH + 12; // accounting for 24 hour time
+    }
+    // If 12AM, convert to 0
+    if (isAm && startH == 12) {
+      startH = 0;
+    }
+    int startinMins = startH * 60 + startM;
+    System.out.println(startinMins);
+    return startinMins;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof CalendarEvent)) {

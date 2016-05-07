@@ -34,7 +34,9 @@ import com.wrapper.spotify.models.User;
 
 import edu.brown.cs.cjps.calendar.CalendarEvent;
 import edu.brown.cs.cjps.music.PlaylistHQ;
+import edu.brown.cs.cjps.music.Settings;
 import edu.brown.cs.cjps.music.VibePlaylist;
+import edu.brown.cs.cjps.vibe.MusicEventTag.Tag;
 import freemarker.template.Configuration;
 
 /**
@@ -286,10 +288,13 @@ public final class Main {
     	  display = currentUser.getId();
       }
 
+      //
+
+      // Old, I think?
       // generatePlaylist();
       // String playlistURI = generatePlaylist();
       // params.add(display);
-      // params.add(playlistURI);
+      // params.add(tempURI);
 
       System.out.printf("Current User: %s\n", display);
 
@@ -320,6 +325,7 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
+      // CalendarEvent newEvent = eventProcessor.addEvent(qm);
 
       // Retrieve event information from the front-end
       String start = qm.value("start");
@@ -332,13 +338,22 @@ public final class Main {
           endAmOrPm, eventName);
 
       // Generate the playlist associated with this event
-      VibePlaylist p = hq.generateFromTag(newEvent, api, currentUser, accessToken);
-      VibeCache.getPlaylistCache().put(newEvent.getId(), p);
+//<<<<<<< HEAD
+//      VibePlaylist p = hq.generateFromTag(newEvent, api, currentUser, accessToken);
+//      VibeCache.getPlaylistCache().put(newEvent.getId(), p);
+//=======
+      // hq.generateFromTag(newEvent, api, currentUser, accessToken);
+      Settings testSettings = new Settings(Tag.PARTY, Arrays.asList("rock"),
+          0.1f, 10, 0.1f);
+//      hq.generateCustom(testSettings, newEvent, api, currentUser, accessToken);
 
       // These lines are only for testing
-//      VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
-//      System.out.println("~~~THE TRACKS~~~");
-//      System.out.println(p2.getTracks());
+      VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
+      String tempURI = hq.convertForSpotify(p2, newEvent.getName(), api,
+          currentUser);
+      System.out.println("~~~THE TRACKS~~~");
+      System.out.println(p2.getTracks());
+      System.out.println(p2.getTracks().size());
 
       // Return an event object to the front-end
 
@@ -408,7 +423,60 @@ public final class Main {
       CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm, end,
           endAMOrPM, eventName);
 
+      // Generate the playlist associated with this event
+      hq.generateFromTag(editedEvent, api, currentUser, accessToken);
+
+      // These lines are only for testing
+      VibePlaylist p2 = VibeCache.getPlaylistCache().get(editedEvent.getId());
+      System.out.println("~~~THE TRACKS~~~");
+      System.out.println(p2.getTracks());
+
       return editedEvent;
+    }
+  }
+
+  /**
+   * Class to handle adding custom playlists to events. I'm assuming that the
+   * event and the settings will be passed back.
+   * 
+   * @author smayfiel
+   *
+   */
+  private class AddCustomEventHandler implements Route {
+    @Override
+    public Object handle(Request req, Response res) {
+      QueryParamsMap qm = req.queryMap();
+      // Event stuff
+      String start = qm.value("start");
+      Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
+      String end = qm.value("end");
+      Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
+      String eventName = qm.value("name");
+
+      CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm, end,
+          endAMOrPM, eventName);
+
+      // Playlist stuff
+      String tag = qm.value("tag");
+      String genres = qm.value("genres");
+      String energy = qm.value("energy");
+      String hotness = qm.value("hotness");
+      String mood = qm.value("mood");
+
+      // Add these things to a list
+      List<String> settingsList = Arrays.asList(tag, genres, energy, hotness,
+          mood);
+
+      // Generate the playlist
+      hq.generateCustom(settingsList, newEvent, api, currentUser, accessToken);
+
+      // These lines are only for testing
+      VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
+      System.out.println("~~~THE TRACKS~~~");
+      System.out.println(p2.getTracks());
+
+      // TODO: I have no idea what this should return
+      return newEvent;
     }
   }
 

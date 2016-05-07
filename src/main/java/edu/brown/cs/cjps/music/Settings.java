@@ -10,7 +10,7 @@ public class Settings {
   private Tag tag;
   private List<String> genres;
   private float mood;
-  private float hotness;
+  private int hotness;
   private float energy;
 
   // Empty constructor
@@ -25,7 +25,7 @@ public class Settings {
   }
 
   // All in one constructor
-  public Settings(Tag t, List<String> initG, float m, float h, float e) {
+  public Settings(Tag t, List<String> initG, float m, int h, float e) {
     tag = t;
     genres = initG;
     mood = m;
@@ -41,12 +41,15 @@ public class Settings {
     genres.add(genre);
   }
 
+  public void replaceGenres(List<String> newGenres) {
+    genres = newGenres;
+  }
+
   public void setMood(float newMood) {
-    // TODO: Same with mood
     mood = newMood;
   }
 
-  public void setHotness(float hot) {
+  public void setHotness(int hot) {
     hotness = hot;
   }
 
@@ -62,11 +65,15 @@ public class Settings {
     return mood;
   }
 
-  public float getHotness() {
+  public int getHotness() {
     return hotness;
   }
 
   public float getEnergy() {
     return energy;
+  }
+
+  public Tag getTag() {
+    return tag;
   }
 }

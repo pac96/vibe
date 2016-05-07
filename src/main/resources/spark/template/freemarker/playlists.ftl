@@ -293,7 +293,8 @@
 
 		<!-- Edit Event Form -->
 		    
-		<form id='editEventForm' form method="POST" action="/editEvent">
+		<form id='editEventForm' form method="POST" action="/editEvent" class='smart-green'>
+  		   <h7> Edit Event </h7>
 	       <label for='name' >Event Name: </label>
 	       <input type='text' id='editEventName' name='name' maxlength="30" class="form-textbox"/>
 	       <br/><br/>
@@ -311,7 +312,7 @@
 	       <br/><br/>
 
 	       &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
-	       <input type='button' name='AddNewEvent' value='Submit Changes' id="EditAddNewEvent" class="form-button"/>
+	       <input type='button' name='AddNewEvent' value='Submit Changes' id="EditAddNewEvent" class="button"/>
 		</form>
 
 	    <br>

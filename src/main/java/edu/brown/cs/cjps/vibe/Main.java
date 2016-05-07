@@ -58,6 +58,8 @@ public final class Main {
     new Main(args).run();
   }
 
+  private boolean receivedCode;
+  
   /**
    * Arguments to the command line.
    */
@@ -78,6 +80,8 @@ public final class Main {
    * An instance variable for the Spotify API.
    */
   private Api api;
+  
+  private String code;
 
   /**
    * Current spotify user
@@ -204,8 +208,9 @@ public final class Main {
   private class HomepageHandler implements TemplateViewRoute {
     @Override
     public ModelAndView handle(Request req, Response res) {
-      Map<String, Object> variables = ImmutableMap.of("title", "Vibe");
-      return new ModelAndView(variables, "vibe.ftl");
+      receivedCode = false;	
+	  Map<String, Object> variables = ImmutableMap.of("title", "Vibe");
+	  return new ModelAndView(variables, "vibe.ftl");
     }
   }
 
@@ -254,49 +259,47 @@ public final class Main {
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
 
-      // Retrieve the code from the front-end to get an access token
-      String code = GSON.fromJson(qm.value("code"), String.class);
-      /*
-       * Make a token request. Asynchronous requests are made with the .getAsync
-       * method and synchronous requests are made with the .get method. This
-       * holds for all type of requests.
-       */
-      AuthorizationCodeCredentials acg = null;
-      currentUser = null;
-      accessToken = "";
-      refreshToken = "";
+      if (!receivedCode) {
+    	 
+    	// Retrieve the code from the front-end to get an access token
+          code = qm.value("code").trim();
+          System.out.println("Code: " + code);
+          receivedCode = true;
+          
+          /*
+           * Make a token request. Asynchronous requests are made with the .getAsync
+           * method and synchronous requests are made with the .get method. This
+           * holds for all type of requests.
+           */
+          AuthorizationCodeCredentials acg = null;
+          currentUser = null;
+          accessToken = "";
+          refreshToken = "";
+         
+          try {
+            acg = api.authorizationCodeGrant(code).build().get();
+            System.out.println("API authorization code grant is good");
+            accessToken = acg.getAccessToken();
+            refreshToken = acg.getRefreshToken();
+            // System.out.println("Getme request: " +
+            // api.getMe().accessToken(accessToken).build().toString());
 
-      try {
-        acg = api.authorizationCodeGrant(code).build().get();
-        accessToken = acg.getAccessToken();
-        refreshToken = acg.getRefreshToken();
-        // System.out.println("Getme request: " +
-        // api.getMe().accessToken(accessToken).build().toString());
-
-        api.setAccessToken(accessToken);
-        api.setRefreshToken(refreshToken);
-        // System.out.println("Access token : " + acg.getAccessToken());
-        currentUser = api.getMe().accessToken(accessToken).build().get();
-      } catch (Exception e) {
-        e.printStackTrace();
-        System.out.println("ERROR: issue retrieving current user");
+            api.setAccessToken(accessToken);
+            api.setRefreshToken(refreshToken);
+            // System.out.println("Access token : " + acg.getAccessToken());
+            currentUser = api.getMe().accessToken(accessToken).build().get();
+          } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.toString());
+          }
       }
-
+      
       String display = currentUser.getDisplayName();
 
       if (display == null) {
     	  display = currentUser.getId();
       }
-
-      //
-
-      // Old, I think?
-      // generatePlaylist();
-      // String playlistURI = generatePlaylist();
-      // params.add(display);
-      // params.add(tempURI);
-
-      System.out.printf("Current User: %s\n", display);
+      System.out.printf("Current User: %s\n", display);        
 
       return display;
     }

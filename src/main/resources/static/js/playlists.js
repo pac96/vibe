@@ -9,32 +9,6 @@ var customizePlaylistForm;
 var eventModal;
 var eventToTimeout = new Map();
 
-//setInterval(function() {
-//	var timeNow = new Date().getTime();
-//	console.log(timeNow);
-//	for (var i = 0; i < eventsArray.length; i++) {
-//		if (d === eventsArray[i].startDate) {
-//			alert("It's time for " + eventsArray[i].name);
-//		}
-//	}
-//
-// }, 1000);
-
-function alertUserForEvent(calendarEvent) {
-	// console.log("It's time for " + calendarEvent.name);
-	var m = moment();
-	var m1Format = m.format("h:mm a");
-	var calendarMFormat = calendarEvent.moment.format("h:mm a");
-
-	console.log(m1Format);
-	console.log(calendarMFormat);
-
-	if (m.isSame(calendarEvent.moment)) {
-		console.log("IT IS TIME FOR " + calendarEvent.name);
-	}
-
-}
-
 
 
 function compareEvents(eventA, eventB) {
@@ -49,58 +23,6 @@ function compareEvents(eventA, eventB) {
 	}
 }
 
-var eventComparator = function(eventA, eventB) {
-
-	if (eventA == null || eventB == null) {
-		return -1;
-	}
-
-	var eventAMoment = eventA.moment;
-	var eventBMoment = eventB.moment;
-
-	// If event A is in the AM and event B is in the PM, event A comes before event B
-	// if (eventA.isAM && !eventB.isAM) {
-	// 	return -1;
-	// } 
-
-	// // If event G is in the AM and event A is in the PM, event B comes before event A
-	// if (eventB.isAM && !eventA.isPM) {
-	// 	return 1;
-	// }
-
-	if (eventBMoment.isAfter(eventA.moment)) {
-		return -1;
-	} else {
-		return 1;
-	}
-
-	// var eventAStartTime = eventA.start;
-	// var eventBStartTime = eventB.start;
-	
-	// //Case where eventA and eventB are both in the AM or both PM
-	// if (eventAStartTime.isAM && eventBStartTime.isAM 
-	// 		|| (!eventAStartTime.isAM && !eventBStartTime.isAM)) {	
-	// 	if (eventAStartTime.hour < eventBStartTime.hour) {
-	// 		return -1;
-	// 	} else if (eventAStartTime.hour > eventBStartTime.hour) {
-	// 		return 1;
-	// 	} else {
-	// 		if (eventAStartTime.minute <= eventBStartTime.minute) {
-	// 			return -1;
-	// 		} else if (eventAStartTime.minute > eventBStartTime.minute) {
-	// 			return 1;
-	// 		}			
-	// 	} 
-	
-	// } else if (eventAStartTime.isAM && !eventBStartTime.isAM) {
-	// 	//eventA comes before eventB
-	// 	return -1;	
-	// //Case where eventA is in the PM and eventA is in the AM	
-	// } else {
-	// 	//eventA comes after eventB
-	// 	return 1;
-	// }
-}
 
 
 if (window.location.pathname === "/playlists") {
@@ -117,41 +39,22 @@ if (window.location.pathname === "/playlists") {
 	$("#logoutLink").attr('href', 
 		"http://localhost:" + window.location.port + "/vibe");
 
+	var userCode;
 	// If the cookie doesn't have the code already
 	// Next, retrieve the user's code to send to the back-end from the URL	
 	var uri = new URI(window.location.href);
 	var urlParams = uri.search(true);
-	var codeFromURL = urlParams.code;
-	var postParams = {code: JSON.stringify(codeFromURL)};
+	userCode = urlParams.code;
+
+	var postParams = {code: userCode};
 
 	// Retrieve the username from the back-end
 	$.post("/code", postParams, function(username) {
 	  // Back-end sends back the user's display name
-//	  var backendParams = responseJSON.split(",");
-//
-//	  if (backendParams === "") {
-//	  	alert("Error loading user information. Please logout and login again!");
-//	  }
-//
-//	  var username = backendParams[0].slice(1, backendParams[0].length).trim(); // remove the [
-//	  var playlistURI = "https://embed.spotify.com/?uri=" 
-//	  + backendParams[1].slice(0, backendParams[1].length - 1).trim(); // remove the ]
-//
-//	  document.cookie = "name=" + username; // Store the username in a cookie
-//
-//	  console.log("user: " + username);
-//	  console.log("playlist: " + playlistURI);
-//
-//	  if (backendParams != null) {
-//	    name = username;
-//		$("#displayname").html(name);
-//	  }
-//
-//	  $("#playlist").attr('src', playlistURI);
 		
 	  console.log("Username: " + username);
 	  $("#displayname").html(username);
-	
+
 	}); // end access token code post
 }
 

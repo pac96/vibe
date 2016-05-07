@@ -229,9 +229,6 @@
 			                <input type="checkbox" value="K-Pop" />K-Pop
 			            </li>
 			            <li>
-			                <input type="checkbox" value="K-Pop" />K-Pop
-			            </li>
-			            <li>
 			                <input type="checkbox" value="Pop" />Pop
 			            </li>
 			            <li>

@@ -421,6 +421,8 @@ public final class Main {
       String end = qm.value("end");
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
+      String eventID = qm.value("eventID");
+     
 
       CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm, end,
           endAMOrPM, eventName);

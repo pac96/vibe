@@ -27,6 +27,12 @@ h1 span {
 
 }
 
+ul#calendarEvents {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+
 #date {
   color: white;
   text-align: center;
@@ -36,11 +42,8 @@ h1 span {
   color: white;
 }
 
-#eventDesc {
+.eventDesc {
   color: white;
-  font-size: 1.1em;
-  text-align: center;
-  padding: .1em;
 }
 
 div.other-content {

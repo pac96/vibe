@@ -55,7 +55,9 @@
 		<div id='view-playlist-panel'> 
 			<!--TODO: Display the name of the event --> 
 		</div>	    
-			    
+		
+	    <div class="otherContent"></div>
+	    
 			    	
 		<!-- Choosing a Playlist from Exisiting Spotify Playlist for Event -->
 		<div id='customize-playlist-panel'> 
@@ -240,31 +242,30 @@
 		<!-- Edit Event Form -->
 		    
 		<form id='editEventForm' form method="POST" action="/editEvent">
-		       <label for='name' >Event Name: </label>
-		       <input type='text' id='editEventName' name='name' maxlength="30" class="form-textbox"/>
-		       <br/><br/>
+	       <label for='name' >Event Name: </label>
+	       <input type='text' id='editEventName' name='name' maxlength="30" class="form-textbox"/>
+	       <br/><br/>
 
-		       <label for='start-time' >Start Time:</label> 
-		       <input type='text' id='editStartTime' name='startTime' maxlength="5" class="form-textbox-time-start"/> 
-		       &nbsp <input type="radio" id='editStartAM' name="time-selection-start" value="am-start" checked>am
-		       &nbsp <input type="radio" id='editStartPM' name="time-selection-start" value="pm-start">pm
-		       <br/><br/>
+	       <label for='start-time' >Start Time:</label> 
+	       <input type='text' id='editStartTime' name='startTime' maxlength="5" class="form-textbox-time-start"/> 
+	       &nbsp <input type="radio" id='editStartAM' name="time-selection-start" value="am-start" checked>am
+	       &nbsp <input type="radio" id='editStartPM' name="time-selection-start" value="pm-start">pm
+	       <br/><br/>
 
-		       <label for='end-time' >End Time:</label> 
-		       <input type='text' id='editEndTime' name='endTime' maxlength="5" class="form-textbox-time-end"/>
-		       &nbsp <input type="radio" id='editEndAM' name="time-selection-end" value="am-end" checked>am
-		       &nbsp <input type="radio" id='editEndPM' name="time-selection-end" value="pm-end">pm
-		       <br/><br/>
+	       <label for='end-time' >End Time:</label> 
+	       <input type='text' id='editEndTime' name='endTime' maxlength="5" class="form-textbox-time-end"/>
+	       &nbsp <input type="radio" id='editEndAM' name="time-selection-end" value="am-end" checked>am
+	       &nbsp <input type="radio" id='editEndPM' name="time-selection-end" value="pm-end">pm
+	       <br/><br/>
 
-		       &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
-		       <input type='button' name='AddNewEvent' value='Submit Changes' id="EditAddNewEvent" class="form-button"/>
+	       &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
+	       <input type='button' name='AddNewEvent' value='Submit Changes' id="EditAddNewEvent" class="form-button"/>
 		</form>
 
 	    <br>
 
 	    <!-- <h2>Display Selected Event Here</h2>
 	    <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Expand Playlist View</a> -->
-	   
 
 		<div>
 		<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>

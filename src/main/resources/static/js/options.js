@@ -47,7 +47,9 @@ function getSelectedValue(id) {
 
 $(document).bind('click', function(e) {
   var $clicked = $(e.target);
-  if (!$clicked.parents().hasClass("gDropdown")) $(".gDropdown dd ul").hide();
+  if (!$clicked.parents().hasClass("gDropdown")) {
+	  $(".gDropdown dd ul").hide();
+  }
 });
 
 $('.mutliSelect input[type="checkbox"]').on('click', function() {
@@ -151,13 +153,23 @@ function deleteEvent(id) {
 		} else {
 			$("#" + id).remove();
 			// The same as <p class='contentMsg' id='successMsg'>Deletion successful!</p>
-			var $msg = $("<p/>", {class: "contentMsg", id: "successMsg"});
+			var $msg = $("<p>", {
+				class: "contentMsg", 
+				id: "successMsg"
+			});
+
 			$msg.append("Deletion successful!");
 			otherContent.html($msg);
 		    otherContent.fadeIn('slow');
 		    setTimeout(function() {
 			    otherContent.fadeOut('slow');
 		    }, 2000);
+
+		    for (var i = 0; i < eventsArray.length; i++) {
+    			if (eventsArray[i].id === id) {
+    				eventsArray.splice(i,1);
+    			}
+    		}
 		}
 	});
 

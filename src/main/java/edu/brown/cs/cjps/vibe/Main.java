@@ -217,19 +217,8 @@ public final class Main {
   }
 
   /**
-<<<<<<< HEAD
    * Handles creating the GUI for processing login requests
    *
-=======
-   * Handles creating the GUI for procString playlistName = "Party"; //
-   * hq.generateFromTag(playlistName, api, currentUser, accessToken); //
-   * VibePlaylist p2 = VibeCache.getPlaylistCache().get(playlistName); //
-   * System.out.println("~~~THE TRACKS~~~"); //
-   * System.out.println(p2.getTracks()); // String playlistURI =
-   * hq.convertForSpotify(p2, playlistName, api, // currentUser);essing login
-   * requests
-   *
->>>>>>> dc754504b841c8cf1e7d3228ca2262ad00a38d5b
    * @author cjps
    *
    */
@@ -288,12 +277,10 @@ public final class Main {
             System.out.println("API authorization code grant is good");
             accessToken = acg.getAccessToken();
             refreshToken = acg.getRefreshToken();
-            // System.out.println("Getme request: " +
-            // api.getMe().accessToken(accessToken).build().toString());
 
             api.setAccessToken(accessToken);
             api.setRefreshToken(refreshToken);
-            // System.out.println("Access token : " + acg.getAccessToken());
+
             currentUser = api.getMe().accessToken(accessToken).build().get();
           } catch (Exception e) {
             e.printStackTrace();
@@ -344,6 +331,7 @@ public final class Main {
       Boolean endAmOrPm = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
       CalendarEvent newEvent = null;
+      
       try {
        newEvent = eventProcessor
         	  .addEvent(start, amOrPm, end, endAmOrPm, eventName, currentUser.getId());
@@ -351,8 +339,6 @@ public final class Main {
         System.out.println("Error in adding event");
         e.printStackTrace();
       }
-
-
 
       // Generate the playlist associated with this event
       hq.generateFromTag(newEvent, api, currentUser, accessToken);
@@ -387,10 +373,10 @@ public final class Main {
       VibePlaylist playlist = VibeCache.getPlaylistCache().get(eventID);
 
       // TODO: Need to get the name from the eventID
-      String eventName = qm.value("event");
-      System.out.println("the event is called" + eventName);
+      String eventName = qm.value("eventName");
+      System.out.println("the event is called " + eventName);
       String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
-
+      
       return uri;
     }
   }

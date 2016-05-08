@@ -45,8 +45,11 @@ public class PlaylistHQ {
     return p;
   }
 
-  public VibePlaylist generateCustom(List<String> stringSettings,
-      CalendarEvent event, Api api, User curentUser, String accessToken) {
+  public VibePlaylist generateCustom(List<String> genres,
+      List<String> stringSettings, CalendarEvent event, Api api,
+      User curentUser, String accessToken) {
+    System.out.println(genres);
+    System.out.println(stringSettings);
     Settings settings = this.makeSettings(stringSettings);
     // Add in the Tag settings to the specific settings that the user chose,
     // and fix anything left null

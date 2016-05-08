@@ -121,6 +121,7 @@ public final class Main {
 
     // Grab the database from the command line args.
     String db = args[0];
+
     UserDBCreator dbCreator = null;
 
     try {
@@ -144,11 +145,6 @@ public final class Main {
     redirectURI = String.format("http://localhost:%s/playlists", port);
     api = Api.builder().clientId(clientID).clientSecret(clientSecret)
         .redirectURI(redirectURI).build();
-
-    // SOME TEST STUFF
-    // this.generatePlaylist();
-
-    // END TEST STUFF
 
     if (options.has("gui")) {
       // Runs the GUI
@@ -198,6 +194,7 @@ public final class Main {
     Spark.post("/getPlaylist", new GetPlaylistHandler());
     Spark.post("/deleteEvent", new DeleteEventHandler());
     Spark.post("/editEvent", new EditEventHandler());
+    Spark.post("/customizePlaylist", new AddCustomPlaylistHandler());
 
   }
 
@@ -486,22 +483,26 @@ public final class Main {
       // Playlist stuff
       String eventID = qm.value("eventID");
       String tag = qm.value("tag");
+      System.out.println("the tag is + " + tag);
       List<String> genres = GSON.fromJson(qm.value("genres"), List.class);
       String energy = qm.value("energy");
       String hotness = qm.value("popularity");
       String mood = qm.value("mood");
 
+      System.out.println("the genre list:");
+      System.out.println(genres);
+
       // Add these things to a list
-      //List<String> settingsList = Arrays.asList(tag, genres, energy, hotness,
-          mood);
+      List<String> settingsList = Arrays.asList(tag, energy, hotness, mood);
 
       // Generate the playlist
-      hq.generateCustom(settingsList, newEvent, api, currentUser, accessToken);
+      hq.generateCustom(genres, settingsList, newEvent, api, currentUser,
+          accessToken);
 
       // These lines are only for testing
-      VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
-      System.out.println("~~~THE TRACKS~~~");
-      System.out.println(p2.getTracks());
+      // VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
+      // System.out.println("~~~THE TRACKS~~~");
+      // System.out.println(p2.getTracks());
 
       // TODO: I have no idea what this should return
       return newEvent;

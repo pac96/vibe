@@ -35,6 +35,13 @@ $(document).on('click', '#customizePlaylist', (function() {
 }));
 
 
+$(document).on('click', '#generateCustom', function() {
+	customizePlaylist();
+})
+
+
+
+
 // "Edit Event" option
 $(document).on('click', '#editEvent', (function() {
 	// Show the edit event form
@@ -404,13 +411,14 @@ function customizePlaylist() {
 	console.log("Customize playlist? " + customize);
 	console.log("Event tag: " + eventTag);
 	console.log("Event mood: " + eventMood);
-	console.log("Event mood number: " + eventMoodNum); //.5
+	console.log("Event mood number: " + eventMoodNum);
 	console.log("Popularity: " + popularityPref);
 	console.log("Energy: " + energyPref);
 	console.log("Genres: " + genreSelection); 
-	
+	var playlistSelection = "";
+
 	if(!customize){
-		var playlistSelection = document.getElementById('#select-your-playlist').value;
+		playlistSelection = document.getElementById('#select-your-playlist').value;
 	}
 					
 	
@@ -418,12 +426,13 @@ function customizePlaylist() {
 		alert("You must either customize or select Spotify playlists");
 	} else {
     	var postParameters = {
-			event : eventTag ,
+			tag : eventTag ,
 			mood : eventMoodNum ,
 			popularity : popularityPref ,
 			energy : energyPref,
-			genre : genreSelection,
-			playlist : playlistSelection
+			genres : JSON.stringify(genreSelection),
+			playlist : playlistSelection,
+			eventID : id
 			
     	};
     	
@@ -442,3 +451,7 @@ function customizePlaylist() {
 function populatePlaylistSelections() {
 
 }
+
+$(document).on('click', '#useOwnPlaylist', function() {
+	
+});

@@ -505,11 +505,11 @@ public final class Main {
       String tag = qm.value("tag");
       String genres = qm.value("genres");
       String energy = qm.value("energy");
-      String hotness = qm.value("hotness");
+      String popularity = qm.value("popularity");
       String mood = qm.value("mood");
 
       // Add these things to a list
-      List<String> settingsList = Arrays.asList(tag, genres, energy, hotness,
+      List<String> settingsList = Arrays.asList(tag, genres, energy, popularity,
           mood);
 
       // Generate the playlist

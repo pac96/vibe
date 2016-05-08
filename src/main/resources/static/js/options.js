@@ -1,9 +1,7 @@
 // "View Playlist" option
 $(document).on('click', '#viewPlaylist', (function() {
-	console.log("View playlist clicked!");
     // Retrieve the playlist URI from the backend and show it
-	var playlistURI = getPlaylistURI(currentEventID);
-	showPlaylist(playlistURI);
+	showPlaylist(currentEventID);
 	
 	// show name of event at top of page 
 	var eventName = $('#name').val();
@@ -138,11 +136,30 @@ $('.mutliSelect input[type="checkbox"]').on('click', function() {
  * show up on the screen
  * @param {String} playlistURI - the link to the Spotify playlist
  */
-function showPlaylist(playlistURI) {
-	var playlist = $("#playlist");
-	// Set the source of the playlist to be the input URI
-	playlist.attr('src', playlistURI);
-	playlist.show();
+function showPlaylist(eventID) {
+	// 1. Set up a post request to the backend and get the event ID
+    var uri = "";
+	var name;
+
+	for (var i = 0; i < eventsArray.length; i++) {
+		if (eventID === eventsArray[i].id) {
+			name = eventsArray[i].name;
+		}
+	}    
+
+    var postParams = {
+    	eventID: eventID, 
+    	eventName: name
+    };
+
+    $.post("/getPlaylist", postParams, function(link) {
+        console.log("Playlist @ " + link);
+        uri = link;
+        var playlist = $("#playlist");
+		// Set the source of the playlist to be the input URI
+		playlist.attr('src', "https://embed.spotify.com/?uri=" + uri);
+		playlist.show();
+    }); 
 }
 
 /**
@@ -153,12 +170,26 @@ function showPlaylist(playlistURI) {
 function getPlaylistURI(eventID) {
 	// 1. Set up a post request to the backend and get the event ID
     var uri = "";
+	
+	var name;
 
-    $.post("/getPlaylist", {eventID: eventID}, function(link) {
+	for (var i = 0; i < eventsArray.length; i++) {
+		if (eventID === eventsArray[i].id) {
+			name = eventsArray[i].name;
+		}
+	}    
+
+    var postParams = {
+    	eventID: eventID, 
+    	eventName: name
+    };
+
+    $.post("/getPlaylist", postParams, function(link) {
+        console.log("Playlist @ " + link);
         uri = link;
-    }); 
 
-	return uri;
+        return uri;
+    }); 
 }
 
 

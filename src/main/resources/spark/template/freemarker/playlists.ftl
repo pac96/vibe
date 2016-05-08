@@ -122,27 +122,27 @@
 			<!-- Event Tags -->
 			<div id="eTagWrapper">
 				<div>
-					<input type="radio" name="eTradio" id="eTradio1" class="radio" checked/>
+					<input type="radio" name="eTradio" id="eTradio1" class="radio" value="Eat/Social" checked/>
 					<label for="eTradio1">Eat/Social</label>
 				</div>
 
 				<div>
-					<input type="radio" name="eTradio" id="eTradio2" class="radio"/>
+					<input type="radio" name="eTradio" id="eTradio2" class="radio" value="Work/Study"/>
 					<label for="eTradio2">Work/Study</label>
 				</div>
 				  
 				<div>	
-					<input type="radio" name="eTradio" id="eTradio3" class="radio"/>
+					<input type="radio" name="eTradio" id="eTradio3" class="radio" value="Exercise"/>
 					<label for="eTradio3">Exercise</label>
 				</div>
 
 				<div>	
-					<input type="radio" name="eTradio" id="eTradio4" class="radio"/>
+					<input type="radio" name="eTradio" id="eTradio4" class="radio" value="Party"/>
 					<label for="eTradio4">Party</label>
 				</div>
 
 				<div>	
-					<input type="radio" name="eTradio" id="eTradio5" class="radio"/>
+					<input type="radio" name="eTradio" id="eTradio5" class="radio" value="Restful"/>
 					<label for="eTradio5">Restful</label>
 				</div>
 			</div>
@@ -153,22 +153,22 @@
 			<!-- Mood Selection -->
 			<div id="mTagWrapper">
 				<div>
-					<input type="radio" name="mSradio" id="mSradio1" class="radio" checked/>
+					<input type="radio" name="mSradio" id="mSradio1" class="radio" value="Happy" checked/>
 					<label for="mSradio1">Happy</label>
 				</div>
 
 				<div>
-					<input type="radio" name="mSradio" id="mSradio2" class="radio"/>
+					<input type="radio" name="mSradio" id="mSradio2" class="radio" value="Excited" />
 					<label for="mSradio2">Excited</label>
 				</div>
 				  
 				<div>	
-					<input type="radio" name="mSradio" id="mSradio3" class="radio"/>
+					<input type="radio" name="mSradio" id="mSradio3" class="radio" value="Sad" />
 					<label for="mSradio3">Sad</label>
 				</div>
 
 				<div>	
-					<input type="radio" name="mSradio" id="mSradio4" class="radio"/>
+					<input type="radio" name="mSradio" id="mSradio4" class="radio" value="Relaxing" />
 					<label for="mSradio4">Relaxing</label>
 				</div>
 			</div>
@@ -188,7 +188,7 @@
 
 			<dd>
 			    <div class="mutliSelect" id="msGenre">
-			        <ul>
+			        <ul id="ulGenre">
 			            <li>
 			                <input type="checkbox" value="Alternative" />Alternative
 			            </li>

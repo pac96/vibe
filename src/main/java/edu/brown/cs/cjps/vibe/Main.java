@@ -121,10 +121,9 @@ public final class Main {
 
     //Grab the database from the command line args.
     String db = args[0];
-    UserDBCreator dbCreator = null;
     
 	try {
-		dbCreator = new UserDBCreator(db);
+		UserDBCreator dbCreator = new UserDBCreator(db);
 	} catch (ClassNotFoundException | SQLException e) {
 		e.printStackTrace();
 	}

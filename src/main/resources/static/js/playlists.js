@@ -243,8 +243,8 @@ function addEvent() {
 		}
 
 		// Set up the event format and time format
-		eventFormat = /^[a-zA-Z]+$/;
-		timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+		var eventFormat = /^[a-zA-Z]+$/;
+		var timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
 		
 		if(eventName == null || startTime == null ||
 		 endTime == null || startAP == null || endAP == null) {

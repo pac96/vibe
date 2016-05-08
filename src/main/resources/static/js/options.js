@@ -1,9 +1,7 @@
 // "View Playlist" option
 $(document).on('click', '#viewPlaylist', (function() {
-	console.log("View playlist clicked!");
     // Retrieve the playlist URI from the backend and show it
-	var playlistURI = getPlaylistURI(currentEventID);
-	showPlaylist(playlistURI);
+	showPlaylist(currentEventID);
 	
 	// show name of event at top of page 
 	var eventName = $('#name').val();
@@ -17,6 +15,8 @@ $(document).on('click', '#viewPlaylist', (function() {
 	//hide unneded divs
 	$("#customizePlaylistForm").hide();
 	$("#editEventForm").hide();
+	playlist.hide();
+
 }));
 
 
@@ -29,6 +29,7 @@ $(document).on('click', '#customizePlaylist', (function() {
 	//hide unneeded divs
 	$('#view-playlist-panel').hide();
 	$("#editEventForm").hide();
+	playlist.hide();
 }));
 
 
@@ -45,6 +46,7 @@ $(document).on('click', '#editEvent', (function() {
 /* Handles clicking on the submit changes button */
 $("#EditAddNewEvent").click(function() {
 	requestEdit(currentEventID);
+
 	var $msg = $("<p>", {
 		class: "contentMsg", 
 		id: "successMsg"
@@ -53,6 +55,7 @@ $("#EditAddNewEvent").click(function() {
 	$msg.append("Event edit successful!");
 	otherContent.html($msg);
     otherContent.fadeIn('slow');
+
     setTimeout(function() {
 	    otherContent.fadeOut('slow');
     }, 2000);
@@ -64,12 +67,11 @@ $("#EditAddNewEvent").click(function() {
 $(document).on('click', '#deleteEvent', (function() {
     deleteEvent(currentEventID);
 
-
     // hide unneeded divs
     $("#editEventForm").hide();
     $("#customizePlaylistForm").hide();
     $('#view-playlist-panel').hide();
-}));
+ }));
 
 
 /* genre dropdown, multi selection */
@@ -110,25 +112,6 @@ $('.mutliSelect input[type="checkbox"]').on('click', function() {
 });
 
 
-// if (eventsArray.length > 0) {
-// 	console.log("It's time to get the next important event");
-// 	var nextEvent = calculateNextImportantEvent();
-// 	var nextTime = nextEvent.startDate.getTime();
-// 	var timeNow = new Date().getTime();
-
-// 	var millisecondOffset = timeNow - nextTime;
-// 	console.log("Millisecond offset: " + millisecondOffset);
-
-// 	setTimeout(function() {
-// 		console.log("--------------------------");
-// 		console.log("--------------------------");
-// 		console.log("IT'S TIME FOR THIS EVENT");
-// 		console.log("--------------------------");
-// 		console.log("--------------------------");
-// 	}, millisecondOffset);
-// }
-
-
 
 ///////////////////////////////////////////
 // Function Declarations
@@ -138,27 +121,30 @@ $('.mutliSelect input[type="checkbox"]').on('click', function() {
  * show up on the screen
  * @param {String} playlistURI - the link to the Spotify playlist
  */
-function showPlaylist(playlistURI) {
-	var playlist = $("#playlist");
-	// Set the source of the playlist to be the input URI
-	playlist.attr('src', playlistURI);
-	playlist.show();
-}
-
-/**
- * Retrieves the URI of the playlist associated with a specific event ID
- * @param  {String} eventID - the ID of the event that was clicked
- * @return {String} the URI of the playlist
- */
-function getPlaylistURI(eventID) {
+function showPlaylist(eventID) {
 	// 1. Set up a post request to the backend and get the event ID
     var uri = "";
+	var name;
 
-    $.post("/getPlaylist", {eventID: eventID}, function(link) {
+	for (var i = 0; i < eventsArray.length; i++) {
+		if (eventID === eventsArray[i].id) {
+			name = eventsArray[i].name;
+		}
+	}    
+
+    var postParams = {
+    	eventID: eventID, 
+    	eventName: name
+    };
+
+    $.post("/getPlaylist", postParams, function(link) {
+        console.log("Playlist @ " + link);
         uri = link;
+        playlist = $("#playlist");
+		// Set the source of the playlist to be the input URI
+		playlist.attr('src', "https://embed.spotify.com/?uri=" + uri);
+		playlist.show();
     }); 
-
-	return uri;
 }
 
 
@@ -222,6 +208,10 @@ function deleteEvent(id) {
 		    // Remove the event from both the events and occurrences arrays
 		    for (var i = 0; i < eventsArray.length; i++) {
     			if (eventsArray[i].id === id) {
+    				if (playlist.src === eventsArray.playlistId) {
+    					playlist.attr('src', "");
+    					playlist.hide();
+    				}
     				eventsArray.splice(i,1);
     			}
     		}

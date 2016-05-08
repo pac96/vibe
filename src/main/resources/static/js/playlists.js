@@ -8,6 +8,8 @@ var editEventForm;
 var customizePlaylistForm;
 var eventModal;
 var eventToTimeout = new Map();
+var playlist = $("#playlist");
+var port = window.location.port;
 
 
 
@@ -26,6 +28,14 @@ function compareEvents(eventA, eventB) {
 
 
 if (window.location.pathname === "/playlists") {
+	var home = "http://localhost:" + port + "/vibe";
+	var uri = new URI(window.location.href);
+	var urlParams = uri.search(true);
+	if (urlParams.error === "access_denied") {
+		// Send the user back to the login page
+		window.location.href = home;
+	}
+
 	var d = new Date();
 	document.getElementById("date").innerHTML = d.toDateString();
 
@@ -36,14 +46,12 @@ if (window.location.pathname === "/playlists") {
 	customizePlaylistForm.hide();
 
 	// First, set the logout link 
-	$("#logoutLink").attr('href', 
-		"http://localhost:" + window.location.port + "/vibe");
+	$("#logoutLink").attr('href', home);
 
 	var userCode;
 	// If the cookie doesn't have the code already
 	// Next, retrieve the user's code to send to the back-end from the URL	
-	var uri = new URI(window.location.href);
-	var urlParams = uri.search(true);
+
 	userCode = urlParams.code;
 
 	var postParams = {code: userCode};

@@ -39,6 +39,13 @@ $(document).on('click', '#generateCustom', function() {
 	customizePlaylist(currentEventID);
 })
 
+$(document).on('click', '#generateCustom', function() {
+	customizePlaylist();
+})
+
+
+
+
 // "Edit Event" option
 $(document).on('click', '#editEvent', (function() {
 	// Show the edit event form
@@ -408,13 +415,14 @@ function customizePlaylist(eventID) {
 	console.log("Customize playlist? " + customize);
 	console.log("Event tag: " + eventTag);
 	console.log("Event mood: " + eventMood);
-	console.log("Event mood number: " + eventMoodNum); //.5
+	console.log("Event mood number: " + eventMoodNum);
 	console.log("Popularity: " + popularityPref);
 	console.log("Energy: " + energyPref);
 	console.log("Genres: " + genreSelection); 
-	
+	var playlistSelection = "";
+
 	if(!customize){
-		var playlistSelection = document.getElementById('#select-your-playlist').value;
+		playlistSelection = document.getElementById('#select-your-playlist').value;
 	}
 					
 	
@@ -429,7 +437,6 @@ function customizePlaylist(eventID) {
 			genres : JSON.stringify(genreSelection),
 			playlist : playlistSelection,
 			eventID : eventID
-			
     	};
     	
     	$.post("/customizePlaylist", postParameters, function(response) {
@@ -447,3 +454,7 @@ function customizePlaylist(eventID) {
 function populatePlaylistSelections() {
 
 }
+
+$(document).on('click', '#useOwnPlaylist', function() {
+	
+});

@@ -49,8 +49,6 @@ if (window.location.pathname === "/playlists") {
 	$("#logoutLink").attr('href', home);
 
 	var userCode;
-	// If the cookie doesn't have the code already
-	// Next, retrieve the user's code to send to the back-end from the URL	
 
 	userCode = urlParams.code;
 

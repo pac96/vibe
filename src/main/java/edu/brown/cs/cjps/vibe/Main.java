@@ -57,7 +57,7 @@ public final class Main {
   }
 
   private boolean receivedCode;
-  
+
   /**
    * Arguments to the command line.
    */
@@ -78,7 +78,7 @@ public final class Main {
    * An instance variable for the Spotify API.
    */
   private Api api;
-  
+
   private String code;
 
   /**
@@ -210,7 +210,7 @@ public final class Main {
   private class HomepageHandler implements TemplateViewRoute {
     @Override
     public ModelAndView handle(Request req, Response res) {
-      receivedCode = false;	
+      receivedCode = false;
 	  Map<String, Object> variables = ImmutableMap.of("title", "Vibe");
 	  return new ModelAndView(variables, "vibe.ftl");
     }
@@ -256,12 +256,12 @@ public final class Main {
       QueryParamsMap qm = req.queryMap();
 
       if (!receivedCode) {
-    	 
+
     	// Retrieve the code from the front-end to get an access token
           code = qm.value("code").trim();
           System.out.println("Code: " + code);
           receivedCode = true;
-          
+
           /*
            * Make a token request. Asynchronous requests are made with the .getAsync
            * method and synchronous requests are made with the .get method. This
@@ -271,7 +271,7 @@ public final class Main {
           currentUser = null;
           accessToken = "";
           refreshToken = "";
-         
+
           try {
             acg = api.authorizationCodeGrant(code).build().get();
             System.out.println("API authorization code grant is good");
@@ -287,7 +287,7 @@ public final class Main {
             System.out.println(e.toString());
           }
       }
-      
+
       String display = currentUser.getDisplayName();
 
       if (display == null) {
@@ -433,9 +433,15 @@ public final class Main {
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
       String eventID = qm.value("eventID");
-     
+
 
       CalendarEvent event = null;
+    try {
+        event = eventProcessor.getEventFromEventID(eventID);
+    } catch (SQLException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }
       CalendarEvent editedEvent = eventProcessor
     		  .editEvent(start, amOrPm, end, endAMOrPM, eventName, event);
 

@@ -17,12 +17,14 @@ public class PlaylistHQ {
   private PlaylistDefaults def;
   private PlaylistGenerator pg;
   private SpotifyConverter sc;
+  private PlaylistGetter getter;
 
   public PlaylistHQ() {
 
     def = new PlaylistDefaults();
     pg = new PlaylistGenerator();
     sc = new SpotifyConverter();
+    getter = new PlaylistGetter();
   }
 
   // NOTE: this method caches the playlist
@@ -89,6 +91,10 @@ public class PlaylistHQ {
     return uri;
   }
 
+  public List<String> getAllPlaylists(Api spotifyAPI, User user) {
+    return getter.getAllUserPlaylists(spotifyAPI, user);
+  }
+
   private Tag findTag(String eventname) {
     eventname = eventname.toLowerCase();
     HashMap<String, Tag> tagmap = VibeCache.getTagMap();
@@ -103,7 +109,7 @@ public class PlaylistHQ {
     return null;
   }
 
-  public Settings getDefaults(Tag tag) {
+  private Settings getDefaults(Tag tag) {
     if (tag == null) {
       tag = Tag.RESTFUL;
     }
@@ -129,7 +135,7 @@ public class PlaylistHQ {
     return defaults;
   }
 
-  public Settings mergeSettings(Settings userSettings, Settings tagSettings) {
+  private Settings mergeSettings(Settings userSettings, Settings tagSettings) {
     // Genres
     Settings finalSettings = new Settings();
     List<String> userGenres = userSettings.getGenres();

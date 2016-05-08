@@ -119,17 +119,17 @@ public final class Main {
     VibeCache vc = new VibeCache();
     hq = new PlaylistHQ();
 
-    //Grab the database from the command line args.
+    // Grab the database from the command line args.
     String db = args[0];
     UserDBCreator dbCreator = null;
-    
-	try {
-		dbCreator = new UserDBCreator(db);
-	} catch (ClassNotFoundException | SQLException e) {
-		e.printStackTrace();
-	}
 
-    //Run should take in a database
+    try {
+      dbCreator = new UserDBCreator(db);
+    } catch (ClassNotFoundException | SQLException e) {
+      e.printStackTrace();
+    }
+
+    // Run should take in a database
     eventProcessor = new EventProcessor(db);
 
     System.out.println("Starting Vibe...");
@@ -159,15 +159,6 @@ public final class Main {
   // TODO: Call this method from some sort of handler
   private String generatePlaylist() {
 
-    // String playlistName = "Party";
-    // hq.generateFromTag(playlistName, api, currentUser, accessToken);
-    // VibePlaylist p2 = VibeCache.getPlaylistCache().get(playlistName);
-    // System.out.println("~~~THE TRACKS~~~");
-    // System.out.println(p2.getTracks());
-    // String playlistURI = hq.convertForSpotify(p2, playlistName, api,
-    // currentUser);
-
-    // return playlistURI;
     return null;
   }
 
@@ -220,8 +211,8 @@ public final class Main {
     @Override
     public ModelAndView handle(Request req, Response res) {
       receivedCode = false;
-	  Map<String, Object> variables = ImmutableMap.of("title", "Vibe");
-	  return new ModelAndView(variables, "vibe.ftl");
+      Map<String, Object> variables = ImmutableMap.of("title", "Vibe");
+      return new ModelAndView(variables, "vibe.ftl");
     }
   }
 
@@ -236,7 +227,7 @@ public final class Main {
     public Object handle(Request req, Response res) {
       /*
        * Set the necessary scopes that the application will need from the user
-       *
+       * 
        * Vibe can read the user's email and modify public and private playlists
        */
       final List<String> scopes = Arrays.asList("user-read-email",
@@ -266,35 +257,35 @@ public final class Main {
 
       if (!receivedCode) {
 
-    	// Retrieve the code from the front-end to get an access token
-          code = qm.value("code").trim();
-          System.out.println("Code: " + code);
-          receivedCode = true;
+        // Retrieve the code from the front-end to get an access token
+        code = qm.value("code").trim();
+        System.out.println("Code: " + code);
+        receivedCode = true;
 
-          /*
-           * Make a token request. Asynchronous requests are made with the .getAsync
-           * method and synchronous requests are made with the .get method. This
-           * holds for all type of requests.
-           */
-          AuthorizationCodeCredentials acg = null;
-          currentUser = null;
-          accessToken = "";
-          refreshToken = "";
+        /*
+         * Make a token request. Asynchronous requests are made with the
+         * .getAsync method and synchronous requests are made with the .get
+         * method. This holds for all type of requests.
+         */
+        AuthorizationCodeCredentials acg = null;
+        currentUser = null;
+        accessToken = "";
+        refreshToken = "";
 
-          try {
-            acg = api.authorizationCodeGrant(code).build().get();
-            System.out.println("API authorization code grant is good");
-            accessToken = acg.getAccessToken();
-            refreshToken = acg.getRefreshToken();
+        try {
+          acg = api.authorizationCodeGrant(code).build().get();
+          System.out.println("API authorization code grant is good");
+          accessToken = acg.getAccessToken();
+          refreshToken = acg.getRefreshToken();
 
-            api.setAccessToken(accessToken);
-            api.setRefreshToken(refreshToken);
+          api.setAccessToken(accessToken);
+          api.setRefreshToken(refreshToken);
 
-            currentUser = api.getMe().accessToken(accessToken).build().get();
-          } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.toString());
-          }
+          currentUser = api.getMe().accessToken(accessToken).build().get();
+        } catch (Exception e) {
+          e.printStackTrace();
+          System.out.println(e.toString());
+        }
       }
 
       String display = currentUser.getDisplayName();
@@ -302,19 +293,18 @@ public final class Main {
       if (display == null) {
         display = currentUser.getId();
       }
-      System.out.printf("Current User: %s\n", display);    
+      System.out.printf("Current User: %s\n", display);
       List<CalendarEvent> events = null;
-      
+
       try {
-		events = eventProcessor.getEventsFromUserID(currentUser.getId());
-	} catch (SQLException e) {
-		e.printStackTrace();
-		System.out.println("ERROR: Database issues");
-	}
-      
-      Map<String, Object> frontEndInfo = ImmutableMap
-    		  .of("username", display, "cachedEvents", events);
-      
+        events = eventProcessor.getEventsFromUserID(currentUser.getId());
+      } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("ERROR: Database issues");
+      }
+
+      Map<String, Object> frontEndInfo = ImmutableMap.of("username", display,
+          "cachedEvents", events);
 
       return GSON.toJson(frontEndInfo);
     }
@@ -344,7 +334,6 @@ public final class Main {
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
 
-
       // Retrieve event information from the front-end
       String start = qm.value("start");
       Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
@@ -352,30 +341,27 @@ public final class Main {
       Boolean endAmOrPm = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
       CalendarEvent newEvent = null;
-      
+
       try {
-       newEvent = eventProcessor
-        	  .addEvent(start, amOrPm, end, endAmOrPm, eventName, currentUser.getId());
+        newEvent = eventProcessor.addEvent(start, amOrPm, end, endAmOrPm,
+            eventName, currentUser.getId());
       } catch (SQLException e) {
         System.out.println("Error in adding event");
         e.printStackTrace();
       }
 
       // Generate the playlist associated with this event
-//      VibePlaylist playlist = 
-      	hq.generateFromTag(newEvent, api, currentUser, accessToken);
-      
-//      String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
-//      newEvent.setPlayListId(uri);
+      hq.generateFromTag(newEvent, api, currentUser, accessToken);
 
-      
+      hq.getAllPlaylists(api, currentUser);
+
       // ~~~~~~~~~These lines are only for testing
-//      VibePlaylist p = VibeCache.getPlaylistCache().get(newEvent.getId());
+      // VibePlaylist p = VibeCache.getPlaylistCache().get(newEvent.getId());
       // String tempURI = hq.convertForSpotify(p2, newEvent.getName(), api,
       // currentUser);
-//      System.out.println("~~~THE TRACKS~~~");
-//      System.out.println(p.getTracks());
-//      System.out.println(p.getTracks().size());
+      // System.out.println("~~~THE TRACKS~~~");
+      // System.out.println(p.getTracks());
+      // System.out.println(p.getTracks().size());
       // ~~~~~end of testing
 
       // Return an event object to the front-end
@@ -402,7 +388,7 @@ public final class Main {
       String eventName = qm.value("eventName");
 
       String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
-      
+
       return uri;
     }
   }
@@ -428,7 +414,6 @@ public final class Main {
         e.printStackTrace();
       }
 
-
       // TODO: catch an error and store the response if there's an issue
 
       return response;
@@ -451,31 +436,29 @@ public final class Main {
       String eventName = qm.value("name");
       String eventID = qm.value("id");
       System.out.println("Event id of event you want to edit is " + eventID);
-      
 
       CalendarEvent event = null;
       try {
-    	  event = eventProcessor.getEventFromEventID(eventID);
+        event = eventProcessor.getEventFromEventID(eventID);
       } catch (SQLException e) {
-    	  // TODO Auto-generated catch block
-    	  e.printStackTrace();
+        // TODO Auto-generated catch block
+        e.printStackTrace();
       }
-      CalendarEvent editedEvent = eventProcessor
-    		  .editEvent(start, amOrPm, end, endAMOrPM, eventName, event);
+      CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm, end,
+          endAMOrPM, eventName, event);
       System.out.println("Edited event: " + editedEvent.toString());
-      
+
       // Generate the playlist associated with this event
       hq.generateFromTag(editedEvent, api, currentUser, accessToken);
       // These lines are only for testing
-//      VibePlaylist p2 = VibeCache.getPlaylistCache().get(editedEvent.getId());
-//      System.out.println("~~~THE TRACKS~~~");
-//      System.out.println(p2.getTracks());
-      
+      // VibePlaylist p2 =
+      // VibeCache.getPlaylistCache().get(editedEvent.getId());
+      // System.out.println("~~~THE TRACKS~~~");
+      // System.out.println(p2.getTracks());
 
       return GSON.toJson(editedEvent);
     }
   }
-
 
   /**
    * Class to handle adding custom playlists to events. I'm assuming that the
@@ -484,7 +467,7 @@ public final class Main {
    * @author smayfiel
    *
    */
-  private class AddCustomEventHandler implements Route {
+  private class AddCustomPlaylistHandler implements Route {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
@@ -495,22 +478,21 @@ public final class Main {
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
 
-
-
-      //Create a new event and add it to the database
-//      CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm, end,
-//          endAMOrPM, eventName);
+      // Create a new event and add it to the database
+      // CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm, end,
+      // endAMOrPM, eventName);
       CalendarEvent newEvent = null;
 
       // Playlist stuff
+      String eventID = qm.value("eventID");
       String tag = qm.value("tag");
-      String genres = qm.value("genres");
+      List<String> genres = GSON.fromJson(qm.value("genres"), List.class);
       String energy = qm.value("energy");
-      String hotness = qm.value("hotness");
+      String hotness = qm.value("popularity");
       String mood = qm.value("mood");
 
       // Add these things to a list
-      List<String> settingsList = Arrays.asList(tag, genres, energy, hotness,
+      //List<String> settingsList = Arrays.asList(tag, genres, energy, hotness,
           mood);
 
       // Generate the playlist
@@ -523,6 +505,14 @@ public final class Main {
 
       // TODO: I have no idea what this should return
       return newEvent;
+    }
+  }
+
+  public class GetAllPlaylistsHandler implements Route {
+    @Override
+    public Object handle(Request req, Response res) {
+      List<String> playlistNames = hq.getAllPlaylists(api, currentUser);
+      return playlistNames;
     }
   }
 

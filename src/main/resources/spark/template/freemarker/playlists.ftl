@@ -157,7 +157,7 @@
 
 				<div>
 					<input type="radio" name="mSradio" id="mSradio2" class="radio"/>
-					<label for="mSradio2">Heated</label>
+					<label for="mSradio2">Excited</label>
 				</div>
 				  
 				<div>	
@@ -168,11 +168,6 @@
 				<div>	
 					<input type="radio" name="mSradio" id="mSradio4" class="radio"/>
 					<label for="mSradio4">Relaxing</label>
-				</div>
-
-				<div>	
-					<input type="radio" name="mSradio" id="mSradio5" class="radio"/>
-					<label for="mSradio5">Excited</label>
 				</div>
 			</div>
 			

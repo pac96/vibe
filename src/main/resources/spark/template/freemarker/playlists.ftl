@@ -86,8 +86,8 @@
 		</div>	    
 			    
 		
-		<div class="hiddenDiv">    
-				
+		<div class="hiddenDiv" id="customizeDiv">    
+
 		<!-- Customize Form -->
 		<form id='customizePlaylistForm' form method="POST" action="/customPlaylist">
 		
@@ -293,7 +293,7 @@
 
 		<!-- Edit Event Form -->
 		
-		<div class="hiddenDiv">    
+		<div class="hiddenDiv" id="editDiv">    
 			<form id='editEventForm' form method="POST" action="/editEvent" class='smart-green'>
 	  		   <h7> Edit Event </h7>
 		       <label for='name' >Event Name: </label>

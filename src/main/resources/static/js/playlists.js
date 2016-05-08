@@ -4,8 +4,9 @@ var occurrenceArray = [];
 var currentEvent;
 var currentEventID;
 var otherContent = $("div.otherContent");
-var editEventForm;
-var customizePlaylistForm;
+var editDiv;
+var customizeDiv;
+var panel;
 var eventModal;
 var eventToTimeout = new Map();
 var playlist = $("#playlist");
@@ -40,10 +41,9 @@ if (window.location.pathname === "/playlists") {
 	document.getElementById("date").innerHTML = d.toDateString();
 
 	otherContent.hide();
-	editEventForm = $("#editEventForm");
-	editEventForm.hide();
-	customizePlaylistForm = $("#customizePlaylistForm");
-	customizePlaylistForm.hide();
+	editDiv = $("#editDiv");
+	customizeDiv = $("#customDiv");
+	panel = $("#view-playlist-panel");
 
 	// First, set the logout link 
 	$("#logoutLink").attr('href', home);
@@ -73,9 +73,15 @@ $("#AddNewEvent").click(function() {
 }); // end add new click handler
 
 
+/*
+ * When the user clicks on an event, initiate the dropdown
+ * and display the name of the event in the main content panel section
+ */
+
 $(document).on('click', '.anEvent', function() {
 	currentEventID = this.id;
 	createDropdown(currentEventID);
+
 	
 }); // end click on event handler
 
@@ -291,8 +297,8 @@ function htmlDropdown(dataTargetID, timePeriod, cEvent) {
 	"<a href='javascript:;' data-toggle='collapse' data-target='#" + dataTargetID + "'>" +
 		"<i class='fa fa-fw fa-arrows-v'></i> " +
 		// event.start.hour + ":" +  event.start.minute 
-		"<p class='eventDesc'>" + cEvent.moment.format("h:mm") + " " + timePeriod 
-		+ " | " + cEvent.name + " </p>" +
+		"<span class='eventDesc'>" + cEvent.moment.format("h:mm") + " " + timePeriod 
+		+ " | " + cEvent.name + " </span>" +
 		"<i class='fa fa-fw fa-caret-down'></i></a>" +
 		"<ul id='" + dataTargetID + "' class='collapse'>" +
 			"<li id='viewPlaylist'>" +

@@ -13,8 +13,8 @@ $(document).on('click', '#viewPlaylist', (function() {
 	$('#view-playlist-panel').show();
 	
 	//hide unneded divs
-	$("#customizePlaylistForm").hide();
-	$("#editEventForm").hide();
+	customizeDiv.hide();
+	editDiv.hide();
 	playlist.hide();
 
 }));
@@ -23,23 +23,24 @@ $(document).on('click', '#viewPlaylist', (function() {
 // "Customize Playlist" option
 $(document).on('click', '#customizePlaylist', (function() {
 	console.log("Customize playlist clicked!");
-	$("#customizePlaylistForm").show();
-	customize(currentEventID);
-	
 	//hide unneeded divs
 	$('#view-playlist-panel').hide();
-	$("#editEventForm").hide();
+	editDiv.hide();
 	playlist.hide();
+
+	customizeDiv.show();
+	customizePlaylist();
+	
 }));
 
 
 // "Edit Event" option
 $(document).on('click', '#editEvent', (function() {
 	// Show the edit event form
-    $("#editEventForm").show();
+    editDiv.show();
     
     // hide unneeded divs
-    $("#customizePlaylistForm").hide();
+    customizeDiv.hide();
     $('#view-playlist-panel').hide();
 }));
 
@@ -68,8 +69,8 @@ $(document).on('click', '#deleteEvent', (function() {
     deleteEvent(currentEventID);
 
     // hide unneeded divs
-    $("#editEventForm").hide();
-    $("#customizePlaylistForm").hide();
+    editDiv.hide();
+    customizeDiv.hide();
     $('#view-playlist-panel').hide();
  }));
 
@@ -169,7 +170,7 @@ function editCalendarEvent(editedEvent){
 
 		// Replaces the html of the old event with the info from the new one
 		eventLI.html(newHTML);
-	    $("#editEventForm").hide();
+	    editDiv.hide();
 
 	}	
 }
@@ -347,48 +348,48 @@ function Customization(preferences) {
  * Customizes an event's music settings and returns
  * a new playlist based on those customizations
  */
-/**function customizePlaylist() {
+function customizePlaylist() {
 	// necessary for some browser problems (saw on jquery's website)
-		$.valHooks.textarea = {
-		  get: function( elem ) {
-		    return elem.value.replace( /\r?\n/g, "\r\n" );
-		  }
-		};
+	$.valHooks.textarea = {
+	  get: function( elem ) {
+	    return elem.value.replace( /\r?\n/g, "\r\n" );
+	  }
+	};
 
-		var eventTag = $('input[name=eTradio]:checked', '#myForm').val()
-		var eventMood = $('input[name=mSradio]:checked', '#myForm').val()
-		var popularityPref = $('#popularitySlider').data('slider').getValue();
-		var energyPref = $('#energySlider').data('slider').getValue();
-		var genreSelection = $('#genre-selector').val();
-		var playlistSelection = $('#select-your-playlist').val();
-		
-		var customize = (eventTag != null  || eventMood != null  ||)
-						popularityPref != null || energyPref != null ||
-						genreSelection != null) ;
-						
+	var eventTag = $('input[name=eTradio]:checked', '#myForm').val()
+	var eventMood = $('input[name=mSradio]:checked', '#myForm').val()
+	var popularityPref = $('#popularitySlider').data('slider');
+	console.log("Popularity slider: " + popularityPref);
+	var energyPref = $('#energySlider').data('slider');
+	var genreSelection = $('#genre-selector').val();
+	var playlistSelection = $('#select-your-playlist').val();
+	
+	var customize = (eventTag != null  || eventMood != null  ||
+					popularityPref != null || energyPref != null ||
+					genreSelection != null) ;
+					
 
-		
-		if(playlistSelection != null && customize) {
-			alert("You must either customize or select Spotify playlists");
-		} else {
-	    	var postParameters = {
-				event : eventTag ,
-				mood : eventMood ,
-				popularity : popularityPref ,
-				energy : energyPref,
-				genre : genreSelection,
-				playlist : playlistSelection
-				
-	    	};
-	    	
-	    	$.post("/customizePlaylist", postParameters, function(response) {
-	    		// 1. Send information to the back end, store in responseObject
-	    		var responseObject = JSON.parse(response);
+	
+	if(playlistSelection != null && customize) {
+		alert("You must either customize or select Spotify playlists");
+	} else {
+    	var postParameters = {
+			event : eventTag ,
+			mood : eventMood ,
+			popularity : popularityPref ,
+			energy : energyPref,
+			genre : genreSelection,
+			playlist : playlistSelection
+			
+    	};
+    	
+    	$.post("/customizePlaylist", postParameters, function(response) {
+    		// 1. Send information to the back end, store in responseObject
+    		var responseObject = JSON.parse(response);
 
-	    		// 2. Make customization object from responseObject
-	    		var custom = new Customization(responseObject);
+    		// 2. Make customization object from responseObject
+    		var custom = new Customization(responseObject);
 
-	    	});
-		}
+    	});
+	}
 }
-**/

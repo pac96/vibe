@@ -469,43 +469,51 @@ public final class Main {
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
       // Event stuff
-      String start = qm.value("start");
-      Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
-      String end = qm.value("end");
-      Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
-      String eventName = qm.value("name");
-
-      // Create a new event and add it to the database
-      // CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm, end,
-      // endAMOrPM, eventName);
-      CalendarEvent newEvent = null;
+      // String start = qm.value("start");
+      // Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
+      // String end = qm.value("end");
+      // Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
+      // String eventName = qm.value("name");
+      //
+      // // Create a new event and add it to the database
+      // // CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm,
+      // end,
+      // // endAMOrPM, eventName);
 
       // Playlist stuff
       String eventID = qm.value("eventID");
       String tag = qm.value("tag");
-      System.out.println("the tag is + " + tag);
       List<String> genres = GSON.fromJson(qm.value("genres"), List.class);
       String energy = qm.value("energy");
+      System.out.println("main e is " + energy);
       String hotness = qm.value("popularity");
       String mood = qm.value("mood");
+      System.out.println("main mood " + mood);
 
-      System.out.println("the genre list:");
-      System.out.println(genres);
+      System.out.println("the event ID + " + eventID);
+      CalendarEvent thisEvent = null;
+      try {
+        thisEvent = eventProcessor.getEventFromEventID(eventID);
+      } catch (SQLException e) {
+        System.out.println("SQL EXCEPTION");
+        e.printStackTrace();
+      }
 
       // Add these things to a list
       List<String> settingsList = Arrays.asList(tag, energy, hotness, mood);
 
       // Generate the playlist
-      hq.generateCustom(genres, settingsList, newEvent, api, currentUser,
+      hq.generateCustom(genres, settingsList, thisEvent, api, currentUser,
           accessToken);
+      System.out.println("returned from generatecustom");
 
       // These lines are only for testing
-      // VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
-      // System.out.println("~~~THE TRACKS~~~");
-      // System.out.println(p2.getTracks());
+      VibePlaylist p2 = VibeCache.getPlaylistCache().get(thisEvent.getId());
+      System.out.println("~~~THE TRACKS~~~");
+      System.out.println(p2.getTracks());
 
       // TODO: I have no idea what this should return
-      return newEvent;
+      return GSON.toJson(thisEvent);
     }
   }
 

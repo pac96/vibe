@@ -34,6 +34,10 @@ $(document).on('click', '#customizePlaylist', (function() {
 	
 }));
 
+$(document).on('click', '#generateCustom', function() {
+	console.log("Hi");
+	customizePlaylist(currentEventID);
+})
 
 // "Edit Event" option
 $(document).on('click', '#editEvent', (function() {
@@ -350,7 +354,7 @@ function Customization(preferences) {
  * Customizes an event's music settings and returns
  * a new playlist based on those customizations
  */
-function customizePlaylist() {
+function customizePlaylist(eventID) {
 	// necessary for some browser problems (saw on jquery's website)
 	$.valHooks.textarea = {
 	  get: function( elem ) {
@@ -423,7 +427,8 @@ function customizePlaylist() {
 			popularity : popularityPref ,
 			energy : energyPref,
 			genres : JSON.stringify(genreSelection),
-			playlist : playlistSelection
+			playlist : playlistSelection,
+			eventID : eventID
 			
     	};
     	

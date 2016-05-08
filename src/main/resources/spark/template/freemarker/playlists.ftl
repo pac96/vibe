@@ -280,7 +280,7 @@
 			</div>
 			
 			<div id='customize-playlist-submit'>
-			<input type="button" class="cbutton" value="Generate Custom Playlist" onclick='customizePlaylist()'>
+			<input type="button" class="cbutton" value="Generate Custom Playlist" id="generateCustom">
 			</div>
 		</form>
 		</div>

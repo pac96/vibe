@@ -138,7 +138,7 @@ public final class Main {
     parser.accepts("gui");
     OptionSet options = parser.parse(args);
 
-    int port = 5555;
+    int port = 4567;
     Spark.setPort(port);
     clientSecret = "9b79b8ae6c2a453588a6be84ca9de659";
     clientID = "bfd53bc39d2c46f081fa7951a5a88ea8";
@@ -468,12 +468,6 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-      // Event stuff
-      String start = qm.value("start");
-      Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
-      String end = qm.value("end");
-      Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
-      String eventName = qm.value("name");
 
       // Create a new event and add it to the database
       // CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm, end,
@@ -484,6 +478,7 @@ public final class Main {
       String eventID = qm.value("eventID");
       String tag = qm.value("tag");
       System.out.println("the tag is + " + tag);
+      @SuppressWarnings("unchecked")
       List<String> genres = GSON.fromJson(qm.value("genres"), List.class);
       String energy = qm.value("energy");
       String hotness = qm.value("popularity");

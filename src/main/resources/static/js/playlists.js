@@ -14,20 +14,6 @@ var port = window.location.port;
 
 
 
-function compareEvents(eventA, eventB) {
-	if (eventA == null || eventB == null) {
-		return -1;
-	}
-
-	if (eventA.startDate < eventB.startDate) {
-		return -1;
-	} else {
-		return 1;
-	}
-}
-
-
-
 if (window.location.pathname === "/playlists") {
 	var home = "http://localhost:" + port + "/vibe";
 	var uri = new URI(window.location.href);
@@ -37,8 +23,10 @@ if (window.location.pathname === "/playlists") {
 		window.location.href = home;
 	}
 
-	var d = new Date();
-	document.getElementById("date").innerHTML = d.toDateString();
+	// var d = new Date();
+	// document.getElementById("date").innerHTML = d.toDateString();
+	document.getElementById("date").innerHTML = moment().format("dddd, MMMM Do YYYY");
+
 
 	otherContent.hide();
 	editDiv = $("#editDiv");
@@ -105,7 +93,7 @@ function CalendarEvent(event) {
 	this.end = new EventTime(event.end);
 	this.name = event.name;
 	this.id = event.id;
-	this.playlistId = event.playlistID;
+	this.playlistURI = event.playlistURI;
 	var m = moment();
 	var startD = new Date();
 
@@ -143,6 +131,19 @@ function CalendarEvent(event) {
 /////////////////////////////////////
 // Function Declarations
 ////////////////////////////////////
+function compareEvents(eventA, eventB) {
+	if (eventA == null || eventB == null) {
+		return -1;
+	}
+
+	if (eventA.startDate < eventB.startDate) {
+		return -1;
+	} else {
+		return 1;
+	}
+}
+
+
 /**
  * Renders the calendar so that we can 
  * @param  {CalendarEvent} event - the calendar event object 

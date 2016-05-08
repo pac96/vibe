@@ -36,7 +36,7 @@ $(document).on('click', '#customizePlaylist', (function() {
 
 
 $(document).on('click', '#generateCustom', function() {
-	customizePlaylist();
+	customizePlaylist(currentEventID);
 })
 
 
@@ -357,7 +357,7 @@ function Customization(preferences) {
  * Customizes an event's music settings and returns
  * a new playlist based on those customizations
  */
-function customizePlaylist() {
+function customizePlaylist(id) {
 	// necessary for some browser problems (saw on jquery's website)
 	$.valHooks.textarea = {
 	  get: function( elem ) {
@@ -422,7 +422,7 @@ function customizePlaylist() {
 	}
 					
 	
-	if(playlistSelection != null && customize) {
+	if(playlistSelection === "" && !customize) {
 		alert("You must either customize or select Spotify playlists");
 	} else {
     	var postParameters = {
@@ -447,8 +447,9 @@ function customizePlaylist() {
 }
 
 
-function populatePlaylistSelections() {
-
+function getUserPlaylists() {
+	
+	
 }
 
 $(document).on('click', '#useOwnPlaylist', function() {

@@ -260,8 +260,8 @@ body{
 /** Genre drop down styling **/
 .gDropdown {
   position: absolute;
-  top:47%;
-  left: 30%;
+  top:113%;
+  left: 32%;
   transform: translateY(-50%);
 }
 
@@ -343,7 +343,7 @@ yy {
 /** Playlist Selection drop down styling **/
 .plDropdown {
   position: absolute;
-  top:56%;
+  top:156%;
   left: 10%;
   transform: translateY(-50%);
 }
@@ -371,7 +371,7 @@ yy {
   color: #4CAF50; /** #fff **/
   text-decoration: none;
   outline: none;
-  font-size: 22px;
+  font-size: 30px;
   text-align: center;
   font-family: 'Segoe UI', Frutiger, 
 	'Frutiger Linotype', 'Dejavu Sans', 
@@ -528,10 +528,12 @@ input.radio:empty ~ label:before {
 /* hide input */
 #mTagWrapper input.radio:empty {
 	margin-left: -999px;
+	
 }
 
 /* style label */
 #mTagWrapper input.radio:empty ~ label {
+	left: 70%;
 	position: relative;
 	float: left;
 	line-height: 2.5em;
@@ -570,7 +572,7 @@ input.radio:empty ~ label:before {
 /* toggle on */
 #mTagWrapper input.radio:checked ~ label:before {
 	content:'\2714';
-	text-indent: .9em;
+	text-indent: .9em;0
 	color: #9CE2AE;
 	background-color: #4DCB6D;
 }
@@ -788,23 +790,25 @@ input.radio:empty ~ label:before {
 
 .cbutton {
 	position: absolute;
-  	top:53%;
-  	left: 57%;
+  	top:148%;
+  	left: 50%;
     background-color: #4CAF50;
     border: none;
     color: white;
     font-family: 'Segoe UI', Frutiger, 
 	'Frutiger Linotype', 'Dejavu Sans', 
 	'Helvetica Neue', Arial, sans-serif;
-    padding: 15px 32px;
+	
+    padding: 8px 20px 44px 44px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 25px;
+    font-size: 30px;
     margin: 4px 2px;
     cursor: pointer;
-    width: 30%;
+    width: 35%;
     height: 5%;
+    overflow: hidden;
 }
 
 .scustomizeTitle { 
@@ -820,7 +824,11 @@ input.radio:empty ~ label:before {
 	
 .rangeSliderTitle { 
 	color: white; 
-	font-family: 'Helvetica Neue', sans-serif; 
+	font-size: 30px; 
+	font-family: 'Segoe UI', Frutiger, 
+	'Frutiger Linotype', 'Dejavu Sans', 
+	'Helvetica Neue', Arial, sans-serif;
+	margin-top: 30px;
 	font-size: 15px; 
 	font-weight: bold; 
 	letter-spacing: -1px; 

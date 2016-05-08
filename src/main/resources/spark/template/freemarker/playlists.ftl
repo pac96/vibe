@@ -187,7 +187,7 @@
 			</dt>
 
 			<dd>
-			    <div class="mutliSelect">
+			    <div class="mutliSelect" id="msGenre">
 			        <ul>
 			            <li>
 			                <input type="checkbox" value="Alternative" />Alternative
@@ -256,7 +256,6 @@
 			<p> 
 			
 			</p> 
-			
 			<p> 
 			
 			</p>
@@ -281,7 +280,7 @@
 			</div>
 			
 			<div id='customize-playlist-submit'>
-			<input type="button" class="cbutton" value="Generate Custom Playlist">
+			<input type="button" class="cbutton" value="Generate Custom Playlist" onclick='customizePlaylist()'>
 			</div>
 		</form>
 		</div>

@@ -42,7 +42,7 @@ if (window.location.pathname === "/playlists") {
 
 	otherContent.hide();
 	editDiv = $("#editDiv");
-	customizeDiv = $("#customDiv");
+	customizeDiv = $("#customizePlaylistForm");
 	panel = $("#view-playlist-panel");
 
 	// First, set the logout link 

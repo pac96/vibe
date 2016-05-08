@@ -8,12 +8,12 @@ $(document).on('click', '#viewPlaylist', (function() {
 	var startTime = $('#startTime').val();
 	var endTime = $('#endTime').val();
 	var eventDIV = document.getElementById('view-playlist-panel');
-	eventDIV.innerHTML = eventName + ' | ' + startTime + ' - ' + endTime;
-	console.log(eventName);
+	//eventDIV.innerHTML = currentEvent.name + ' | ' + currentEvent.start.hour + ' - ' + currentEvent.end.hour;
+	//console.log(eventName);
 	$('#view-playlist-panel').show();
 	
 	//hide unneded divs
-	customizeDiv.hide();
+	$("#customizeDiv").hide();
 	editDiv.hide();
 	playlist.hide();
 
@@ -28,8 +28,9 @@ $(document).on('click', '#customizePlaylist', (function() {
 	editDiv.hide();
 	playlist.hide();
 
-	customizeDiv.show();
-	customizePlaylist();
+	console.log("custom show1");
+	$("#customizeDiv").show();
+	console.log("custom show2");
 	
 }));
 
@@ -40,7 +41,7 @@ $(document).on('click', '#editEvent', (function() {
     editDiv.show();
     
     // hide unneeded divs
-    customizeDiv.hide();
+    $("#customizeDiv").hide();
     $('#view-playlist-panel').hide();
 }));
 
@@ -356,27 +357,84 @@ function customizePlaylist() {
 	    return elem.value.replace( /\r?\n/g, "\r\n" );
 	  }
 	};
-
-	var eventTag = $('input[name=eTradio]:checked', '#myForm').val()
-	var eventMood = $('input[name=mSradio]:checked', '#myForm').val()
-	var popularityPref = $('#popularitySlider').data('slider');
-	console.log("Popularity slider: " + popularityPref);
-	var energyPref = $('#energySlider').data('slider');
-	var genreSelection = $('#genre-selector').val();
-	var playlistSelection = $('#select-your-playlist').val();
 	
-	var customize = (eventTag != null  || eventMood != null  ||
-					popularityPref != null || energyPref != null ||
-					genreSelection != null) ;
+	var eventMoodNum;
+	var eventTag;
+	var eventMood;
+	var popularityPref = document.getElementById('popularitySlider').value;
+	var energyPref = document.getElementById('energySlider').value;
+	var genreSelection = ["Jazz", "Pop"];//$('.dropdown dt yy').value; TODO: FIX THIS AND THE PLAYLIST!! 
+	
+	// set event tag
+	if ($('#eTradio1').is(':checked')) {
+		eventTag = "Eat/Social";
+	} else if ($('#eTradio2').is(':checked')) {
+		eventTag = "Work/Study";
+	} else if ($('#eTradio3').is(':checked')) {
+		eventTag = "Exercise";
+	} else if ($('#eTradio4').is(':checked')) {
+		eventTag = "Party";
+	} else if ($('#eTradio5').is(':checked')) {
+		eventTag = "Restful";
+	} else {
+		eventTag = "";
+	}
+	
+	//set event mood
+	if ($('#mSradio1').is(':checked')) {
+		eventMood = "Happy";
+	} else if ($('#mSradio2').is(':checked')) {
+		eventMood = "Excited";
+	} else if ($('#mSradio3').is(':checked')) {
+		eventMood = "Sad";
+	} else if ($('#mSradio4').is(':checked')) {
+		eventMood = "Relaxing";
+	} else {
+		eventMood = "";
+	}
+	
+	
+	// assign value to mood
+	if (eventMood == "Happy") {
+		eventMoodNum = .75;
+		
+	} else if (eventMood == "Excited") {
+		eventMoodNum = 1;
+		
+	} else if (eventMood == "Sad") {
+		eventMoodNum = 0;
+		
+	} else if (eventMood == "Relaxing") {
+		eventMoodNum = .40;
+		
+	} else {
+		eventMoodNum = .5;
+	}
+	
+	var customize = (eventTag != null  && eventMood != null  &&
+			popularityPref != null && energyPref != null &&
+			genreSelection != null) ;
+	
+	console.log(customize); //false
+	console.log(eventTag); //on
+	console.log(eventMood); //on
+	console.log(popularityPref); //undefined
+	console.log(energyPref); //undefined
+	console.log(genreSelection); //nothing
+	console.log(eventMoodNum); //.5
+	
+	if(!customize){
+		var playlistSelection = document.getElementById('#select-your-playlist').value;
+	}
 					
-
+	
 	
 	if(playlistSelection != null && customize) {
 		alert("You must either customize or select Spotify playlists");
 	} else {
     	var postParameters = {
 			event : eventTag ,
-			mood : eventMood ,
+			mood : eventMoodNum ,
 			popularity : popularityPref ,
 			energy : energyPref,
 			genre : genreSelection,

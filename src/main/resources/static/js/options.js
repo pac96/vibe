@@ -433,7 +433,6 @@ function customizePlaylist() {
 			genres : JSON.stringify(genreSelection),
 			playlist : playlistSelection,
 			eventID : id
-			
     	};
     	
     	$.post("/customizePlaylist", postParameters, function(response) {

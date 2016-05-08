@@ -1,6 +1,7 @@
 package edu.brown.cs.cjps.vibe;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import edu.brown.cs.cjps.calendar.CalendarEvent;
 import edu.brown.cs.cjps.calendar.EventTime;
@@ -103,7 +104,6 @@ public class EventProcessor {
 	        try {
                 dbquerier.editCalendarEvent(event);
             } catch (SQLException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
@@ -123,5 +123,9 @@ public class EventProcessor {
 
 	public CalendarEvent getEventFromEventID(String eventId) throws SQLException {
 	    return dbquerier.getEventFromEventID(eventId);
+	}
+	
+	public List<CalendarEvent> getEventsFromUserID(String userID) throws SQLException {
+	    return dbquerier.getEventsGivenUserId(userID);
 	}
 }

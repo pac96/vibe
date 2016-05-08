@@ -55,11 +55,15 @@ if (window.location.pathname === "/playlists") {
 	var postParams = {code: userCode};
 
 	// Retrieve the username from the back-end
-	$.post("/code", postParams, function(username) {
+	$.post("/code", postParams, function(infoMap) {
 	  // Back-end sends back the user's display name
-		
+	  var backendInfo = JSON.parse(infoMap);
+	  var username = backendInfo.username;
+
 	  console.log("Username: " + username);
 	  $("#displayname").html(username);
+
+	  loadCachedEvents(backendInfo.cachedEvents);
 
 	}); // end access token code post
 }
@@ -374,4 +378,22 @@ function findNextEvent() {
 	}
 
 	return nextEvent;
+}
+
+
+
+function loadCachedEvents(cachedEvents) {
+
+	for (var i = 0; i < cachedEvents.length; i++) {
+		var cachedEvent = new CalendarEvent(cachedEvents[i]);
+		eventsArray.push(cachedEvent);
+		occurrenceArray.push(cachedEvent);
+		
+		eventsArray.sort(compareEvents);
+		occurrenceArray.push(compareEvents);
+
+		renderCalendar(cachedEvent);
+
+		nextEventPopup();	
+	}
 }

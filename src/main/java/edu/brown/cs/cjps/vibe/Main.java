@@ -33,6 +33,7 @@ import com.wrapper.spotify.models.AuthorizationCodeCredentials;
 import com.wrapper.spotify.models.User;
 
 import edu.brown.cs.cjps.calendar.CalendarEvent;
+import edu.brown.cs.cjps.db.UserDBCreator;
 import edu.brown.cs.cjps.music.PlaylistHQ;
 import edu.brown.cs.cjps.music.VibePlaylist;
 import freemarker.template.Configuration;
@@ -120,6 +121,14 @@ public final class Main {
 
     //Grab the database from the command line args.
     String db = args[0];
+    UserDBCreator dbCreator = null;
+    
+	try {
+		dbCreator = new UserDBCreator(db);
+	} catch (ClassNotFoundException | SQLException e) {
+		e.printStackTrace();
+	}
+
     //Run should take in a database
     eventProcessor = new EventProcessor(db);
 
@@ -294,12 +303,20 @@ public final class Main {
         display = currentUser.getId();
       }
       System.out.printf("Current User: %s\n", display);    
+      List<CalendarEvent> events = null;
       
+      try {
+		events = eventProcessor.getEventsFromUserID(currentUser.getId());
+	} catch (SQLException e) {
+		e.printStackTrace();
+		System.out.println("ERROR: Database issues");
+	}
       
-      Map<String, Object> variables = ImmutableMap.of("username", display);
+      Map<String, Object> frontEndInfo = ImmutableMap
+    		  .of("username", display, "cachedEvents", events);
+      
 
-
-      return display;
+      return GSON.toJson(frontEndInfo);
     }
   }
 

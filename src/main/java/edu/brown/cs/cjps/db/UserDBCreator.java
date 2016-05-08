@@ -32,25 +32,25 @@ public class UserDBCreator {
     Connection conn = DriverManager.getConnection(urlToDB);
     this.conn = conn;
     
-    //These delete the tables if they exist.
-    Statement stat = conn.createStatement();
-    stat.execute("DROP TABLE IF EXISTS USERS");
-    stat.execute("DROP TABLE IF EXISTS USEREVENTS");
-    stat.close();
+//    //These delete the tables if they exist.
+//    Statement stat = conn.createStatement();
+//    stat.execute("CREATE TABLE IF NOT EXISTS USERS");
+//    stat.execute("CREATE TABLE IF NOT EXISTS USEREVENTS");
+//    stat.close();
     
     
     //(3): Fill in the schema to create a table
     PreparedStatement prep;
     
     //Fill in the schema for the table called user
-    String schema = "Create TABLE USERS ( "
+    String schema = " CREATE TABLE IF NOT EXISTS USERS ( "
         + " userid TEXT , "
         + " name TEXT "
-        + " ); ";
+        + " ) ; ";
     buildTable(schema);
         
     //Fill in the schema to create a table called playlist
-    schema = "Create TABLE USEREVENTS ( "
+    schema = " CREATE TABLE IF NOT EXISTS USEREVENTS ( "
         + " userid TEXT ,"
         + " eventname TEXT , "
         + " eventid TEXT , "
@@ -59,8 +59,8 @@ public class UserDBCreator {
         + " endhour int , "
         + " startminute int , "
         + " endminute int , "
-        + " starAMorPM int, "
-        + " endAMorPM int ); ";
+        + " startAMorPM int, "
+        + " endAMorPM int ) ; ";
     buildTable(schema);  
   }
   

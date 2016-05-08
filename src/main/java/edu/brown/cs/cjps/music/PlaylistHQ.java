@@ -84,7 +84,7 @@ public class PlaylistHQ {
     return uri;
   }
 
-  public List<String> getAllPlaylists(Api spotifyAPI, User user) {
+  public List<String[]> getAllPlaylists(Api spotifyAPI, User user) {
     return getter.getAllUserPlaylists(spotifyAPI, user);
   }
 

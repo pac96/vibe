@@ -15,9 +15,9 @@ public class PlaylistGetter {
 
   }
 
-  public List<String> getAllUserPlaylists(Api api, User currentUser) {
+  public List<String[]> getAllUserPlaylists(Api api, User currentUser) {
 
-    List<String> playlistList = new ArrayList<>();
+    List<String[]> playlistList = new ArrayList<>();
     final UserPlaylistsRequest request = api.getPlaylistsForUser(
         currentUser.getId()).build();
 
@@ -25,8 +25,8 @@ public class PlaylistGetter {
       final Page<SimplePlaylist> playlistsPage = request.get();
 
       for (SimplePlaylist playlist : playlistsPage.getItems()) {
-        System.out.println(playlist.getName());
-        playlistList.add(playlist.getName());
+        String[] pObject = { playlist.getName(), playlist.getUri() };
+        playlistList.add(pObject);
       }
     } catch (Exception e) {
       System.out.println("Something went wrong!" + e.getMessage());

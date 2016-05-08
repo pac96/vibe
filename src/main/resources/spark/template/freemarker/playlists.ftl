@@ -318,14 +318,7 @@
 					<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>
 			    </div>
 			</div>
-<!-- begining of conflict -->			
-			<div id='customize-playlist-submit'>
-			<input type="button" class="cbutton" value="Generate Custom Playlist" id="generateCustom">
-			</div>
-		</form>
-		</div>
 
-<!-- end of conflict -->
 		</div>
 
 	</div>

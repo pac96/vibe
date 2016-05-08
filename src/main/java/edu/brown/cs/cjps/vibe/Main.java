@@ -293,7 +293,11 @@ public final class Main {
       if (display == null) {
         display = currentUser.getId();
       }
-      System.out.printf("Current User: %s\n", display);        
+      System.out.printf("Current User: %s\n", display);    
+      
+      
+      Map<String, Object> variables = ImmutableMap.of("username", display);
+
 
       return display;
     }

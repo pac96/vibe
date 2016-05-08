@@ -341,8 +341,13 @@ public final class Main {
       }
 
       // Generate the playlist associated with this event
-      hq.generateFromTag(newEvent, api, currentUser, accessToken);
+      VibePlaylist playlist = hq
+    		  .generateFromTag(newEvent, api, currentUser, accessToken);
+      
+//      String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
+//      newEvent.setPlayListId(uri);
 
+      
       // ~~~~~~~~~These lines are only for testing
       VibePlaylist p = VibeCache.getPlaylistCache().get(newEvent.getId());
       // String tempURI = hq.convertForSpotify(p2, newEvent.getName(), api,
@@ -374,7 +379,7 @@ public final class Main {
 
       // TODO: Need to get the name from the eventID
       String eventName = qm.value("eventName");
-      System.out.println("the event is called " + eventName);
+
       String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
       
       return uri;

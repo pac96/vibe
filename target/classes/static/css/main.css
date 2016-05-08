@@ -92,3 +92,7 @@ p#modal-msg {
   font-size: 1.1em;
 
 }
+
+.hiddenDiv {
+  display: none;
+}

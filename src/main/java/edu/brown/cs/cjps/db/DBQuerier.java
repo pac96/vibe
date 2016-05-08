@@ -99,18 +99,18 @@ public class DBQuerier {
     } else {
     	ps.setInt(4, 0);
     }
-    
+
     ps.setInt(5, event.getEnd().getHour());
     ps.setInt(6, event.getEnd().getMinute());
-    
+
     if (event.getEnd().isAM()) {
     	ps.setInt(7, 1);
     } else {
     	ps.setInt(7, 0);
     }
-    
+
     ps.setString(8, eventid);
-    
+
     //(4): Execute the query.
     ps.executeUpdate();
     ps.close();
@@ -139,7 +139,7 @@ public class DBQuerier {
   }
 
   public void insertUser(String userID, String name)throws SQLException {
-    String query = "INSERT INTO users VALUES (?,?) ; ";
+    String query = "INSERT INTO USERS VALUES (?,?) ; ";
     PreparedStatement ps = conn.prepareStatement(query);
     ps.setString(1, userID);
     ps.setString(2, name);
@@ -228,7 +228,7 @@ public class DBQuerier {
 
           ps.close();
           res.close();
-          
+
           return event;
 
   }

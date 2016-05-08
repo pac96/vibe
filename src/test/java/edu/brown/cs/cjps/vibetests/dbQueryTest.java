@@ -11,7 +11,7 @@ import edu.brown.cs.cjps.db.DBQuerier;
 public class dbQueryTest {
     @Test
     public void userTableInsertion() {
-        String db = "";
+        String db = "vibe.sqlite3";
         DBQuerier querier;
         try {
             querier = new DBQuerier(db);
@@ -23,7 +23,7 @@ public class dbQueryTest {
 
 
         } catch (SQLException e) {
-            System.out.println("Error in db creation");
+            System.out.println("Error in db query");
             assertTrue(1 == 0);
         } catch (ClassNotFoundException e) {
             System.out.println("Class Not found");
@@ -32,10 +32,4 @@ public class dbQueryTest {
 
     }
 
-    @Test
-    public void eventTableInsertion() {
-        String db = "";
-
-
-    }
 }

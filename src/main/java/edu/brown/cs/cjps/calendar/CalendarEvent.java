@@ -9,7 +9,7 @@ import com.google.common.collect.ImmutableMap;
 public class CalendarEvent {
 
   private String name;
-  
+
 
 private EventTime start;
   private EventTime end;
@@ -37,7 +37,7 @@ private EventTime start;
   public String getName() {
     return name;
   }
-  
+
   public void setName(String name) {
 		this.name = name;
 	}
@@ -63,7 +63,7 @@ private EventTime start;
   }
 
 
-  public void setStart(int newHour, int newMinute, boolean amOrPm) {
+  public void setStart(int newHour, int newMinute, boolean amOrPm) throws IllegalArgumentException {
     start.update(newHour, newMinute, amOrPm);
 
     if (start.compareTo(end) > 0) {
@@ -73,7 +73,7 @@ private EventTime start;
     }
   }
 
-  public void setEnd(int newHour, int newMinute, boolean amOrPm) {
+  public void setEnd(int newHour, int newMinute, boolean amOrPm) throws IllegalArgumentException {
     end.update(newHour, newMinute, amOrPm);
 
     if (end.compareTo(start) < 0) {

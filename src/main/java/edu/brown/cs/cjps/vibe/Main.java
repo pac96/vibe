@@ -82,6 +82,8 @@ public final class Main {
 
   private String code;
 
+  private final String TIMEREGEX = "(\\d\\d|\\d):\\d\\d";
+
   /**
    * Current spotify user
    */
@@ -122,7 +124,7 @@ public final class Main {
     //Grab the database from the command line args.
     String db = args[0];
     UserDBCreator dbCreator = null;
-    
+
 	try {
 		dbCreator = new UserDBCreator(db);
 	} catch (ClassNotFoundException | SQLException e) {
@@ -302,19 +304,19 @@ public final class Main {
       if (display == null) {
         display = currentUser.getId();
       }
-      System.out.printf("Current User: %s\n", display);    
+      System.out.printf("Current User: %s\n", display);
       List<CalendarEvent> events = null;
-      
+
       try {
 		events = eventProcessor.getEventsFromUserID(currentUser.getId());
 	} catch (SQLException e) {
 		e.printStackTrace();
 		System.out.println("ERROR: Database issues");
 	}
-      
+
       Map<String, Object> frontEndInfo = ImmutableMap
     		  .of("username", display, "cachedEvents", events);
-      
+
 
       return GSON.toJson(frontEndInfo);
     }
@@ -345,42 +347,33 @@ public final class Main {
       QueryParamsMap qm = req.queryMap();
 
 
-      // Retrieve event information from the front-end
+      //(1): Retrieve event information from the front-end
       String start = qm.value("start");
       Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
       String end = qm.value("end");
       Boolean endAmOrPm = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
       CalendarEvent newEvent = null;
-      
-      try {
-       newEvent = eventProcessor
-        	  .addEvent(start, amOrPm, end, endAmOrPm, eventName, currentUser.getId());
-      } catch (SQLException e) {
-        System.out.println("Error in adding event");
-        e.printStackTrace();
+
+      //(2): Check if the input times have the correct format
+      if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)) {
+
+      //(3): Add the event to the database
+          try {
+              newEvent = eventProcessor
+                     .addEvent(start, amOrPm, end, endAmOrPm, eventName, currentUser.getId());
+             } catch (SQLException e) {
+               System.out.println("Error in adding event");
+               e.printStackTrace();
+             }
+          return GSON.toJson(newEvent);
       }
 
-      // Generate the playlist associated with this event
-//      VibePlaylist playlist = 
-      	hq.generateFromTag(newEvent, api, currentUser, accessToken);
-      
-//      String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
-//      newEvent.setPlayListId(uri);
+      return null;
 
-      
-      // ~~~~~~~~~These lines are only for testing
-//      VibePlaylist p = VibeCache.getPlaylistCache().get(newEvent.getId());
-      // String tempURI = hq.convertForSpotify(p2, newEvent.getName(), api,
-      // currentUser);
-//      System.out.println("~~~THE TRACKS~~~");
-//      System.out.println(p.getTracks());
-//      System.out.println(p.getTracks().size());
-      // ~~~~~end of testing
 
-      // Return an event object to the front-end
 
-      return GSON.toJson(newEvent);
+
     }
   }
 
@@ -402,7 +395,7 @@ public final class Main {
       String eventName = qm.value("eventName");
 
       String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
-      
+
       return uri;
     }
   }
@@ -451,28 +444,47 @@ public final class Main {
       String eventName = qm.value("name");
       String eventID = qm.value("id");
       System.out.println("Event id of event you want to edit is " + eventID);
-      
+
 
       CalendarEvent event = null;
+      //If the edits are valid an event will be returned to the front-end
       try {
-    	  event = eventProcessor.getEventFromEventID(eventID);
-      } catch (SQLException e) {
-    	  // TODO Auto-generated catch block
-    	  e.printStackTrace();
-      }
-      CalendarEvent editedEvent = eventProcessor
-    		  .editEvent(start, amOrPm, end, endAMOrPM, eventName, event);
-      System.out.println("Edited event: " + editedEvent.toString());
-      
-      // Generate the playlist associated with this event
-      hq.generateFromTag(editedEvent, api, currentUser, accessToken);
-      // These lines are only for testing
-//      VibePlaylist p2 = VibeCache.getPlaylistCache().get(editedEvent.getId());
-//      System.out.println("~~~THE TRACKS~~~");
-//      System.out.println(p2.getTracks());
-      
 
-      return GSON.toJson(editedEvent);
+          //(1): Grab the event from the database
+    	  event = eventProcessor.getEventFromEventID(eventID);
+
+    	  //(2): Make modifications to the event if the times match the correct format
+    	  if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)) {
+    	       CalendarEvent editedEvent = eventProcessor
+    	                  .editEvent(start, amOrPm, end, endAMOrPM, eventName, event);
+
+    	          System.out.println("Edited event: " + editedEvent.toString());
+
+    	          //(3): Generate the playlist associated with this event
+    	          hq.generateFromTag(editedEvent, api, currentUser, accessToken);
+
+
+    	          //(4): Return the event
+    	          return GSON.toJson(editedEvent);
+
+    	  } else {
+    	  //(Else): If the format of the start and end are incorrect, return the orignial event
+    	      return GSON.toJson(event);
+    	  }
+
+      } catch (SQLException e) {
+          //If a sql exception is returned. It will return null
+          System.out.println("Error encountered in database");
+    	  e.printStackTrace();
+    	  return null;
+
+      } catch (IllegalArgumentException e) {
+          System.out.println("Invalid argument encountered. Ensure times follow the correct format");
+          e.printStackTrace();
+          return null;
+      }
+
+
     }
   }
 
@@ -480,6 +492,8 @@ public final class Main {
   /**
    * Class to handle adding custom playlists to events. I'm assuming that the
    * event and the settings will be passed back.
+   *
+   *
    *
    * @author smayfiel
    *
@@ -498,9 +512,14 @@ public final class Main {
 
 
       //Create a new event and add it to the database
-//      CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm, end,
-//          endAMOrPM, eventName);
-      CalendarEvent newEvent = null;
+      CalendarEvent newEvent = null;;
+    try {
+        newEvent = eventProcessor.getEventFromEventID(qm.value("id"));
+    } catch (SQLException e) {
+        System.out.println("Event does not exist in database");
+        e.printStackTrace();
+        return null;
+    }
 
       // Playlist stuff
       String tag = qm.value("tag");

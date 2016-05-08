@@ -120,4 +120,8 @@ public class EventProcessor {
 		// TODO: delete an event with a certain eventID
 	  dbquerier.deleteCalendarEventFromEventsTable(eventID, userID);
 	}
+
+	public CalendarEvent getEventFromEventID(String eventId) throws SQLException {
+	    return dbquerier.getEventFromEventID(eventId);
+	}
 }

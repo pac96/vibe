@@ -174,4 +174,40 @@ public class DBQuerier {
     return toReturn;
   }
 
+  public CalendarEvent getEventFromEventID(String eventId) throws SQLException {
+      String query = "SELECT * "
+              + " FROM USEREVENTS "
+              + " WHERE eventid = ? ; ";
+
+          //(2): Create a preparedstatment.
+          PreparedStatement ps = conn.prepareStatement(query);
+
+          //(3): Set the arguments to use in the query.
+          ps.setString(1, eventId);
+
+          //(4): Execute the query
+          ResultSet res = ps.executeQuery();
+
+          //(5): Add the results to the list
+          //Read from res and create the startTime object.
+          EventTime startTime = new EventTime();
+          startTime.setHour(res.getInt("starthour"));
+          startTime.setMinute(res.getInt("startminute"));
+          startTime.setAM((res.getInt("startAMorPM") == 1));
+
+         //Read from res and create the endTime object.
+          EventTime endTime = new EventTime();
+          endTime.setHour(res.getInt("endhour"));
+          endTime.setMinute(res.getInt("endminute"));
+          endTime.setAM((res.getInt("endAMorPM") == 1));
+
+          //Create an event and set the eventid and playlistid
+          CalendarEvent event = new CalendarEvent(res.getString("eventname"), startTime, endTime);
+          event.setPlayListId(res.getString("playlistid"));
+          event.setId(UUID.fromString(res.getString("eventid")));
+
+          return event;
+
+  }
+
 }

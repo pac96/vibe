@@ -46,6 +46,7 @@ $(document).on('click', '#editEvent', (function() {
 
 /* Handles clicking on the submit changes button */
 $("#EditAddNewEvent").click(function() {
+	console.log("Current event id " + currentEventID);
 	requestEdit(currentEventID);
 
 	var $msg = $("<p>", {
@@ -317,7 +318,7 @@ function requestEdit(eventID) {
 	    		
 	    		// 4. Add new calendar event to user's list
 	    		eventsArray.push(editableEvent);
-	    		occurrenceArray.push(newEvent);
+	    		occurrenceArray.push(editableEvent);
 
 	    		
 	    		// 5. sort the list of events

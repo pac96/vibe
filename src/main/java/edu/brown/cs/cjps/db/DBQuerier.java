@@ -78,22 +78,42 @@ public class DBQuerier {
 
     //(1): Write a query as String
     String query = "UPDATE USEREVENTS "
-        + "SET eventname = ? ,"
-        + "SET starthour = ? , "
-        + "SET startminute = ? , "
-        + "SET startAM = ? , "
-        + "SET endhour = ? , "
-        + "SET endminute = ?"
-        + "SET endAM = ?"
-        + "WHERE USEREVENTS.eventid = ? ";
+        + "SET eventname = ? , "
+        + "starthour = ? , "
+        + "startminute = ? , "
+        + "startAMOrPM = ? , "
+        + "endhour = ? , "
+        + "endminute = ?, "
+        + "endAMOrPM = ? "
+        + "WHERE USEREVENTS.eventid = ? ; ";
 
     //(2): Create a prepared statement.
     PreparedStatement ps = conn.prepareStatement(query);
 
     //(3): Fill in the values for the query
-
-    //(3): Execute the query.
+    ps.setString(1, event.getName());
+    ps.setInt(2, event.getStart().getHour());
+    ps.setInt(3, event.getStart().getMinute());
+    if (event.getStart().isAM()) {
+    	ps.setInt(4,1);
+    } else {
+    	ps.setInt(4, 0);
+    }
+    
+    ps.setInt(5, event.getEnd().getHour());
+    ps.setInt(6, event.getEnd().getMinute());
+    
+    if (event.getEnd().isAM()) {
+    	ps.setInt(7, 1);
+    } else {
+    	ps.setInt(7, 0);
+    }
+    
+    ps.setString(8, eventid);
+    
+    //(4): Execute the query.
     ps.executeUpdate();
+    ps.close();
   }
 
 
@@ -188,7 +208,7 @@ public class DBQuerier {
           //(4): Execute the query
           ResultSet res = ps.executeQuery();
 
-          //(5): Add the results to the list
+          //(5): Add the results
           //Read from res and create the startTime object.
           EventTime startTime = new EventTime();
           startTime.setHour(res.getInt("starthour"));
@@ -206,6 +226,9 @@ public class DBQuerier {
           event.setPlayListId(res.getString("playlistid"));
           event.setId(UUID.fromString(res.getString("eventid")));
 
+          ps.close();
+          res.close();
+          
           return event;
 
   }

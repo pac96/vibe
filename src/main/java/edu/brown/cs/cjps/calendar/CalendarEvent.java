@@ -9,7 +9,9 @@ import com.google.common.collect.ImmutableMap;
 public class CalendarEvent {
 
   private String name;
-  private EventTime start;
+  
+
+private EventTime start;
   private EventTime end;
   private UUID id;
 
@@ -35,6 +37,10 @@ public class CalendarEvent {
   public String getName() {
     return name;
   }
+  
+  public void setName(String name) {
+		this.name = name;
+	}
 
   /**
    * @param id

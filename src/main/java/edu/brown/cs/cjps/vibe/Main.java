@@ -362,20 +362,20 @@ public final class Main {
       }
 
       // Generate the playlist associated with this event
-      VibePlaylist playlist = hq
-    		  .generateFromTag(newEvent, api, currentUser, accessToken);
+//      VibePlaylist playlist = 
+      	hq.generateFromTag(newEvent, api, currentUser, accessToken);
       
 //      String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
 //      newEvent.setPlayListId(uri);
 
       
       // ~~~~~~~~~These lines are only for testing
-      VibePlaylist p = VibeCache.getPlaylistCache().get(newEvent.getId());
+//      VibePlaylist p = VibeCache.getPlaylistCache().get(newEvent.getId());
       // String tempURI = hq.convertForSpotify(p2, newEvent.getName(), api,
       // currentUser);
-      System.out.println("~~~THE TRACKS~~~");
-      System.out.println(p.getTracks());
-      System.out.println(p.getTracks().size());
+//      System.out.println("~~~THE TRACKS~~~");
+//      System.out.println(p.getTracks());
+//      System.out.println(p.getTracks().size());
       // ~~~~~end of testing
 
       // Return an event object to the front-end
@@ -449,27 +449,30 @@ public final class Main {
       String end = qm.value("end");
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
-      String eventID = qm.value("eventID");
-
+      String eventID = qm.value("id");
+      System.out.println("Event id of event you want to edit is " + eventID);
+      
 
       CalendarEvent event = null;
-    try {
-        event = eventProcessor.getEventFromEventID(eventID);
-    } catch (SQLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-    }
+      try {
+    	  event = eventProcessor.getEventFromEventID(eventID);
+      } catch (SQLException e) {
+    	  // TODO Auto-generated catch block
+    	  e.printStackTrace();
+      }
       CalendarEvent editedEvent = eventProcessor
     		  .editEvent(start, amOrPm, end, endAMOrPM, eventName, event);
-
+      System.out.println("Edited event: " + editedEvent.toString());
+      
       // Generate the playlist associated with this event
       hq.generateFromTag(editedEvent, api, currentUser, accessToken);
       // These lines are only for testing
-      VibePlaylist p2 = VibeCache.getPlaylistCache().get(editedEvent.getId());
-      System.out.println("~~~THE TRACKS~~~");
-      System.out.println(p2.getTracks());
+//      VibePlaylist p2 = VibeCache.getPlaylistCache().get(editedEvent.getId());
+//      System.out.println("~~~THE TRACKS~~~");
+//      System.out.println(p2.getTracks());
+      
 
-      return editedEvent;
+      return GSON.toJson(editedEvent);
     }
   }
 

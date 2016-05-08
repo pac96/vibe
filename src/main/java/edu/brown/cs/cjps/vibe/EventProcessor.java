@@ -100,6 +100,8 @@ public class EventProcessor {
 	        Integer endHour = Integer.parseInt(endSplit[0]);
 	        Integer endMinute = Integer.parseInt(endSplit[1]);
 	        event.getEnd().update(endHour, endMinute, endAMorPM);
+	        
+	        event.setName(name);
 
 	        try {
                 dbquerier.editCalendarEvent(event);

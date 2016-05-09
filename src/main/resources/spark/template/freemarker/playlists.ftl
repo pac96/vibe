@@ -92,8 +92,7 @@
 				</div>
 		    </div>
 
-		    <!-- Edit Event Form -->
-				
+		    <!-- Edit Event Form -->				
 			<div class="hiddenDiv row" id="editDiv">    
 			<p> <br> </br> </p> <!-- add some space -->
 				<form id='editEventForm' form method="POST" action="/editEvent" class='smart-green'>
@@ -120,6 +119,7 @@
 			       <input type='button' name='QuitEditEvent' value='Exit Edit Event' id="ExitEditEvent" class="btn btn-success"/>
 				</form>
 			</div>
+			<!-- end Edit event div -->
 				    
 				    
 			<div class="row">
@@ -141,19 +141,20 @@
 						</div>
 
 						<div class="col-md-6">
-							<input type="button" class="btn btn-success othercbutton" value="Generate Custom Playlist" id="generateCustom">
+							<input type="button" class="btn btn-success cbutton" value="Generate Custom Playlist" id="generateCustom">
 						</div>
 					</div>
 
 					<!-- Select Playlist Dropdown -->
 					<form id="selectPlaylistForm" method="POST" action="/selectExistingPlaylist" class="hiddenDiv">
+						<h2 class="boxed-text">Pick one of your own playlists!</h2>
 						<div class="select-style">
 							<select id="playlistDropdown">
 								<!-- Will be filled up with options -->
 							</select>
 						</div>
 
-						<input type="button" class="btn btn-success cbutton" value="Use one of your own!" id="existingSubmit">
+						<input type="button" class="btn btn-success cbutton" value="Submit one of your own!" id="existingSubmit">
 					</form>
 
 
@@ -344,7 +345,7 @@
 				
 
 				<div class="row">
-					<button class="btn btn-primary" id="hidePlaylist" class="hiddenDiv">Hide Playlist</button>
+					<button class="btn btn-primary hiddenDiv" id="hidePlaylist">Hide Playlist</button>
 					<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>
 			    </div>
 			</div>

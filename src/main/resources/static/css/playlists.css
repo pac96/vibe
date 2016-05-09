@@ -816,9 +816,9 @@ input.radio:empty ~ label:before {
 }
 
 .cbutton {
-  position: absolute;
+/*  position: absolute;
     top:20px;
-    left: 10%;
+    left: 10%;*/
     /* background-color: #4CAF50; */
     border: none;
     color: white;
@@ -843,9 +843,9 @@ input.radio:empty ~ label:before {
 }
 
 .custbutton {
-  position: absolute;
+/*  position: absolute;
     top:750px;
-    left: 325px ;
+    left: 325px ;*/
     /* background-color: #4CAF50; */
     border: none;
     color: white;
@@ -857,7 +857,7 @@ input.radio:empty ~ label:before {
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 30px;
+    /*font-size: 30px;*/
     margin: 4px 2px;
     cursor: pointer;
     width: 450px;
@@ -865,14 +865,12 @@ input.radio:empty ~ label:before {
     overflow: hidden;
     font-size: 2.5em;
     font-weight: bold;
-    padding: 8px 8px 8px 8px;
-    text-align: center;
 }
 
 .othercbutton {
-  position: absolute;
+/*  position: absolute;
     top:20px;
-    left: 15%;
+    left: 15%;*/
     /* background-color: #4CAF50; */
     border: none;
     color: white;
@@ -884,16 +882,13 @@ input.radio:empty ~ label:before {
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 30px;
+    /*font-size: 30px;*/
     margin: 4px 2px;
     cursor: pointer;
-    width: 350px;
-    height: 50px;
+    width: 450px;
+    height: 75px;
     overflow: hidden;
-    font-size: 1.3em;
-    font-weight: bold;
-    padding: 8px 8px 8px 8px;
-    text-align: center;
+    font-size: 2.5em;
 }
 
 .scustomizeTitle { 
@@ -1032,6 +1027,7 @@ input.radio:empty ~ label:before {
     /*box-shadow: none;*/
     background-color: white;
     /*-webkit-appearance: none;*/
+    size: 5;
 }
 
 .select-style select:focus {

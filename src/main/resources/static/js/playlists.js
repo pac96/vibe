@@ -437,6 +437,7 @@ function populateUserPlaylists() {
 				class: "plName",
 				value: currentPlaylist.name
 			}).append(currentPlaylist.name);
+			$plElt.css('overflow-y', 'scroll');
 			$dropdown.append($plElt);
 		}
 	});

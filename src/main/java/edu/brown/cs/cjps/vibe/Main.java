@@ -333,9 +333,9 @@ public final class Main {
         e.printStackTrace();
       }
 
-      // for (CalendarEvent e : events) {
-      // VibeCache.getEventCache().put(e.getId(), e);
-      // }
+       for (CalendarEvent e : events) {
+       VibeCache.getEventCache().put(e.getId(), e);
+       }
 
       return GSON.toJson(frontEndInfo);
     }

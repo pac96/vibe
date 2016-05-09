@@ -47,7 +47,7 @@ $(document).on('click', '#customizePlaylist', (function() {
 
 // Load customization options
 $(document).on('click', '#generateCustom', function() {
-	$("#customOptions").hide();
+	// $("#customOptions").hide();
 	$("#selectPlaylistForm").hide();
 	$("#customizePlaylistForm").show();
 });

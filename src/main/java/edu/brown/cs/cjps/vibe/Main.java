@@ -141,7 +141,7 @@ public final class Main {
     parser.accepts("gui");
     OptionSet options = parser.parse(args);
 
-    int port = 5555;
+    int port = 4567;
     Spark.setPort(port);
     clientSecret = "9b79b8ae6c2a453588a6be84ca9de659";
     clientID = "bfd53bc39d2c46f081fa7951a5a88ea8";
@@ -486,10 +486,16 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
+      // Create a new event and add it to the database
+      // CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm, end,
+      // endAMOrPM, eventName);
 
       // Playlist stuff
       String eventID = qm.value("eventID");
       String tag = qm.value("tag");
+
+      System.out.println("the tag is + " + tag);
+      @SuppressWarnings("unchecked")
       List<String> genres = GSON.fromJson(qm.value("genres"), List.class);
       String energy = qm.value("energy");
       System.out.println("main e is " + energy);
@@ -524,7 +530,7 @@ public final class Main {
     }
   }
 
-  public class GetAllPlaylistsHandler implements Route {
+  private class GetAllPlaylistsHandler implements Route {
     @Override
     public Object handle(Request req, Response res) {
       List<String[]> playlistNames = hq.getAllPlaylists(api, currentUser);
@@ -533,14 +539,16 @@ public final class Main {
       for (String[] playlist : playlistNames) {
         JsonObject jobj = new JsonObject();
         jobj.add("name", jp.parse(playlist[0]));
-        jobj.add("id", jp.parse(playlist[1]));
+        jobj.add("uri", jp.parse(playlist[1]));
         jarray.add(jobj);
       }
-      return jarray;
+      
+      System.out.println(jarray);
+      return GSON.toJson(jarray);
     }
   }
 
-  public class SelectExistingPlaylistHandler implements Route {
+  private class SelectExistingPlaylistHandler implements Route {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();

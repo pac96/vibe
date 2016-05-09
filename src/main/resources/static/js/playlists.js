@@ -14,20 +14,6 @@ var port = window.location.port;
 
 
 
-function compareEvents(eventA, eventB) {
-	if (eventA == null || eventB == null) {
-		return -1;
-	}
-
-	if (eventA.startDate < eventB.startDate) {
-		return -1;
-	} else {
-		return 1;
-	}
-}
-
-
-
 if (window.location.pathname === "/playlists") {
 	var home = "http://localhost:" + port + "/vibe";
 	var uri = new URI(window.location.href);
@@ -37,8 +23,10 @@ if (window.location.pathname === "/playlists") {
 		window.location.href = home;
 	}
 
-	var d = new Date();
-	document.getElementById("date").innerHTML = d.toDateString();
+	// var d = new Date();
+	// document.getElementById("date").innerHTML = d.toDateString();
+	document.getElementById("date").innerHTML = moment().format("dddd, MMMM Do YYYY");
+
 
 	otherContent.hide();
 	editDiv = $("#editDiv");
@@ -64,9 +52,13 @@ if (window.location.pathname === "/playlists") {
 	  $("#displayname").html(username);
 
 	  loadCachedEvents(backendInfo.cachedEvents);
+	  
 
 	}); // end access token code post
-}
+
+	// Populates the dropdown selection for user playlists
+  	populateUserPlaylists();
+}	
 
 /* Handles adding an event */
 $("#AddNewEvent").click(function() {
@@ -105,7 +97,7 @@ function CalendarEvent(event) {
 	this.end = new EventTime(event.end);
 	this.name = event.name;
 	this.id = event.id;
-	this.playlistId = event.playlistID;
+	this.playlistURI = event.playlistURI;
 	var m = moment();
 	var startD = new Date();
 
@@ -143,6 +135,19 @@ function CalendarEvent(event) {
 /////////////////////////////////////
 // Function Declarations
 ////////////////////////////////////
+function compareEvents(eventA, eventB) {
+	if (eventA == null || eventB == null) {
+		return -1;
+	}
+
+	if (eventA.startDate < eventB.startDate) {
+		return -1;
+	} else {
+		return 1;
+	}
+}
+
+
 /**
  * Renders the calendar so that we can 
  * @param  {CalendarEvent} event - the calendar event object 
@@ -397,4 +402,24 @@ function loadCachedEvents(cachedEvents) {
 
 		nextEventPopup();	
 	}
+}
+
+
+
+function populateUserPlaylists() {
+	$.post("/getAllPlaylists", function(jarray) {
+		// returns a jarray with an object at each index having access to a name and URI
+		var playlists = JSON.parse(jarray);
+		var names = [];
+		var $dropdownUL = $("#playlistDropdown");
+
+
+		for (var i = 0; i < jarray.length; i++) {
+			var currentPlaylist = playlists[i];
+			// names[i].push(currentPlaylist.name);
+			// each li will store the uri of the playlist as its id
+			var $plElt = $("<li>").attr('id', currentPlaylist.uri).append(currentPlaylist.name); 
+			$dropdownUL.append($plElt);
+		}
+	});
 }

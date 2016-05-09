@@ -40,7 +40,7 @@ $(document).on('click', '#generateCustom', function() {
 })
 
 $(document).on('click', '#generateCustom', function() {
-	customizePlaylist();
+	customizePlaylist(currentEventID);
 })
 
 
@@ -426,7 +426,7 @@ function customizePlaylist(eventID) {
 	}
 					
 	
-	if(playlistSelection != null && customize) {
+	if(playlistSelection === "" && !customize) {
 		alert("You must either customize or select Spotify playlists");
 	} else {
     	var postParameters = {
@@ -451,10 +451,16 @@ function customizePlaylist(eventID) {
 }
 
 
-function populatePlaylistSelections() {
-
-}
-
 $(document).on('click', '#useOwnPlaylist', function() {
+	$("#select-your-playlist").show();
+
+	// TODO: Display dropdown
+	var playlists = [];
+
+
 	
+
+	// TODO: Get value from selected dropdown
+
+	// TODO: 
 });

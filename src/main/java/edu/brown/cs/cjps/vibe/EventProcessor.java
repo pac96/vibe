@@ -39,7 +39,7 @@ public class EventProcessor {
 	 * @param endTime - the end time of the event
 	 * @param endAMorPM - end boolean (true if AM, false if PM)
 	 * @param name - the name of the event
-	 * @return the CalendarEvent object of the event you just added
+	 * @return the CalendarEvent object of the event you just added , null if a NumberException is caught
 	 * @throws SQLException
 	 */
 	public CalendarEvent addEvent(String startTime, Boolean amOrPm,
@@ -47,16 +47,38 @@ public class EventProcessor {
 
 	    // Parse the start time to hour and minute.
 	      String[] startTimeSplit = startTime.split(":");
-	      Integer startHour = Integer.parseInt(startTimeSplit[0]);
-	      Integer startMinute = Integer.parseInt(startTimeSplit[1]);
+	      Integer startHour = null;
+	      Integer startMinute = null;
+	      try {
+	          startHour = Integer.parseInt(startTimeSplit[0]);
+	          startMinute = Integer.parseInt(startTimeSplit[1]);
+	      } catch (NumberFormatException e) {
+	          System.out.println("Invalid format for time.");
+	          System.out.println("Be sure the format is hh:mm , and both are numbers");
+	          return null;
+	      }
+
 
 	      //Create an EventTime object for the start
 	      EventTime start = new EventTime(startHour, startMinute, amOrPm);
 
 	      // Parse the end time to hour and minute.
 	      String[] endTimeSplit = endTime.split(":");
-	      Integer endHour = Integer.parseInt(endTimeSplit[0]);
-	      Integer endMinute = Integer.parseInt(endTimeSplit[1]);
+
+	      Integer endHour = null;
+	      Integer endMinute = null;
+
+	      try {
+	          endHour = Integer.parseInt(endTimeSplit[0]);
+	          endMinute = Integer.parseInt(endTimeSplit[1]);
+	      } catch (NumberFormatException e) {
+	          System.out.println("Invalid format for time.");
+              System.out.println("Be sure the format is hh:mm");
+	          return null;
+	      }
+
+
+
 
 	      //Create an EventTime object for the end
 	      EventTime end = new EventTime(endHour, endMinute, endAMorPM);
@@ -83,12 +105,13 @@ public class EventProcessor {
 	 * @param endTime - the new end time of the event
 	 * @param endAMorPM - the new end boolean (true if AM, false if PM)
 	 * @param name - the new name of the event
-	 * @return the CalendarEvent object of the event you just edited
+	 * @return the CalendarEvent object of the event you just edited, if the formatting was incorrect,
+	 * or an error was encountered, the original calendar event is returned unmodified.
 	 */
 	public CalendarEvent editEvent(String startTime, Boolean amOrPm,
 			String endTime, Boolean endAMorPM, String name, CalendarEvent event) {
 
-	      // TODO: edit the old event in the database
+	    try {
 	      //Parse the start time
 	        String[] startSplit = startTime.split(":");
 	        Integer startHour = Integer.parseInt(startSplit[0]);
@@ -100,16 +123,24 @@ public class EventProcessor {
 	        Integer endHour = Integer.parseInt(endSplit[0]);
 	        Integer endMinute = Integer.parseInt(endSplit[1]);
 	        event.getEnd().update(endHour, endMinute, endAMorPM);
-	        
-	        event.setName(name);
 
-	        try {
-                dbquerier.editCalendarEvent(event);
-            } catch (SQLException e) {
+	        event.setName(name);
+	        dbquerier.editCalendarEvent(event);
+
+	        } catch (SQLException e) {
                 e.printStackTrace();
+
+            } catch (NumberFormatException e) {
+                System.out.println("Error in format of times");
+                e.printStackTrace();
+
             }
 
-	      return event;
+        return event;
+
+
+
+
 	}
 
 	/**
@@ -126,7 +157,7 @@ public class EventProcessor {
 	public CalendarEvent getEventFromEventID(String eventId) throws SQLException {
 	    return dbquerier.getEventFromEventID(eventId);
 	}
-	
+
 	public List<CalendarEvent> getEventsFromUserID(String userID) throws SQLException {
 	    return dbquerier.getEventsGivenUserId(userID);
 	}

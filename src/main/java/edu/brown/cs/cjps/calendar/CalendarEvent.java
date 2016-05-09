@@ -61,7 +61,7 @@ public class CalendarEvent {
     this.playListId = playListID;
   }
 
-  public void setStart(int newHour, int newMinute, boolean amOrPm) {
+  public void setStart(int newHour, int newMinute, boolean amOrPm) throws IllegalArgumentException {
     start.update(newHour, newMinute, amOrPm);
 
     if (start.compareTo(end) > 0) {
@@ -71,7 +71,7 @@ public class CalendarEvent {
     }
   }
 
-  public void setEnd(int newHour, int newMinute, boolean amOrPm) {
+  public void setEnd(int newHour, int newMinute, boolean amOrPm) throws IllegalArgumentException {
     end.update(newHour, newMinute, amOrPm);
 
     if (end.compareTo(start) < 0) {

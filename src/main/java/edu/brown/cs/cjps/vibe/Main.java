@@ -50,7 +50,7 @@ import freemarker.template.Configuration;
  */
 public final class Main {
 
- /**
+  /**
    * 
    * Launching point of program.
    *
@@ -259,13 +259,13 @@ public final class Main {
       String authorizeURL = api.createAuthorizeURL(scopes, state);
 
       return GSON.toJson(authorizeURL);
-    }
+    };
   }
 
   /**
    * Handles acquiring and utilizing the code for the user to create an access
-   * token
-   *
+   * token ;
+   * 
    * @author cjps
    *
    */
@@ -389,14 +389,12 @@ public final class Main {
 
         // Generate the playlist associated with this event
         hq.generateFromTag(newEvent, api, currentUser, accessToken);
-        
-        frontEndInfo = ImmutableMap.of("event", newEvent,
-                "success", true);
+
+        frontEndInfo = ImmutableMap.of("event", newEvent, "success", true);
       } else {
-          System.out.println("The input does not match the regex");
-          frontEndInfo = ImmutableMap.of("event", newEvent,
-                  "success", false);  
-      }      
+        System.out.println("The input does not match the regex");
+        frontEndInfo = ImmutableMap.of("event", newEvent, "success", false);
+      }
 
       return GSON.toJson(frontEndInfo);
 
@@ -491,9 +489,10 @@ public final class Main {
       // (1): Grab the event from the cache
       CalendarEvent oldEvent = VibeCache.getEventCache().get(
           UUID.fromString(eventID));
+      ;
 
       Map<String, Object> frontEndInfo;
-      // (2): Make modifications to the event if the times match the correct
+      // (2): Make modifications to the event i;f the times match the correct
       // format
       if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)) {
         System.out.println("The input matches");
@@ -623,5 +622,4 @@ public final class Main {
       return playlistURI;
     }
   }
-//>>>>>>> 9c4633c4551faeb8a7c3bea3a4fd48ae21d38ed6
 }

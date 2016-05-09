@@ -42,7 +42,7 @@ public class PlaylistGenerator {
     }
     // Add last one
     genreString = genreString + genres.get(genres.size() - 1);
-    System.out.println(genreString);
+    // System.out.println(genreString);
 
     // Connection to recommendations
     String recString = "https://api.spotify.com/v1/recommendations?target_energy="
@@ -92,7 +92,6 @@ public class PlaylistGenerator {
     }
 
     VibePlaylist vp = new VibePlaylist(trackList, s);
-    System.out.println("End of playlist making");
     return vp;
   }
 

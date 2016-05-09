@@ -50,7 +50,7 @@ import freemarker.template.Configuration;
  */
 public final class Main {
 
- /**
+  /**
    * 
    * Launching point of program.
    *
@@ -259,13 +259,13 @@ public final class Main {
       String authorizeURL = api.createAuthorizeURL(scopes, state);
 
       return GSON.toJson(authorizeURL);
-    }
+    };
   }
 
   /**
    * Handles acquiring and utilizing the code for the user to create an access
-   * token
-   *
+   * token ;
+   * 
    * @author cjps
    *
    */
@@ -372,7 +372,11 @@ public final class Main {
       Map<String, Object> frontEndInfo;
 
       // (2): Check if the input times have the correct format
-      if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)) {
+      if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)
+          && timeErrorHelper(start, end)
+          && startBeforeEnd(start, amOrPm, end, endAmOrPm)) {
+        // Need to check that nothing is > 12 or 59 and start is before end
+
         System.out.println("The input maches the regex");
 
         // (3): Add the event to the database
@@ -389,19 +393,62 @@ public final class Main {
 
         // Generate the playlist associated with this event
         hq.generateFromTag(newEvent, api, currentUser, accessToken);
-        
-        frontEndInfo = ImmutableMap.of("event", newEvent,
-                "success", true);
-      } else {
-          System.out.println("The input does not match the regex");
-          frontEndInfo = ImmutableMap.of("event", newEvent,
-                  "success", false);  
-      }      
 
+        frontEndInfo = ImmutableMap.of("event", newEvent, "success", true);
+      } else {
+        System.out.println("The input does not match the regex");
+        frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+        System.out.println("where is the error");
+      }
+      System.out.println("about to return");
       return GSON.toJson(frontEndInfo);
 
     }
+  }
 
+  // Error check the entered time
+  public boolean timeErrorHelper(String start, String end) {
+    String[] startAr = start.split(":");
+    int startHour = Integer.parseInt(startAr[0]);
+    int startMin = Integer.parseInt(startAr[1]);
+    String[] endAr = end.split(":");
+    int endHour = Integer.parseInt(endAr[0]);
+    int endMin = Integer.parseInt(endAr[1]);
+    if (startHour < 1 || startHour > 12 || endHour < 1 || endHour > 12) {
+      return false;
+    }
+    if (startMin < 0 || startMin > 59 || endMin < 0 || endMin > 59) {
+      return false;
+    }
+    return true;
+  }
+
+  // Start time before end time checker
+  public boolean startBeforeEnd(String start, boolean isAm, String end,
+      boolean isAm2) {
+    String[] startAr = start.split(":");
+    int startHour = Integer.parseInt(startAr[0]);
+    int startMin = Integer.parseInt(startAr[1]);
+    String[] endAr = end.split(":");
+    int endHour = Integer.parseInt(endAr[0]);
+    int endMin = Integer.parseInt(endAr[1]);
+    int startinMin = this.getTimeInMins(startHour, startMin, isAm);
+    int endinMin = this.getTimeInMins(endHour, endMin, isAm2);
+    return (endinMin - startinMin >= 0);
+  }
+
+  // returns the time in military minutes from midnight
+  public int getTimeInMins(int startH, int startM, boolean isAm) {
+    // If PM and not 12pm, add 12 hours
+    if ((!isAm && (startH != 12))) {
+      startH = startH + 12; // accounting for 24 hour time
+    }
+    // If 12AM, convert to 0
+    if (isAm && startH == 12) {
+      startH = 0;
+    }
+    int startinMins = startH * 60 + startM;
+    return startinMins;
   }
 
   /**
@@ -493,14 +540,14 @@ public final class Main {
           UUID.fromString(eventID));
 
       Map<String, Object> frontEndInfo;
-      // (2): Make modifications to the event if the times match the correct
+      // (2): Make modifications to the event i;f the times match the correct
       // format
-      if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)) {
+      if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)
+          && startBeforeEnd(start, amOrPm, end, endAMOrPM)
+          && timeErrorHelper(start, end)) {
         System.out.println("The input matches");
         CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm,
             end, endAMOrPM, eventName, oldEvent);
-
-        System.out.println("Edited event: " + editedEvent.toString());
 
         // (3): Generate the playlist associated with this event
 
@@ -623,5 +670,4 @@ public final class Main {
       return playlistURI;
     }
   }
-//>>>>>>> 9c4633c4551faeb8a7c3bea3a4fd48ae21d38ed6
 }

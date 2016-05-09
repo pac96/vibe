@@ -1,7 +1,9 @@
 // "View Playlist" option
 $(document).on('click', '#viewPlaylist', (function() {
+	var dropdownID = $(this).parent().attr('id');
+	currentEventID = dropdownID.split("_")[1];
+
 	var eventObject = getEvent(currentEventID);
-	console.log("Current id: " + currentEventID);
 	console.log("Current event: " + eventObject.name);
 
 	if (eventObject.playlistURI == null) {
@@ -32,8 +34,9 @@ $(document).on('click', '#viewPlaylist', (function() {
 
 // "Customize Playlist" option
 $(document).on('click', '#customizePlaylist', (function() {
-	console.log("Customize playlist clicked!");
-	//hide unneeded divs
+	var dropdownID = $(this).parent().attr('id');
+	currentEventID = dropdownID.split("_")[1];	//hide unneeded divs
+	
 	$('#view-playlist-panel').hide();
 	editDiv.hide();
 	playlist.hide();
@@ -71,6 +74,8 @@ $(document).on('click', '#useOwnPlaylist', function() {
 
 // "Edit Event" option
 $(document).on('click', '#editEvent', (function() {
+	var dropdownID = $(this).parent().attr('id');
+	currentEventID = dropdownID.split("_")[1];
 	// Show the edit event form
     editDiv.show();
     
@@ -88,6 +93,8 @@ $("#EditAddNewEvent").click(function() {
 
 // "Delete Event" option
 $(document).on('click', '#deleteEvent', (function() {
+	var dropdownID = $(this).parent().attr('id');
+	currentEventID = dropdownID.split("_")[1];
     deleteEvent(currentEventID);
 
     // hide unneeded divs
@@ -327,10 +334,12 @@ function requestEdit(eventID) {
 	    		// 1. send stuff to back end and store in responseObject
 	    		var responseObject = JSON.parse(response);
 	    		console.log(responseObject["success"]);
-	    		if (responseObject["success"] == "true") {
+	    		if (responseObject["success"] === true) {
 		    		// 2. Get calendar event from the calendar array
 		    		editableEvent = new CalendarEvent(responseObject["event"]);
-
+		    		console.log("response object");
+		    		console.log(editableEvent);
+		    		console.log(responseObject["event"]);
 		    		// 3. Remove the old event from the eventsArray
 		    		for (var i = 0; i < eventsArray.length; i++) {
 		    			if (eventsArray[i].id === eventID) {
@@ -377,7 +386,7 @@ function requestEdit(eventID) {
 						id: "errorMsg"
 					});
 
-					$msg.append("Event edit failed. Time should be formatted like so. 5:00  , 12:24");
+					$msg.append("Edit event failed, check that the time is formatted properly");
 					otherContent.html($msg);
 				    otherContent.fadeIn('slow');
 

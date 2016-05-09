@@ -72,9 +72,8 @@ $("#AddNewEvent").click(function() {
 
 $(document).on('click', '.anEvent', function() {
 	currentEventID = this.id;
+	console.log("Curr: " + currentEventID);
 	createDropdown(currentEventID);
-
-	
 }); // end click on event handler
 
 
@@ -161,7 +160,7 @@ function renderCalendar(event){
 	
 	var eventTimeline = $('#calendarEvents');
 
-	var targetID = "dropdown-" + event.id;
+	var targetID = "dropdown_" + event.id;
 
 	var htmlCode = htmlDropdown(targetID, timePeriod, event);
 
@@ -272,8 +271,7 @@ function addEvent() {
 	    	$.post("/newEvent", postParameters, function(response) {
 	    		// 1. send stuff to back end and store in responseObject
 	    		var responseObject = JSON.parse(response);
-
-	    		if (responseObject.success == "true") {
+	    		if (responseObject.success === true) {
 	    			// 2. Make calendar event object from responseObject
 		    		var newEvent = new CalendarEvent(responseObject.event);
 
@@ -294,7 +292,7 @@ function addEvent() {
 						id: "errorMsg"
 					});
 
-					$msg.append("Add event failed. Time should be formatted like this: 5:00  , 12:24");
+					$msg.append("Add event failed, check that the time is formatted properly");
 					otherContent.html($msg);
 				    otherContent.fadeIn('slow');
 

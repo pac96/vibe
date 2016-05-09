@@ -372,7 +372,10 @@ public final class Main {
       Map<String, Object> frontEndInfo;
 
       // (2): Check if the input times have the correct format
-      if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)) {
+      if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)
+          && timeErrorHelper(start, end)) {
+        // Need to check that nothing is > 12 or 59
+
         System.out.println("The input maches the regex");
 
         // (3): Add the event to the database
@@ -393,14 +396,33 @@ public final class Main {
         frontEndInfo = ImmutableMap.of("event", newEvent, "success", true);
       } else {
         System.out.println("The input does not match the regex");
-        frontEndInfo = ImmutableMap.of("event", newEvent, "success", false);
+        frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+        System.out.println("where is the error");
       }
-
+      System.out.println("about to return");
       return GSON.toJson(frontEndInfo);
 
     }
-
   }
+
+  // Error check the entered time
+  public boolean timeErrorHelper(String start, String end) {
+    String[] startAr = start.split(":");
+    int startHour = Integer.parseInt(startAr[0]);
+    int startMin = Integer.parseInt(startAr[1]);
+    String[] endAr = end.split(":");
+    int endHour = Integer.parseInt(endAr[0]);
+    int endMin = Integer.parseInt(endAr[1]);
+    if (startHour < 1 || startHour > 12 || endHour < 1 || endHour > 12) {
+      return false;
+    }
+    if (startMin < 0 || startMin > 59 || endMin < 0 || endMin > 59) {
+      return false;
+    }
+    return true;
+  }
+
+  // Start time before end time checker
 
   /**
    *

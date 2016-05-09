@@ -32,7 +32,7 @@ public class PlaylistHQ {
     String eventName = event.getName();
     Tag tag = this.findTag(eventName);
     // Tag tag = Tag.RESTFUL;
-    System.out.println("tag is " + tag);
+    // System.out.println("tag is " + tag);
 
     Settings defaults = this.getDefaults(tag);
 
@@ -49,12 +49,12 @@ public class PlaylistHQ {
       User curentUser, String accessToken) {
     Settings settings = this.makeSettings(genres, stringSettings);
 
-    System.out.println("after formatting");
-    System.out.println("genres " + settings.getGenres());
-    System.out.println("energy " + settings.getEnergy());
-    System.out.println("hotness " + settings.getHotness());
-    System.out.println("mood " + settings.getMood());
-    System.out.println("tag " + settings.getTag());
+    // System.out.println("after formatting");
+    // System.out.println("genres " + settings.getGenres());
+    // System.out.println("energy " + settings.getEnergy());
+    // System.out.println("hotness " + settings.getHotness());
+    // System.out.println("mood " + settings.getMood());
+    // System.out.println("tag " + settings.getTag());
 
     // Add in the Tag settings to the specific settings that the user chose,
     // and fix anything left null
@@ -139,7 +139,7 @@ public class PlaylistHQ {
       finalGenres.addAll(tagSettings.getGenres());
       finalSettings.replaceGenres(finalGenres);
     } else {
-      System.out.println("size was 0");
+      // System.out.println("size was 0");
       finalSettings.replaceGenres(tagSettings.getGenres());
     }
     // Energy
@@ -172,8 +172,8 @@ public class PlaylistHQ {
     }
 
     // Energy, hotness, and mood
-    float energy = (float) (Float.parseFloat(energyStr) / 10.0f); // 0-1 scale
-    int hotness = (int) (Integer.parseInt(hotnessStr) * 10); // 0-100 scale
+    float energy = Float.parseFloat(energyStr) / 10.0f; // 0-1 scale
+    int hotness = Integer.parseInt(hotnessStr) * 10; // 0-100 scale
     float mood = Float.parseFloat(moodStr); // mood is already 0-1
     return new Settings(tag, genres, mood, hotness, energy);
   }

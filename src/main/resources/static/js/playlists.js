@@ -72,9 +72,8 @@ $("#AddNewEvent").click(function() {
 
 $(document).on('click', '.anEvent', function() {
 	currentEventID = this.id;
+	console.log("Curr: " + currentEventID);
 	createDropdown(currentEventID);
-
-	
 }); // end click on event handler
 
 
@@ -161,7 +160,7 @@ function renderCalendar(event){
 	
 	var eventTimeline = $('#calendarEvents');
 
-	var targetID = "dropdown-" + event.id;
+	var targetID = "dropdown_" + event.id;
 
 	var htmlCode = htmlDropdown(targetID, timePeriod, event);
 
@@ -272,8 +271,13 @@ function addEvent() {
 	    	$.post("/newEvent", postParameters, function(response) {
 	    		// 1. send stuff to back end and store in responseObject
 	    		var responseObject = JSON.parse(response);
-
-	    		if (responseObject.success == "true") {
+	    		console.log("Success value:");
+	    		console.log(responseObject.success);
+	    		console.log(responseObject.success == true);
+	    		console.log(responseObject.success === true);
+	    		console.log(responseObject.success == "true");
+	    		if (responseObject.success === true) {
+	    			console.log("in the if");
 	    			// 2. Make calendar event object from responseObject
 		    		var newEvent = new CalendarEvent(responseObject.event);
 
@@ -289,6 +293,7 @@ function addEvent() {
 
 	   				nextEventPopup();	
 	    		} else {
+	    			console.log("in the else");
 	    			var $msg = $("<p>", {
 						class: "contentMsg", 
 						id: "errorMsg"

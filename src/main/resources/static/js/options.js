@@ -74,19 +74,6 @@ $(document).on('click', '#editEvent', (function() {
 /* Handles clicking on the submit changes button */
 $("#EditAddNewEvent").click(function() {
 	requestEdit(currentEventID);
-
-	var $msg = $("<p>", {
-		class: "contentMsg", 
-		id: "successMsg"
-	});
-
-	$msg.append("Event edit successful!");
-	otherContent.html($msg);
-    otherContent.fadeIn('slow');
-
-    setTimeout(function() {
-	    otherContent.fadeOut('slow');
-    }, 2000);
 });
 
 
@@ -327,14 +314,63 @@ function requestEdit(eventID) {
 	    		// 1. send stuff to back end and store in responseObject
 	    		var responseObject = JSON.parse(response);
 
-	    		// 2. Get calendar event from the calendar array
-	    		editableEvent = new CalendarEvent(responseObject);
+	    		if (responseObject["success"] == "true") {
+		    		// 2. Get calendar event from the calendar array
+		    		editableEvent = new CalendarEvent(responseObject["event"]);
 
-	    		// 3. Remove the old event from the eventsArray
-	    		for (var i = 0; i < eventsArray.length; i++) {
-	    			if (eventsArray[i].id === eventID) {
-	    				eventsArray.splice(i,1);
-	    			}
+		    		// 3. Remove the old event from the eventsArray
+		    		for (var i = 0; i < eventsArray.length; i++) {
+		    			if (eventsArray[i].id === eventID) {
+		    				eventsArray.splice(i,1);
+		    			}
+		    		}
+
+		    		// 3a. Remove the old event from the occurrenceArray
+		    		for (var j = 0; j < occurrenceArray.length; j++) {
+		    			if (occurrenceArray[j].id === eventID) {
+		    				occurrenceArray.splice(j,1);
+		    			}
+		    		}
+		    		
+		    		// 4. Add new calendar event to user's list
+		    		eventsArray.push(editableEvent);
+		    		occurrenceArray.push(editableEvent);
+
+		    		
+		    		// 5. sort the list of events
+		    		eventsArray.sort(compareEvents);
+		    		occurrenceArray.sort(compareEvents);
+		    		
+		    		// 6. Find out when the next event is and set the popup
+		    		editCalendarEvent(editableEvent);
+		    		
+			    	nextEventPopup();			
+	    			
+	    			var $msg = $("<p>", {
+						class: "contentMsg", 
+						id: "successMsg"
+					});
+
+					$msg.append("Event edit successful!");
+					otherContent.html($msg);
+				    otherContent.fadeIn('slow');
+
+				    setTimeout(function() {
+					    otherContent.fadeOut('slow');
+				    }, 2000);
+	    		} else {
+	    			var $msg = $("<p>", {
+						class: "contentMsg", 
+						id: "errorMsg"
+					});
+
+					$msg.append("Event edit failed. Time should be formatted like so. 5:00  , 12:24");
+					otherContent.html($msg);
+				    otherContent.fadeIn('slow');
+
+				    setTimeout(function() {
+					    otherContent.fadeOut('slow');
+				    }, 2000);
 	    		}
 
 	    		// 3a. Remove the old event from the occurrenceArray
@@ -355,7 +391,6 @@ function requestEdit(eventID) {
 	    		// 6. Find out when the next event is and set the popup
 	    		editCalendarEvent(editableEvent);
 	    		
-		    	nextEventPopup();
 	    	});
 		}
 }

@@ -106,7 +106,8 @@ public class DBQuerier {
 
     ps.setString(8, eventid);
 
-    // (4): Execute the query.
+    //(4): Execute the query.
+
     ps.executeUpdate();
     ps.close();
   }
@@ -132,6 +133,7 @@ public class DBQuerier {
     // 5. Close the connection
     ps.close();
   }
+
 
   public void insertUser(String userID, String name) throws SQLException {
     String query = "INSERT INTO users VALUES (?,?) ; ";
@@ -189,6 +191,7 @@ public class DBQuerier {
   }
 
   public CalendarEvent getEventFromEventID(String eventId) throws SQLException {
+
     String query = "SELECT * " + " FROM USEREVENTS " + " WHERE eventid = ? ; ";
 
     // (2): Create a preparedstatment.
@@ -203,9 +206,11 @@ public class DBQuerier {
     // (5): Add the results
     // Read from res and create the startTime object.
     EventTime startTime = new EventTime();
+
     startTime.setHour(res.getInt("starthour"));
     startTime.setMinute(res.getInt("startminute"));
     startTime.setAM((res.getInt("startAMorPM") == 1));
+    System.out.println(startTime);
 
     // Read from res and create the endTime object.
     EventTime endTime = new EventTime();

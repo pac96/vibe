@@ -85,6 +85,8 @@ public final class Main {
 
   private String code;
 
+  private final String TIMEREGEX = "(\\d\\d|\\d):\\d\\d";
+
   /**
    * Current spotify user
    */
@@ -127,6 +129,8 @@ public final class Main {
 
     UserDBCreator dbCreator = null;
 
+
+    //Run should take in a database
     try {
       dbCreator = new UserDBCreator(db);
     } catch (ClassNotFoundException | SQLException e) {
@@ -141,7 +145,7 @@ public final class Main {
     parser.accepts("gui");
     OptionSet options = parser.parse(args);
 
-    int port = 4567;
+    int port = 5555;
     Spark.setPort(port);
     clientSecret = "9b79b8ae6c2a453588a6be84ca9de659";
     clientID = "bfd53bc39d2c46f081fa7951a5a88ea8";
@@ -197,6 +201,26 @@ public final class Main {
   }
 
   /**
+   * Handles printing out exceptions to the GUI
+   *
+   * @author cjps
+   *
+   */
+  private static class ExceptionPrinter implements ExceptionHandler {
+    @Override
+    public void handle(Exception e, Request req, Response res) {
+      res.status(500);
+      StringWriter stacktrace = new StringWriter();
+      try (PrintWriter pw = new PrintWriter(stacktrace)) {
+        pw.println("<pre>");
+        e.printStackTrace(pw);
+        pw.println("</pre>");
+      }
+      res.body(stacktrace.toString());
+    }
+  }
+
+  /**
    * Handles creating the GUI for the homepage
    *
    * @author cjps
@@ -222,7 +246,7 @@ public final class Main {
     public Object handle(Request req, Response res) {
       /*
        * Set the necessary scopes that the application will need from the user
-       * 
+       *
        * Vibe can read the user's email and modify public and private playlists
        */
       final List<String> scopes = Arrays.asList("user-read-email",
@@ -292,14 +316,22 @@ public final class Main {
       List<CalendarEvent> events = null;
 
       try {
-        events = eventProcessor.getEventsFromUserID(currentUser.getId());
-      } catch (SQLException e) {
-        e.printStackTrace();
-        System.out.println("ERROR: Database issues");
-      }
+		events = eventProcessor.getEventsFromUserID(currentUser.getId());
+	} catch (SQLException e) {
+		e.printStackTrace();
+		System.out.println("ERROR: Database issues");
+	}
 
-      Map<String, Object> frontEndInfo = ImmutableMap.of("username", display,
-          "cachedEvents", events);
+      Map<String, Object> frontEndInfo = ImmutableMap
+    		  .of("username", display, "cachedEvents", events);
+
+      //Look at this later
+        try {
+            events = eventProcessor.getEventsFromUserID(currentUser.getId());
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
       return GSON.toJson(frontEndInfo);
     }
@@ -329,7 +361,8 @@ public final class Main {
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
 
-      // Retrieve event information from the front-end
+
+      //(1): Retrieve event information from the front-end
       String start = qm.value("start");
       Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
       String end = qm.value("end");
@@ -337,33 +370,34 @@ public final class Main {
       String eventName = qm.value("name");
       CalendarEvent newEvent = null;
 
-      try {
-        newEvent = eventProcessor.addEvent(start, amOrPm, end, endAmOrPm,
-            eventName, currentUser.getId());
-      } catch (SQLException e) {
-        System.out.println("Error in adding event");
-        e.printStackTrace();
-      }
 
-      // Generate the playlist associated with this event
-      hq.generateFromTag(newEvent, api, currentUser, accessToken);
+      //(2): Check if the input times have the correct format
+      if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)) {
+          System.out.println("The input maches the regex");
 
-      hq.getAllPlaylists(api, currentUser);
+      //(3): Add the event to the database
+          try {
+              newEvent = eventProcessor
+                     .addEvent(start, amOrPm, end, endAmOrPm, eventName, currentUser.getId());
+             } catch (SQLException e) {
+               System.out.println("Error in adding event");
+               e.printStackTrace();
+             }
 
-      // ~~~~~~~~~These lines are only for testing
-      // VibePlaylist p = VibeCache.getPlaylistCache().get(newEvent.getId());
-      // String tempURI = hq.convertForSpotify(p2, newEvent.getName(), api,
-      // currentUser);
-      // System.out.println("~~~THE TRACKS~~~");
-      // System.out.println(p.getTracks());
-      // System.out.println(p.getTracks().size());
-      // ~~~~~end of testing
+          // Generate the playlist associated with this event
+          hq.generateFromTag(newEvent, api, currentUser, accessToken);
+          return GSON.toJson(newEvent);
 
-      // Return an event object to the front-end
-
-      return GSON.toJson(newEvent);
     }
+
+      System.out.println("The input does not match the regex");
+      return GSON.toJson(newEvent);
+
+
   }
+
+}
+
 
   /**
    *
@@ -398,36 +432,38 @@ public final class Main {
         returnURI = thisEvent.getPlayListURI();
       }
 
+
       return returnURI;
     }
   }
 
   /**
-   *
-   * Handles deleting a specific event.
-   *
-   * */
-  private class DeleteEventHandler implements Route {
-    @Override
-    public Object handle(Request req, Response res) {
-      QueryParamsMap qm = req.queryMap();
-      String response = "SUCCESS";
+  *
+  * Handles deleting a specific event.
+  *
+  * */
+ private class DeleteEventHandler implements Route {
+   @Override
+   public Object handle(Request req, Response res) {
+     QueryParamsMap qm = req.queryMap();
+     String response = "SUCCESS";
 
-      String eventID = qm.value("eventID");
+     String eventID = qm.value("eventID");
 
-      try {
-        eventProcessor.deleteEvent(eventID, currentUser.getId());
-      } catch (SQLException e) {
-        System.out.println("Error: delteEvent failed");
-        response = "FAILURE";
-        e.printStackTrace();
-      }
+     try {
+       eventProcessor.deleteEvent(eventID, currentUser.getId());
+     } catch (SQLException e) {
+       System.out.println("Error: delteEvent failed");
+       response = "FAILURE";
+       e.printStackTrace();
+     }
 
-      // TODO: catch an error and store the response if there's an issue
+     // TODO: catch an error and store the response if there's an issue
 
-      return response;
-    }
-  }
+     return response;
+   }
+ }
+
 
   /**
    *
@@ -444,34 +480,44 @@ public final class Main {
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
       String eventID = qm.value("id");
-      System.out.println("Event id of event you want to edit is " + eventID);
 
       CalendarEvent event = null;
-      try {
-        event = eventProcessor.getEventFromEventID(eventID);
-      } catch (SQLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm, end,
-          endAMOrPM, eventName, event);
-      System.out.println("Edited event: " + editedEvent.toString());
+      //If the edits are valid an event will be returned to the front-end
 
-      // Generate the playlist associated with this event
-      hq.generateFromTag(editedEvent, api, currentUser, accessToken);
-      // These lines are only for testing
-      // VibePlaylist p2 =
-      // VibeCache.getPlaylistCache().get(editedEvent.getId());
-      // System.out.println("~~~THE TRACKS~~~");
-      // System.out.println(p2.getTracks());
+          //(1): Grab the event from the database
+          try {
+            event = eventProcessor.getEventFromEventID(eventID);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+          Map<String, Object> frontEndInfo;
+          //(2): Make modifications to the event if the times match the correct format
+          if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)) {
+              System.out.println("The input matches");
+               CalendarEvent editedEvent = eventProcessor
+                          .editEvent(start, amOrPm, end, endAMOrPM, eventName, event);
 
-      return GSON.toJson(editedEvent);
+                  System.out.println("Edited event: " + editedEvent.toString());
+
+                  //(3): Generate the playlist associated with this event
+                 // hq.generateFromTag(editedEvent, api, currentUser, accessToken);
+
+                  //(4): Return the event along to true so front end can recognize that edit was succesful
+                  frontEndInfo = ImmutableMap.of("event",editedEvent,"success",true);
+
+          } else {
+              frontEndInfo = ImmutableMap.of("event",event,"success",false);
+          }
+          return GSON.toJson(frontEndInfo);
     }
   }
 
   /**
    * Class to handle adding custom playlists to events. I'm assuming that the
    * event and the settings will be passed back.
+   *
+   *
    *
    * @author smayfiel
    *
@@ -524,65 +570,43 @@ public final class Main {
     }
   }
 
-  private class GetAllPlaylistsHandler implements Route {
-    @Override
-    public Object handle(Request req, Response res) {
-      List<String[]> playlistNames = hq.getAllPlaylists(api, currentUser);
-      JsonArray jarray = new JsonArray();
-      JsonParser jp = new JsonParser();
-      for (String[] playlist : playlistNames) {
-        // TODO: something is wrong with this loop I think. It's only going
-        // through this once instead of 10 times!
-        JsonObject jobj = new JsonObject();
-        jobj.addProperty("name", playlist[0]);
-        jobj.addProperty("uri", playlist[1]);
-        jarray.add(jobj);
-      }
-
-      return GSON.toJson(jarray);
-    }
-  }
-
   private class SelectExistingPlaylistHandler implements Route {
-    @Override
-    public Object handle(Request req, Response res) {
-      QueryParamsMap qm = req.queryMap();
-      String playlistURI = qm.value("playlistURI");
-      String eventID = qm.value("eventID");
+      @Override
+      public Object handle(Request req, Response res) {
+        QueryParamsMap qm = req.queryMap();
+        String playlistURI = qm.value("playlistURI");
+        String eventID = qm.value("eventID");
 
-      // Associate this eventID with this URI
-      CalendarEvent thisEvent = null;
-      try {
-        thisEvent = eventProcessor.getEventFromEventID(eventID);
-      } catch (SQLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      thisEvent.setPlayListURI(playlistURI);
-
-      return playlistURI;
-
-    }
-  }
-
-  /**
-   * Handles printing out exceptions to the GUI
-   *
-   * @author cjps
-   *
-   */
-  private static class ExceptionPrinter implements ExceptionHandler {
-    @Override
-    public void handle(Exception e, Request req, Response res) {
-      res.status(500);
-      StringWriter stacktrace = new StringWriter();
-      try (PrintWriter pw = new PrintWriter(stacktrace)) {
-        pw.println("<pre>");
-        e.printStackTrace(pw);
-        pw.println("</pre>");
-      }
-      res.body(stacktrace.toString());
-    }
-  }
-
+        // Associate this eventID with this URI
+        CalendarEvent thisEvent = null;
+        try {
+          thisEvent = eventProcessor.getEventFromEventID(eventID);
+        } catch (SQLException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        thisEvent.setPlayListURI(playlistURI);
+        return playlistURI;
 }
+  }
+
+  private class GetAllPlaylistsHandler implements Route {
+      @Override
+      public Object handle(Request req, Response res) {
+        List<String[]> playlistNames = hq.getAllPlaylists(api, currentUser);
+        JsonArray jarray = new JsonArray();
+        JsonParser jp = new JsonParser();
+        for (String[] playlist : playlistNames) {
+          // TODO: something is wrong with this loop I think. It's only going
+          // through this once instead of 10 times!
+          JsonObject jobj = new JsonObject();
+          jobj.addProperty("name", playlist[0]);
+          jobj.addProperty("uri", playlist[1]);
+          jarray.add(jobj);
+        }
+
+        return GSON.toJson(jarray);
+      }
+    }
+}
+

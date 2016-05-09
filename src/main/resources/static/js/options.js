@@ -94,7 +94,9 @@ $("#EditAddNewEvent").click(function() {
 // "Delete Event" option
 $(document).on('click', '#deleteEvent', (function() {
 	var dropdownID = $(this).parent().attr('id');
+	console.log("Dropdown ID: " + dropdownID);
 	currentEventID = dropdownID.split("_")[1];
+	console.log("before deletEvent function" + currentEventID);
     deleteEvent(currentEventID);
 
     // hide unneeded divs
@@ -200,7 +202,7 @@ function editCalendarEvent(editedEvent){
 	}
 
 	if (editedEvent) {
-		var dataTargetID = "dropdown-" + currentEventID;
+		var dataTargetID = "dropdown_" + currentEventID;
 		var newHTML = htmlDropdown(dataTargetID, timePeriod, editedEvent);
 		
 		var eventLI = $('#' + currentEventID);
@@ -216,6 +218,7 @@ function editCalendarEvent(editedEvent){
  * @param  {String} id - id of the event you want to delete
  */
 function deleteEvent(id) {
+	console.log("Right before we send it back... " + id);
 	var postParam = {eventID: id};
 	
 	// The backend responds with a string: 
@@ -321,6 +324,14 @@ function requestEdit(eventID) {
 	    } else if(endTime == '' && !startTime.match(timeFormat)) {
 	    	alert("Invalid End Time: " + endTime);
 	    } else {
+	    	console.log("New start: " + startTime);
+	    	console.log("New end: " + endTime);
+	    	console.log("New startAMPM: " + startAP);
+	    	console.log("New endAMPM: " + endAP);
+	    	console.log("New name: " + eventName);
+	    	console.log("ID: " + eventID);
+
+	    	
 	    	var postParameters = {
 				start : startTime ,
 				end : endTime ,
@@ -334,6 +345,7 @@ function requestEdit(eventID) {
 	    		// 1. send stuff to back end and store in responseObject
 	    		var responseObject = JSON.parse(response);
 	    		console.log(responseObject["success"]);
+	    		
 	    		if (responseObject["success"] === true) {
 		    		// 2. Get calendar event from the calendar array
 		    		editableEvent = new CalendarEvent(responseObject["event"]);
@@ -394,24 +406,24 @@ function requestEdit(eventID) {
 					    otherContent.fadeOut('slow');
 				    }, 2000);
 	    		}
-
-	    		// 3a. Remove the old event from the occurrenceArray
-	    		for (var j = 0; j < occurrenceArray.length; j++) {
-	    			if (occurrenceArray[j].id === eventID) {
-	    				occurrenceArray.splice(j,1);
-	    			}
-	    		}
-	    		
-	    		// 4. Add new calendar event to user's list
-	    		eventsArray.push(editableEvent);
-	    		occurrenceArray.push(editableEvent);
-
-	    		// 5. sort the list of events
-	    		eventsArray.sort(compareEvents);
-	    		occurrenceArray.sort(compareEvents);
-	    		
-	    		// 6. Find out when the next event is and set the popup
-	    		editCalendarEvent(editableEvent);
+//
+//	    		// 3a. Remove the old event from the occurrenceArray
+//	    		for (var j = 0; j < occurrenceArray.length; j++) {
+//	    			if (occurrenceArray[j].id === eventID) {
+//	    				occurrenceArray.splice(j,1);
+//	    			}
+//	    		}
+//	    		
+//	    		// 4. Add new calendar event to user's list
+//	    		eventsArray.push(editableEvent);
+//	    		occurrenceArray.push(editableEvent);
+//
+//	    		// 5. sort the list of events
+//	    		eventsArray.sort(compareEvents);
+//	    		occurrenceArray.sort(compareEvents);
+//	    		
+//	    		// 6. Find out when the next event is and set the popup
+//	    		editCalendarEvent(editableEvent);
 	    		
 	    	});
 		}

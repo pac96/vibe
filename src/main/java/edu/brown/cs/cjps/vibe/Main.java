@@ -333,6 +333,10 @@ public final class Main {
         e.printStackTrace();
       }
 
+      // for (CalendarEvent e : events) {
+      // VibeCache.getEventCache().put(e.getId(), e);
+      // }
+
       return GSON.toJson(frontEndInfo);
     }
   }
@@ -417,9 +421,16 @@ public final class Main {
         // Success scenario
         frontEndInfo = ImmutableMap.of("event", newEvent, "success", true);
       } else {
+<<<<<<< HEAD
         System.out.println("ERROR: Event time invalid");
         frontEndInfo = ImmutableMap.of("event", "null", "success", false);
       }
+=======
+        frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+      }
+
+      System.out.println("new event id is " + newEvent.getId());
+>>>>>>> cc9f34b1d3cd26159e659be8d42e11005f4f50a6
       return GSON.toJson(frontEndInfo);
 
     }
@@ -518,12 +529,16 @@ public final class Main {
       String response = "SUCCESS";
 
       String eventID = qm.value("eventID");
+<<<<<<< HEAD
 
       // Error check
       if (eventID == null) {
         return "FAILURE";
       }
 
+=======
+      System.out.println("The event ID in delete event is " + eventID);
+>>>>>>> cc9f34b1d3cd26159e659be8d42e11005f4f50a6
       try {
         eventProcessor.deleteEvent(eventID, currentUser.getId());
       } catch (SQLException e) {
@@ -582,12 +597,16 @@ public final class Main {
       // (1): Grab the event from the cache
       CalendarEvent oldEvent = VibeCache.getEventCache().get(
           UUID.fromString(eventID));
+<<<<<<< HEAD
       // Error check
       if (oldEvent == null) {
         System.out.println("ERROR: couldn't get event associated with this id");
         frontEndInfo = ImmutableMap.of("event", "null", "success", false);
         return frontEndInfo;
       }
+=======
+      System.out.println("Old event: " + oldEvent);
+>>>>>>> cc9f34b1d3cd26159e659be8d42e11005f4f50a6
 
       // (2): Make modifications to the event if the times match the correct
       // format
@@ -632,7 +651,7 @@ public final class Main {
       } else {
         frontEndInfo = ImmutableMap.of("event", oldEvent, "success", false);
       }
-
+      System.out.println("the edited event ID is " + eventID);
       return GSON.toJson(frontEndInfo);
     }
   }

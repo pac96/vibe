@@ -133,6 +133,9 @@ public class EventProcessor {
       event.getEnd().update(endHour, endMinute, endAMorPM);
 
       event.setName(name);
+
+      System.out.println("Updated event: " + event);
+
       dbquerier.editCalendarEvent(event);
 
     } catch (SQLException e) {

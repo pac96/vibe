@@ -1,5 +1,5 @@
 html, body {
-  color: black;
+  /*color: black;*/
   height: 100%;
   width: 100%;
   background-image:url("/images/river.jpg");
@@ -95,9 +95,5 @@ p#modal-msg {
 
 .hiddenDiv {
   display: none;
-<<<<<<< HEAD
 }
 
-=======
-}
->>>>>>> c02d632a4eca1279a6b630df37f4aab50b7f30e2

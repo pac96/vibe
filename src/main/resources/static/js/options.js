@@ -34,6 +34,17 @@ $(document).on('click', '#customizePlaylist', (function() {
 	
 }));
 
+$(document).on('click', '#generateCustom', function() {
+	console.log("Hi");
+	customizePlaylist(currentEventID);
+})
+
+$(document).on('click', '#generateCustom', function() {
+	customizePlaylist();
+})
+
+
+
 
 // "Edit Event" option
 $(document).on('click', '#editEvent', (function() {
@@ -350,7 +361,7 @@ function Customization(preferences) {
  * Customizes an event's music settings and returns
  * a new playlist based on those customizations
  */
-function customizePlaylist() {
+function customizePlaylist(eventID) {
 	// necessary for some browser problems (saw on jquery's website)
 	$.valHooks.textarea = {
 	  get: function( elem ) {
@@ -359,39 +370,25 @@ function customizePlaylist() {
 	};
 	
 	var eventMoodNum;
-	var eventTag;
-	var eventMood;
+	var eventTag = "";
+	var eventMood = "";
 	var popularityPref = document.getElementById('popularitySlider').value;
 	var energyPref = document.getElementById('energySlider').value;
-	var genreSelection = ["Jazz", "Pop"];//$('.dropdown dt yy').value; TODO: FIX THIS AND THE PLAYLIST!! 
-	
-	// set event tag
-	if ($('#eTradio1').is(':checked')) {
-		eventTag = "Eat/Social";
-	} else if ($('#eTradio2').is(':checked')) {
-		eventTag = "Work/Study";
-	} else if ($('#eTradio3').is(':checked')) {
-		eventTag = "Exercise";
-	} else if ($('#eTradio4').is(':checked')) {
-		eventTag = "Party";
-	} else if ($('#eTradio5').is(':checked')) {
-		eventTag = "Restful";
-	} else {
-		eventTag = "";
-	}
-	
-	//set event mood
-	if ($('#mSradio1').is(':checked')) {
-		eventMood = "Happy";
-	} else if ($('#mSradio2').is(':checked')) {
-		eventMood = "Excited";
-	} else if ($('#mSradio3').is(':checked')) {
-		eventMood = "Sad";
-	} else if ($('#mSradio4').is(':checked')) {
-		eventMood = "Relaxing";
-	} else {
-		eventMood = "";
-	}
+
+	var genreSelection = [];
+
+	// Retrieve the value of each selected genre
+	$('#ulGenre :checkbox:checked').each(function(i) {
+		genreSelection[i] = $(this).val();
+	});
+
+	$('#eTagWrapper :radio:checked').each(function() {
+		eventTag = this.value;
+	});
+
+	$('#mTagWrapper :radio:checked').each(function() {
+		eventMood = this.value;
+	});
 	
 	
 	// assign value to mood
@@ -415,31 +412,31 @@ function customizePlaylist() {
 			popularityPref != null && energyPref != null &&
 			genreSelection != null) ;
 	
-	console.log(customize); //false
-	console.log(eventTag); //on
-	console.log(eventMood); //on
-	console.log(popularityPref); //undefined
-	console.log(energyPref); //undefined
-	console.log(genreSelection); //nothing
-	console.log(eventMoodNum); //.5
-	
+	console.log("Customize playlist? " + customize);
+	console.log("Event tag: " + eventTag);
+	console.log("Event mood: " + eventMood);
+	console.log("Event mood number: " + eventMoodNum);
+	console.log("Popularity: " + popularityPref);
+	console.log("Energy: " + energyPref);
+	console.log("Genres: " + genreSelection); 
+	var playlistSelection = "";
+
 	if(!customize){
-		var playlistSelection = document.getElementById('#select-your-playlist').value;
+		playlistSelection = document.getElementById('#select-your-playlist').value;
 	}
 					
-	
 	
 	if(playlistSelection != null && customize) {
 		alert("You must either customize or select Spotify playlists");
 	} else {
     	var postParameters = {
-			event : eventTag ,
+			tag : eventTag ,
 			mood : eventMoodNum ,
 			popularity : popularityPref ,
 			energy : energyPref,
-			genre : genreSelection,
-			playlist : playlistSelection
-			
+			genres : JSON.stringify(genreSelection),
+			playlist : playlistSelection,
+			eventID : eventID
     	};
     	
     	$.post("/customizePlaylist", postParameters, function(response) {
@@ -452,3 +449,12 @@ function customizePlaylist() {
     	});
 	}
 }
+
+
+function populatePlaylistSelections() {
+
+}
+
+$(document).on('click', '#useOwnPlaylist', function() {
+	
+});

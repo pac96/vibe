@@ -243,9 +243,11 @@ function addEvent() {
 		}
 
 		// Set up the event format and time format
-		eventFormat = /^[a-zA-Z]+$/;
-		timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+		var eventFormat = /^[a-zA-Z]+$/;
+		var timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
 		
+		// if ()
+
 		if(eventName == null || startTime == null ||
 		 endTime == null || startAP == null || endAP == null) {
 			alert("One or more event fields are empty");
@@ -273,14 +275,13 @@ function addEvent() {
 
 	    		// 3. Add new calendar event to user's list
 	    		eventsArray.push(newEvent);
-	    		occurrenceArray.push(newEvent);
-	    		
 	    		// 4. sort the list 
 	    		eventsArray.sort(compareEvents);
-	    		occurrenceArray.push(compareEvents);
-
-	    		//5. Render calendar
+	    		// 5. Render calendar
 	    		renderCalendar(newEvent);
+
+	    		occurrenceArray.push(newEvent);
+	    		occurrenceArray.sort(compareEvents);
 
    				nextEventPopup();
 	    	});

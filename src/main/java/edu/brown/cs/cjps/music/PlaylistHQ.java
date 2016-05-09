@@ -1,7 +1,6 @@
 package edu.brown.cs.cjps.music;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,12 +16,14 @@ public class PlaylistHQ {
   private PlaylistDefaults def;
   private PlaylistGenerator pg;
   private SpotifyConverter sc;
+  private PlaylistGetter getter;
 
   public PlaylistHQ() {
 
     def = new PlaylistDefaults();
     pg = new PlaylistGenerator();
     sc = new SpotifyConverter();
+    getter = new PlaylistGetter();
   }
 
   // NOTE: this method caches the playlist
@@ -43,30 +44,24 @@ public class PlaylistHQ {
     return p;
   }
 
-  public VibePlaylist generateCustom(List<String> stringSettings,
-      CalendarEvent event, Api api, User curentUser, String accessToken) {
-    Settings settings = this.makeSettings(stringSettings);
+  public VibePlaylist generateCustom(List<String> genres,
+      List<String> stringSettings, CalendarEvent event, Api api,
+      User curentUser, String accessToken) {
+    Settings settings = this.makeSettings(genres, stringSettings);
+
+    System.out.println("after formatting");
+    System.out.println("genres " + settings.getGenres());
+    System.out.println("energy " + settings.getEnergy());
+    System.out.println("hotness " + settings.getHotness());
+    System.out.println("mood " + settings.getMood());
+    System.out.println("tag " + settings.getTag());
+
     // Add in the Tag settings to the specific settings that the user chose,
     // and fix anything left null
     Tag tag = settings.getTag();
     // If user selected a tag - merge settings
-    if (tag != null) {
-      System.out.println("Tag not null");
-      settings = this.mergeSettings(settings, this.getDefaults(tag));
-    } else { // Need to check to make sure there are no nulls
-      if (settings.getGenres() == null) {
-        settings.replaceGenres(Arrays.asList("classical"));
-      }
-      if (settings.getEnergy() < 0) {
-        settings.setEnergy(0.7f);
-      }
-      if (settings.getHotness() < 0) {
-        settings.setHotness(70);
-      }
-      if (settings.getMood() < 0) {
-        settings.setMood(0.7f);
-      }
-    }
+    settings = this.mergeSettings(settings, this.getDefaults(tag));
+
     VibePlaylist p = pg.makePlaylist(settings, event.getDuration(), api,
         curentUser, accessToken);
     VibeCache.getPlaylistCache().put(event.getId(), p);
@@ -89,6 +84,10 @@ public class PlaylistHQ {
     return uri;
   }
 
+  public List<String[]> getAllPlaylists(Api spotifyAPI, User user) {
+    return getter.getAllUserPlaylists(spotifyAPI, user);
+  }
+
   private Tag findTag(String eventname) {
     eventname = eventname.toLowerCase();
     HashMap<String, Tag> tagmap = VibeCache.getTagMap();
@@ -103,7 +102,7 @@ public class PlaylistHQ {
     return null;
   }
 
-  public Settings getDefaults(Tag tag) {
+  private Settings getDefaults(Tag tag) {
     if (tag == null) {
       tag = Tag.RESTFUL;
     }
@@ -129,100 +128,75 @@ public class PlaylistHQ {
     return defaults;
   }
 
-  public Settings mergeSettings(Settings userSettings, Settings tagSettings) {
+  private Settings mergeSettings(Settings userSettings, Settings tagSettings) {
     // Genres
     Settings finalSettings = new Settings();
     List<String> userGenres = userSettings.getGenres();
-    if (userGenres != null) {
+    if (userGenres.size() != 0) {
       List<String> finalGenres = new ArrayList<>();
       finalGenres.addAll(userGenres);
       // userGenres.addAll(tagSettings.getGenres());
       finalGenres.addAll(tagSettings.getGenres());
       finalSettings.replaceGenres(finalGenres);
     } else {
+      System.out.println("size was 0");
       finalSettings.replaceGenres(tagSettings.getGenres());
     }
     // Energy
     float userE = userSettings.getEnergy();
-    if (userE > 0f) {
-      float averageE = (userE + tagSettings.getEnergy()) / 2;
-      finalSettings.setEnergy(averageE);
-    } else {
-      finalSettings.setEnergy(tagSettings.getEnergy());
-    }
+    float averageE = (userE + tagSettings.getEnergy()) / 2;
+    finalSettings.setEnergy(averageE);
     // Mood
     float userM = userSettings.getMood();
-    if (userM > 0f) {
-      float averageM = (userM + tagSettings.getMood()) / 2;
-      finalSettings.setMood(averageM);
-    } else {
-      finalSettings.setEnergy(tagSettings.getEnergy());
-    }
+    float averageM = (userM + tagSettings.getMood()) / 2;
+    finalSettings.setMood(averageM);
+
     // Hotness
     int userH = userSettings.getHotness();
-    if (userH > 0) {
-      int averageH = (userH + tagSettings.getHotness()) / 2;
-      finalSettings.setHotness(averageH);
-    } else {
-      finalSettings.setHotness(tagSettings.getHotness());
-    }
+    int averageH = (userH + tagSettings.getHotness()) / 2;
+    finalSettings.setHotness(averageH);
+
     return finalSettings;
   }
 
-  public Settings makeSettings(List<String> str) {
+  public Settings makeSettings(List<String> genres, List<String> str) {
     String tagStr = str.get(0);
-    String genreStr = str.get(1);
-    String energyStr = str.get(2);
-    String hotnessStr = str.get(3);
-    String moodStr = str.get(4);
+    String energyStr = str.get(1);
+    String hotnessStr = str.get(2);
+    String moodStr = str.get(3);
     Tag tag = this.tagFromTagString(tagStr);
-    List<String> genreList = this.parseGenreString(genreStr);
+
+    // Lowercase the genres
+    for (int i = 0; i < genres.size(); i++) {
+      genres.set(i, genres.get(i).toLowerCase());
+    }
 
     // Energy, hotness, and mood
-    float energy = -1f;
-    int hotness = -1;
-    float mood = -1f;
-    if (!energyStr.equals("none")) {
-      energy = Float.parseFloat(energyStr);
-    }
-    if (!hotnessStr.equals("none")) {
-      hotness = Integer.parseInt(hotnessStr);
-    }
-    if (!moodStr.equals("none")) {
-      mood = Float.parseFloat(moodStr);
-    }
-    return new Settings(tag, genreList, energy, hotness, mood);
+    float energy = (float) (Float.parseFloat(energyStr) / 10.0f); // 0-1 scale
+    int hotness = (int) (Integer.parseInt(hotnessStr) * 10); // 0-100 scale
+    float mood = Float.parseFloat(moodStr); // mood is already 0-1
+    return new Settings(tag, genres, mood, hotness, energy);
   }
 
   private Tag tagFromTagString(String tagStr) {
-    if (tagStr.equals("none")) {
-      return null;
-    }
     Tag tag = null;
     switch (tagStr) {
-    case "party":
+    case "Party":
       tag = Tag.PARTY;
-    case "workstudy":
+      break;
+    case "Work/Study":
       tag = Tag.WORKSTUDY;
-    case "exercise":
+      break;
+    case "Exercise":
       tag = Tag.EXERCISE;
-    case "eatsocial":
+      break;
+    case "Eat/Social":
       tag = Tag.EATSOCIAL;
-    case "restful":
+      break;
+    default:
       tag = Tag.RESTFUL;
+      break;
     }
     return tag;
-  }
-
-  private List<String> parseGenreString(String genreStr) {
-    if (genreStr.equals("none")) {
-      return null;
-    }
-    String[] splitList = genreStr.split(",");
-    List<String> retList = new ArrayList<>();
-    for (int i = 0; i < splitList.length; i++) {
-      retList.add(splitList[i]);
-    }
-    return retList;
   }
 }

@@ -24,13 +24,9 @@ public class PlaylistGenerator {
   public VibePlaylist makePlaylist(Settings s, int length, Api api,
       User curentUser, String accessToken) {
     List<String> genres = s.getGenres();
-    System.out.println(genres);
     float mood = s.getMood();
-    System.out.println(mood);
     int hotness = s.getHotness();
-    System.out.println(hotness);
     float energy = s.getEnergy();
-    System.out.println(energy);
     int numTracks = length / 3;
     if (numTracks > 100) {
       numTracks = 100;

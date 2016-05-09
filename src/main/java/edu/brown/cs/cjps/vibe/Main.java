@@ -346,7 +346,7 @@ public final class Main {
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
 
-
+      System.out.println("add event called");
       //(1): Retrieve event information from the front-end
       String start = qm.value("start");
       Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
@@ -354,9 +354,9 @@ public final class Main {
       Boolean endAmOrPm = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
       CalendarEvent newEvent = null;
-
       //(2): Check if the input times have the correct format
       if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)) {
+          System.out.println("The input maches the regex");
 
       //(3): Add the event to the database
           try {
@@ -368,7 +368,7 @@ public final class Main {
              }
           return GSON.toJson(newEvent);
       }
-
+      System.out.println("The input does not match the regex");
       return null;
 
 
@@ -445,7 +445,8 @@ public final class Main {
       String eventID = qm.value("id");
       System.out.println("Event id of event you want to edit is " + eventID);
 
-
+      System.out.println("Start: " + start);
+      System.out.println("End: " + end);
       CalendarEvent event = null;
       //If the edits are valid an event will be returned to the front-end
       try {
@@ -455,6 +456,7 @@ public final class Main {
 
     	  //(2): Make modifications to the event if the times match the correct format
     	  if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)) {
+    	      System.out.println("The input matches");
     	       CalendarEvent editedEvent = eventProcessor
     	                  .editEvent(start, amOrPm, end, endAMOrPM, eventName, event);
 

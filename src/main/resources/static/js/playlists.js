@@ -52,12 +52,12 @@ if (window.location.pathname === "/playlists") {
 	  $("#displayname").html(username);
 
 	  loadCachedEvents(backendInfo.cachedEvents);
-	  
+	  // Populates the dropdown selection for user playlists
+	  populateUserPlaylists();
 
 	}); // end access token code post
 
-	// Populates the dropdown selection for user playlists
-  	populateUserPlaylists();
+
 }	
 
 /* Handles adding an event */

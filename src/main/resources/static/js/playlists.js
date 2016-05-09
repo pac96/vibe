@@ -271,13 +271,7 @@ function addEvent() {
 	    	$.post("/newEvent", postParameters, function(response) {
 	    		// 1. send stuff to back end and store in responseObject
 	    		var responseObject = JSON.parse(response);
-	    		console.log("Success value:");
-	    		console.log(responseObject.success);
-	    		console.log(responseObject.success == true);
-	    		console.log(responseObject.success === true);
-	    		console.log(responseObject.success == "true");
 	    		if (responseObject.success === true) {
-	    			console.log("in the if");
 	    			// 2. Make calendar event object from responseObject
 		    		var newEvent = new CalendarEvent(responseObject.event);
 
@@ -293,13 +287,12 @@ function addEvent() {
 
 	   				nextEventPopup();	
 	    		} else {
-	    			console.log("in the else");
 	    			var $msg = $("<p>", {
 						class: "contentMsg", 
 						id: "errorMsg"
 					});
 
-					$msg.append("Add event failed. Time should be formatted like this: 5:00  , 12:24");
+					$msg.append("Add event failed, check that the time is formatted properly");
 					otherContent.html($msg);
 				    otherContent.fadeIn('slow');
 

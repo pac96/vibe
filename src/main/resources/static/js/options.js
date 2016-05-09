@@ -322,10 +322,12 @@ function requestEdit(eventID) {
 	    		// 1. send stuff to back end and store in responseObject
 	    		var responseObject = JSON.parse(response);
 	    		console.log(responseObject["success"]);
-	    		if (responseObject["success"] == "true") {
+	    		if (responseObject["success"] === true) {
 		    		// 2. Get calendar event from the calendar array
 		    		editableEvent = new CalendarEvent(responseObject["event"]);
-
+		    		console.log("response object");
+		    		console.log(editableEvent);
+		    		console.log(responseObject["event"]);
 		    		// 3. Remove the old event from the eventsArray
 		    		for (var i = 0; i < eventsArray.length; i++) {
 		    			if (eventsArray[i].id === eventID) {
@@ -372,7 +374,7 @@ function requestEdit(eventID) {
 						id: "errorMsg"
 					});
 
-					$msg.append("Event edit failed. Time should be formatted like so. 5:00  , 12:24");
+					$msg.append("Edit event failed, check that the time is formatted properly");
 					otherContent.html($msg);
 				    otherContent.fadeIn('slow');
 

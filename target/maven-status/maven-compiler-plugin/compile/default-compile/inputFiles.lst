@@ -1,9 +1,9 @@
 /gpfs/main/home/casteele/course/cs032/vibe/src/main/java/edu/brown/cs/cjps/calendar/Day.java
+/gpfs/main/home/casteele/course/cs032/vibe/src/main/java/edu/brown/cs/cjps/music/PlaylistGetter.java
 /gpfs/main/home/casteele/course/cs032/vibe/src/main/java/edu/brown/cs/cjps/music/Settings.java
 /gpfs/main/home/casteele/course/cs032/vibe/src/main/java/edu/brown/cs/cjps/music/SpotifyConverter.java
 /gpfs/main/home/casteele/course/cs032/vibe/src/main/java/edu/brown/cs/cjps/db/DBQuerier.java
 /gpfs/main/home/casteele/course/cs032/vibe/src/main/java/edu/brown/cs/cjps/music/PlaylistDefaults.java
-/gpfs/main/home/casteele/course/cs032/vibe/src/main/java/edu/brown/cs/cjps/music/NewSpotifyTester.java
 /gpfs/main/home/casteele/course/cs032/vibe/src/main/java/edu/brown/cs/cjps/music/PlaylistHQ.java
 /gpfs/main/home/casteele/course/cs032/vibe/src/main/java/edu/brown/cs/cjps/calendar/EventTime.java
 /gpfs/main/home/casteele/course/cs032/vibe/src/main/java/edu/brown/cs/cjps/vibe/MusicEventTag.java
@@ -15,4 +15,3 @@
 /gpfs/main/home/casteele/course/cs032/vibe/src/main/java/edu/brown/cs/cjps/music/VibePlaylist.java
 /gpfs/main/home/casteele/course/cs032/vibe/src/main/java/edu/brown/cs/cjps/vibe/VibeCache.java
 /gpfs/main/home/casteele/course/cs032/vibe/src/main/java/edu/brown/cs/cjps/db/UserDBCreator.java
-/gpfs/main/home/casteele/course/cs032/vibe/src/main/java/edu/brown/cs/cjps/user/User.java

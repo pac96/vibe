@@ -345,18 +345,6 @@ function requestEdit(eventID) {
 		}
 }
 
-
-/** Object to mirror Customization from the backend **/
-function Customization(preferences) {
-	this.tag = preferences.event;
-	this.mood = preferences.mood;
-	this.popularity = preferences.popularity;
-	this.energy = preferences.energy;
-	this.genre = prefereces.genre;
-	this.playlist = preferences.playlist;
-
-}
-
 /**
  * Customizes an event's music settings and returns
  * a new playlist based on those customizations
@@ -423,6 +411,7 @@ function customizePlaylist(eventID) {
 
 	if(!customize){
 		playlistSelection = document.getElementById('#select-your-playlist').value;
+		console.log(playlistSelection);
 	}
 					
 	
@@ -441,10 +430,13 @@ function customizePlaylist(eventID) {
     	
     	$.post("/customizePlaylist", postParameters, function(response) {
     		// 1. Send information to the back end, store in responseObject
+    		//    backend will generate a new playlist id for this event
+    		//console.log(response);
     		var responseObject = JSON.parse(response);
+    		//console.log(responseObject);
 
     		// 2. Make customization object from responseObject
-    		var custom = new Customization(responseObject);
+    		//var custom = new Customization(responseObject);
 
     	});
 	}

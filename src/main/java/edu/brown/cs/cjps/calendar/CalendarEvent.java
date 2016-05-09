@@ -9,9 +9,8 @@ import com.google.common.collect.ImmutableMap;
 public class CalendarEvent {
 
   private String name;
-  
 
-private EventTime start;
+  private EventTime start;
   private EventTime end;
   private UUID id;
 
@@ -25,7 +24,6 @@ private EventTime start;
     this.id = UUID.randomUUID();
   }
 
-
   public EventTime getStart() {
     return start;
   }
@@ -37,10 +35,10 @@ private EventTime start;
   public String getName() {
     return name;
   }
-  
+
   public void setName(String name) {
-		this.name = name;
-	}
+    this.name = name;
+  }
 
   /**
    * @param id
@@ -54,14 +52,13 @@ private EventTime start;
     return id;
   }
 
-  public String getPlayListId() {
+  public String getPlayListURI() {
     return playListId;
   }
 
-  public void setPlayListId(String playListID) {
+  public void setPlayListURI(String playListID) {
     this.playListId = playListID;
   }
-
 
   public void setStart(int newHour, int newMinute, boolean amOrPm) {
     start.update(newHour, newMinute, amOrPm);
@@ -117,7 +114,7 @@ private EventTime start;
           && this.getEnd().equals(other.getEnd())
           && this.getId().equals(other.getId())
           && this.getName().equals(other.getName())
-          && this.getPlayListId().equals(other.getPlayListId());
+          && this.getPlayListURI().equals(other.getPlayListURI());
     }
   }
 

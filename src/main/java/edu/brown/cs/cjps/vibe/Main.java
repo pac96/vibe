@@ -28,6 +28,9 @@ import spark.template.freemarker.FreeMarkerEngine;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.wrapper.spotify.Api;
 import com.wrapper.spotify.models.AuthorizationCodeCredentials;
 import com.wrapper.spotify.models.User;
@@ -195,7 +198,8 @@ public final class Main {
     Spark.post("/deleteEvent", new DeleteEventHandler());
     Spark.post("/editEvent", new EditEventHandler());
     Spark.post("/customizePlaylist", new AddCustomPlaylistHandler());
-
+    Spark.post("/getAllPlaylists", new GetAllPlaylistsHandler());
+    Spark.post("/selectExistingPlaylist", new SelectExistingPlaylistHandler());
   }
 
   /**
@@ -376,17 +380,31 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-
+      String returnURI = null;
       // Retrieve the event ID and find the associated playlist
-      UUID eventID = UUID.fromString(qm.value("eventID"));
-      VibePlaylist playlist = VibeCache.getPlaylistCache().get(eventID);
+      String idString = qm.value("eventID");
+      UUID eventID = UUID.fromString(idString);
 
-      // TODO: Need to get the name from the eventID
-      String eventName = qm.value("eventName");
+      // Check to see if a prexisting playlist was associated with this event
+      CalendarEvent thisEvent = null;
+      try {
+        thisEvent = eventProcessor.getEventFromEventID(idString);
+      } catch (SQLException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      // Case for new playlist
+      if (thisEvent.getPlayListURI().equals("")) {
+        VibePlaylist playlist = VibeCache.getPlaylistCache().get(eventID);
+        // TODO: Need to get the name from the eventID
+        String eventName = thisEvent.getName();
+        returnURI = hq.convertForSpotify(playlist, eventName, api, currentUser);
+        // This is the case where an existing URI is set
+      } else {
+        returnURI = thisEvent.getPlayListURI();
+      }
 
-      String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
-
-      return uri;
+      return returnURI;
     }
   }
 
@@ -468,47 +486,85 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-
       // Create a new event and add it to the database
       // CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm, end,
       // endAMOrPM, eventName);
-      CalendarEvent newEvent = null;
 
       // Playlist stuff
       String eventID = qm.value("eventID");
       String tag = qm.value("tag");
+
       System.out.println("the tag is + " + tag);
       @SuppressWarnings("unchecked")
       List<String> genres = GSON.fromJson(qm.value("genres"), List.class);
       String energy = qm.value("energy");
+      System.out.println("main e is " + energy);
       String hotness = qm.value("popularity");
       String mood = qm.value("mood");
+      System.out.println("main mood " + mood);
 
-      System.out.println("the genre list:");
-      System.out.println(genres);
+      System.out.println("the event ID + " + eventID);
+      CalendarEvent thisEvent = null;
+      try {
+        thisEvent = eventProcessor.getEventFromEventID(eventID);
+      } catch (SQLException e) {
+        System.out.println("SQL EXCEPTION");
+        e.printStackTrace();
+      }
 
       // Add these things to a list
       List<String> settingsList = Arrays.asList(tag, energy, hotness, mood);
 
       // Generate the playlist
-      hq.generateCustom(genres, settingsList, newEvent, api, currentUser,
+      hq.generateCustom(genres, settingsList, thisEvent, api, currentUser,
           accessToken);
+      System.out.println("returned from generatecustom");
 
       // These lines are only for testing
-      // VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
-      // System.out.println("~~~THE TRACKS~~~");
-      // System.out.println(p2.getTracks());
+      VibePlaylist p2 = VibeCache.getPlaylistCache().get(thisEvent.getId());
+      System.out.println("~~~THE TRACKS~~~");
+      System.out.println(p2.getTracks());
 
       // TODO: I have no idea what this should return
-      return newEvent;
+      return GSON.toJson(thisEvent);
     }
   }
 
-  public class GetAllPlaylistsHandler implements Route {
+  private class GetAllPlaylistsHandler implements Route {
     @Override
     public Object handle(Request req, Response res) {
-      List<String> playlistNames = hq.getAllPlaylists(api, currentUser);
-      return playlistNames;
+      List<String[]> playlistNames = hq.getAllPlaylists(api, currentUser);
+      JsonArray jarray = new JsonArray();
+      JsonParser jp = new JsonParser();
+      for (String[] playlist : playlistNames) {
+        JsonObject jobj = new JsonObject();
+        jobj.add("name", jp.parse(playlist[0]));
+        jobj.add("uri", jp.parse(playlist[1]));
+        jarray.add(jobj);
+      }
+      return jarray;
+    }
+  }
+
+  private class SelectExistingPlaylistHandler implements Route {
+    @Override
+    public Object handle(Request req, Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String playlistURI = qm.value("playlistURI");
+      String eventID = qm.value("eventID");
+
+      // Associate this eventID with this URI
+      CalendarEvent thisEvent = null;
+      try {
+        thisEvent = eventProcessor.getEventFromEventID(eventID);
+      } catch (SQLException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      thisEvent.setPlayListURI(playlistURI);
+
+      return playlistURI;
+
     }
   }
 

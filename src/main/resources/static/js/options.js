@@ -34,6 +34,10 @@ $(document).on('click', '#customizePlaylist', (function() {
 	
 }));
 
+$(document).on('click', '#generateCustom', function() {
+	console.log("Hi");
+	customizePlaylist(currentEventID);
+})
 
 $(document).on('click', '#generateCustom', function() {
 	customizePlaylist(currentEventID);
@@ -357,7 +361,7 @@ function Customization(preferences) {
  * Customizes an event's music settings and returns
  * a new playlist based on those customizations
  */
-function customizePlaylist(id) {
+function customizePlaylist(eventID) {
 	// necessary for some browser problems (saw on jquery's website)
 	$.valHooks.textarea = {
 	  get: function( elem ) {
@@ -432,7 +436,7 @@ function customizePlaylist(id) {
 			energy : energyPref,
 			genres : JSON.stringify(genreSelection),
 			playlist : playlistSelection,
-			eventID : id
+			eventID : eventID
     	};
     	
     	$.post("/customizePlaylist", postParameters, function(response) {
@@ -448,10 +452,26 @@ function customizePlaylist(id) {
 
 
 function getUserPlaylists() {
-	
+	$.post('/getAllPlaylists', function(jarray) {
+		// returns a jarray with an object at each index having access to a name and URI
+		var playlists = JSON.parse(jarray);
+		for (var i = 0; i < jarray.length; i++) {
+
+		}
+	});
 	
 }
 
 $(document).on('click', '#useOwnPlaylist', function() {
+	$("#select-your-playlist")
+
+	// TODO: Display dropdown
+	var playlists = [];
+
+
 	
+
+	// TODO: Get value from selected dropdown
+
+	// TODO: 
 });

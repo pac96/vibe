@@ -1,9 +1,6 @@
 <#assign content>
 
-
 <div class="other-bg img-responsive">
-
-
 
 <div id="wrapper">
 	<!-- Sidebar -->
@@ -161,13 +158,13 @@
 
 
 					<!-- Customize Form -->
-					<p> <br> </br> </p> <!-- add some space -->
+					<p> </p> <!-- add some space -->
 					<form id='customizePlaylistForm' method="POST" action="/customizePlaylist" class="hiddenDiv">
 						<!-- Choosing a Playlist from Existing Spotify Playlist for Event -->						
 						
 						<!-- Event Tags -->
 						<div id="eTagWrapper" class="row section-wrapper">
-							<h2 class="sub-desc">Select an Event Tag</h2>
+							<h2 class="boxed-text">Select an Event Tag</h2>
 							<div>
 								<input type="radio" name="eTradio" id="eTradio1" class="radio" value="Eat/Social" />
 								<label for="eTradio1">Eat/Social</label>
@@ -199,8 +196,8 @@
 						
 						<!-- Mood Selection -->
 						<div id="mTagWrapper" class="row section-wrapper">
-						<p> <br> </br> </p> <!-- add some space -->
-							<h2 class="sub-desc">Select an Event Mood</h2>
+						<p> </p> <!-- add some space -->
+							<h2 class="boxed-text">Select an Event Mood</h2>
 
 							<div>
 								<input type="radio" name="mSradio" id="mSradio1" class="radio" value="Happy" />
@@ -334,7 +331,7 @@
 								<dd>
 								    <div class="plmutliSelect">
 								        <ul>
-								            <!-- add in li elements for each playlist you have -->
+								             add in li elements for each playlist you have -->
 								<!--         </ul>
 								    </div>
 								</dd>
@@ -346,7 +343,8 @@
 
 				
 
-				<div>
+				<div class="row">
+					<button class="btn btn-primary" id="hidePlaylist" class="hiddenDiv">Hide Playlist</button>
 					<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>
 			    </div>
 			</div>
@@ -358,9 +356,6 @@
 </div>
 <!-- /#wrapper -->
 </div>
-
-</div>
-
 
 <!-- Menu Toggle Script -->
 <script>

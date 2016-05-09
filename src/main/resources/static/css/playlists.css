@@ -15,6 +15,7 @@ body{
   font-weight: 100; 
 	line-height: 20px; 
 	margin: 0 0 72px; 
+	
 }
 
 
@@ -25,6 +26,7 @@ body{
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
+    
     
 }
 
@@ -55,12 +57,20 @@ body{
     width: 100%;
     position: absolute;
     padding: 15px;
+    
+    
+    background-image:url("/images/vibe-background.jpg");
+    background-size:125%,170%;
+  	background-repeat: repeat;
+  	background-position: center;
+   
 }
 
 
 #wrapper.toggled #page-content-wrapper {
     position: absolute;
     margin-right: -250px;
+    
 }
 
 /* Sidebar Styles */
@@ -72,6 +82,7 @@ body{
     margin: 0;
     padding: 0;
     list-style: none;
+    
 }
 
 .sidebar-nav li {

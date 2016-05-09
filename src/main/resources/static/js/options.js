@@ -1,7 +1,9 @@
 // "View Playlist" option
 $(document).on('click', '#viewPlaylist', (function() {
+	var dropdownID = $(this).parent().attr('id');
+	currentEventID = dropdownID.split("_")[1];
+
 	var eventObject = getEvent(currentEventID);
-	console.log("Current id: " + currentEventID);
 	console.log("Current event: " + eventObject.name);
 
 	if (eventObject.playlistURI == null) {
@@ -32,8 +34,9 @@ $(document).on('click', '#viewPlaylist', (function() {
 
 // "Customize Playlist" option
 $(document).on('click', '#customizePlaylist', (function() {
-	console.log("Customize playlist clicked!");
-	//hide unneeded divs
+	var dropdownID = $(this).parent().attr('id');
+	currentEventID = dropdownID.split("_")[1];	//hide unneeded divs
+	
 	$('#view-playlist-panel').hide();
 	editDiv.hide();
 	playlist.hide();
@@ -64,6 +67,8 @@ $(document).on('click', '#useOwnPlaylist', function() {
 
 // "Edit Event" option
 $(document).on('click', '#editEvent', (function() {
+	var dropdownID = $(this).parent().attr('id');
+	currentEventID = dropdownID.split("_")[1];
 	// Show the edit event form
     editDiv.show();
     
@@ -81,6 +86,8 @@ $("#EditAddNewEvent").click(function() {
 
 // "Delete Event" option
 $(document).on('click', '#deleteEvent', (function() {
+	var dropdownID = $(this).parent().attr('id');
+	currentEventID = dropdownID.split("_")[1];
     deleteEvent(currentEventID);
 
     // hide unneeded divs

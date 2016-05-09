@@ -72,9 +72,8 @@ $("#AddNewEvent").click(function() {
 
 $(document).on('click', '.anEvent', function() {
 	currentEventID = this.id;
+	console.log("Curr: " + currentEventID);
 	createDropdown(currentEventID);
-
-	
 }); // end click on event handler
 
 
@@ -161,7 +160,7 @@ function renderCalendar(event){
 	
 	var eventTimeline = $('#calendarEvents');
 
-	var targetID = "dropdown-" + event.id;
+	var targetID = "dropdown_" + event.id;
 
 	var htmlCode = htmlDropdown(targetID, timePeriod, event);
 

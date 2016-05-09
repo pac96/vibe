@@ -140,7 +140,7 @@
 						<div id="eTagWrapper" class="row section-wrapper">
 							<h2 class="sub-desc">Select an Event Tag</h2>
 							<div>
-								<input type="radio" name="eTradio" id="eTradio1" class="radio" value="Eat/Social" checked/>
+								<input type="radio" name="eTradio" id="eTradio1" class="radio" value="Eat/Social" />
 								<label for="eTradio1">Eat/Social</label>
 							</div>
 
@@ -173,7 +173,7 @@
 							<h2 class="sub-desc">Select an Event Mood</h2>
 
 							<div>
-								<input type="radio" name="mSradio" id="mSradio1" class="radio" value="Happy" checked/>
+								<input type="radio" name="mSradio" id="mSradio1" class="radio" value="Happy" />
 								<label for="mSradio1">Happy</label>
 							</div>
 
@@ -291,7 +291,7 @@
 						</div>
 						
 						<div id='customize-playlist-submit' class="row">
-							<!-- <input type="button" class="btn btn-primary cbutton" value="Use your Own Playlist" id="useOwnPlaylist"> -->
+							<!-- <input type="button" class="btn btn-primary cbutton" value="Use Your Own Playlist" id="useOwnPlaylist"> -->
 						
 							<!-- <dl id='select-your-playlist' class="plDropdown btn btn-primary cbutton"> 
 								<dt>
@@ -311,7 +311,7 @@
 							</dl> -->
 
 
-							<input type="button" class="btn btn-primary cbutton" value="Use your Own Playlist" id="useOwnPlaylist">
+							<input type="button" class="btn btn-primary cbutton" value="Use Your Own Playlist" id="useOwnPlaylist">
 							<div class="hiddenDiv" id="select-your-playlist">
 						    	<!-- <div class="input-group-btn">
 									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select Playlists <span class="caret"></span></button>

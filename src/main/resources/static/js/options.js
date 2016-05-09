@@ -42,12 +42,19 @@ $(document).on('click', '#customizePlaylist', (function() {
 	
 }));
 
-
+// Load customization options
 $(document).on('click', '#generateCustom', function() {
+	$("#customOptions").hide();
 	$("#selectPlaylistForm").hide();
 	$("#customizePlaylistForm").show();
+});
+
+// Submit customization options 
+$(document).on('click', '#customizeSubmit', function() {
 	customizePlaylist(currentEventID);
 })
+
+
 
 
 $(document).on('click', '#useOwnPlaylist', function() {
@@ -125,6 +132,11 @@ $('.mutliSelect input[type="checkbox"]').on('click', function() {
     $('.dropdown dt yy').append(ret);
 
   }
+});
+
+// Exit Event Editor
+$('#ExitEditEvent').on('click', function() {
+	editDiv.hide();
 });
 
 
@@ -446,11 +458,15 @@ function customizePlaylist(eventID) {
 		eventMoodNum = .40;
 		
 	} else {
-		eventMoodNum = .5;
+		eventMoodNum = null;
 	}
 	
 	var customize = (eventTag != null  && eventMood != null  &&
 			popularityPref != null && energyPref != null &&
+			genreSelection != null) ;
+	
+	var atLeastOneCustomOption = (eventTag != null  || eventMood != null  ||
+			popularityPref != null || energyPref != null ||
 			genreSelection != null) ;
 	
 	console.log("Customize playlist? " + customize);
@@ -462,15 +478,13 @@ function customizePlaylist(eventID) {
 	console.log("Genres: " + genreSelection); 
 	var playlistSelection = "";
 
+	// none of the custom options are selected
 	if(!customize){
 		playlistSelection = document.getElementById('#select-your-playlist').value;
 		console.log(playlistSelection);
 	}
-					
 	
-	if(playlistSelection === "" && !customize) {
-		alert("You must either customize or select Spotify playlists");
-	} else {
+	if (customize || playlistSelection !== "") {
     	var postParameters = {
 			tag : eventTag ,
 			mood : eventMoodNum ,
@@ -482,6 +496,11 @@ function customizePlaylist(eventID) {
     	};
     	
     	$.post("/customizePlaylist", postParameters, function(response) {
+    		// 2. Hide Customization div and show playlist div
+    		$('#customizeTitle').hide();
+    		$("#customizePlaylistForm").hide();
+    		$('#view-playlist-panel').show();
+    		
     		// 1. Send information to the back end, store in responseObject
     		//    backend will generate a new playlist id for this event
     		//console.log(response);
@@ -490,8 +509,61 @@ function customizePlaylist(eventID) {
 
     		// 2. Make customization object from responseObject
     		//var custom = new Customization(responseObject);
+    		
+    		
 
     	});
+    	// empty playlist selection and no custom options 
+    	// or empty playlist selection and incomplete custom option selection
+	}else if((playlistSelection === "" && !customize) || 
+			(playlistSelection === "" && atLeastOneCustomOption)) {
+		var $msg = $("<p>", {
+			class: "contentMsg", 
+			id: "successMsg"
+		});
+
+		$msg.append("You must either customize or select Spotify playlists");
+		otherContent.html($msg);
+	    otherContent.fadeIn('slow');
+	    setTimeout(function() {
+		    otherContent.fadeOut('slow');
+	    }, 2000);var $msg = $("<p>", {
+			class: "contentMsg", 
+			id: "errorMsg"
+		});
+
+		$msg.append("Complete Your Customization or Select a Playlist");
+		otherContent.html($msg);
+	    otherContent.fadeIn('slow');
+	    setTimeout(function() {
+		    otherContent.fadeOut('slow');
+	    }, 2000);
+	
+		// incomplete custom option selection and empty playlist selection
+		// or incomplete custom option selection and non-empty playlist selection
+	} else if ((atLeastOneCustomOption && playlistSelection === "") || 
+			(atLeastOneCustomOption && playlistSelection !== "")) {
+		var $msg = $("<p>", {
+			class: "contentMsg", 
+			id: "successMsg"
+		});
+
+		$msg.append("Fully complete customizations or select a playlist");
+		otherContent.html($msg);
+	    otherContent.fadeIn('slow');
+	    setTimeout(function() {
+		    otherContent.fadeOut('slow');
+	    }, 2000);var $msg = $("<p>", {
+			class: "contentMsg", 
+			id: "errorMsg"
+		});
+
+		$msg.append("Complete Your Customization or Select a Playlist");
+		otherContent.html($msg);
+	    otherContent.fadeIn('slow');
+	    setTimeout(function() {
+		    otherContent.fadeOut('slow');
+	    }, 2000);
 	}
 }
 

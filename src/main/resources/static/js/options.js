@@ -1,7 +1,16 @@
 // "View Playlist" option
 $(document).on('click', '#viewPlaylist', (function() {
-    // Retrieve the playlist URI from the backend and show it
-	showPlaylist(currentEventID);
+
+	var eventObject = getEvent(currentEventID);
+
+	if (eventObject.playlistURI == null) {
+		// Retrieve the playlist URI from the backend and show it
+		showPlaylist(currentEventID);			
+	} else {
+		playlist.attr('src', "https://embed.spotify.com/?uri=" + eventObject.playlistURI);
+		playlist.show();
+	}
+    
 	
 	// show name of event at top of page 
 	var eventName = $('#name').val();
@@ -15,7 +24,7 @@ $(document).on('click', '#viewPlaylist', (function() {
 	//hide unneded divs
 	$("#customizeDiv").hide();
 	editDiv.hide();
-	playlist.hide();
+	// playlist.hide();
 
 }));
 
@@ -28,20 +37,26 @@ $(document).on('click', '#customizePlaylist', (function() {
 	editDiv.hide();
 	playlist.hide();
 
-	console.log("custom show1");
 	$("#customizeDiv").show();
-	console.log("custom show2");
 	
 }));
 
+
 $(document).on('click', '#generateCustom', function() {
-	console.log("Hi");
+	$("#selectPlaylistForm").hide();
+	$("#customizePlaylistForm").show();
 	customizePlaylist(currentEventID);
 })
 
-$(document).on('click', '#generateCustom', function() {
-	customizePlaylist(currentEventID);
-})
+
+$(document).on('click', '#useOwnPlaylist', function() {
+	$("#customizePlaylistForm").hide();
+	$("#selectPlaylistForm").show();
+
+	$(document).on('click', "#existingSubmit", function() {
+		selectExistingPlaylist(currentEventID);
+	});
+});
 
 
 
@@ -58,7 +73,6 @@ $(document).on('click', '#editEvent', (function() {
 
 /* Handles clicking on the submit changes button */
 $("#EditAddNewEvent").click(function() {
-	console.log("Current event id " + currentEventID);
 	requestEdit(currentEventID);
 
 	var $msg = $("<p>", {
@@ -139,12 +153,15 @@ function showPlaylist(eventID) {
 	// 1. Set up a post request to the backend and get the event ID
     var uri = "";
 	var name;
-
+	var theEvent;
 	for (var i = 0; i < eventsArray.length; i++) {
 		if (eventID === eventsArray[i].id) {
+			theEvent = eventsArray[i];
 			name = eventsArray[i].name;
 		}
 	}    
+
+
 
     var postParams = {
     	eventID: eventID, 
@@ -184,7 +201,6 @@ function editCalendarEvent(editedEvent){
 		// Replaces the html of the old event with the info from the new one
 		eventLI.html(newHTML);
 	    editDiv.hide();
-
 	}	
 }
 
@@ -222,7 +238,7 @@ function deleteEvent(id) {
 		    // Remove the event from both the events and occurrences arrays
 		    for (var i = 0; i < eventsArray.length; i++) {
     			if (eventsArray[i].id === id) {
-    				if (playlist.src === eventsArray.playlistId) {
+    				if (playlist.src === eventsArray[i].playlistURI) {
     					playlist.attr('src', "");
     					playlist.hide();
     				}
@@ -332,7 +348,6 @@ function requestEdit(eventID) {
 	    		eventsArray.push(editableEvent);
 	    		occurrenceArray.push(editableEvent);
 
-	    		
 	    		// 5. sort the list of events
 	    		eventsArray.sort(compareEvents);
 	    		occurrenceArray.sort(compareEvents);
@@ -350,6 +365,8 @@ function requestEdit(eventID) {
  * a new playlist based on those customizations
  */
 function customizePlaylist(eventID) {
+
+
 	// necessary for some browser problems (saw on jquery's website)
 	$.valHooks.textarea = {
 	  get: function( elem ) {
@@ -444,20 +461,15 @@ function customizePlaylist(eventID) {
 
 
 
-$(document).on('click', '#useOwnPlaylist', function() {
-	$("#select-your-playlist").toggle();
 
-	$(document).on('click', "#submitYourOwn", function() {
-		selectExistingPlaylist(currentEventID);
-	});
-});
 
 function selectExistingPlaylist(id) {
 	var $selectedOption = $("#playlistDropdown option:selected");
 	var uri = $selectedOption.attr('id');
 
 	console.log("Selected uri: " + uri);
-
+	var theEvent = getEvent(id);
+	theEvent.playlistURI = uri;
 
 	var postParams = {
 		playlistURI: uri, 
@@ -467,4 +479,17 @@ function selectExistingPlaylist(id) {
 	$.post("/selectExistingPlaylist", postParams, function(response) {
 
 	});	
+}
+
+function getEvent(eventID) {
+	var theEvent;
+
+	for (var i = 0; i < eventsArray.length; i++) {
+		if (eventsArray[i].id == eventID) {
+			theEvent = eventsArray[i];
+			break;
+		}
+	}
+
+	return theEvent;
 }

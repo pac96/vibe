@@ -444,6 +444,7 @@ yy {
 }
 
 
+/* Handles Mood and Event Tag Wrappers */
 .section-wrapper.form {
 	margin: 40px 0;
 }
@@ -463,6 +464,7 @@ yy {
 /* hide input */
 .section-wrapper input.radio:empty {
 	margin-left: -999px;
+  display: none;
 }
 
 /* style label */
@@ -522,7 +524,7 @@ input.radio:empty ~ label:before {
 
 /* Mood Tag */
 
-#mTagWrapper.form {
+/*#mTagWrapper.form {
 	margin: 40px 0;
 }
 
@@ -536,16 +538,16 @@ input.radio:empty ~ label:before {
   border-radius: 3px;
   border: 1px solid white;
   color: white;
-}
+}*/
 
 /* hide input */
-#mTagWrapper input.radio:empty {
+/*#mTagWrapper input.radio:empty {
 	margin-left: -999px;
 	display: none;
-}
+}*/
 
 /* style label */
-#mTagWrapper input.radio:empty ~ label {
+/*#mTagWrapper input.radio:empty ~ label {
 	left: 70%;
 	position: relative;
 	float: left;
@@ -569,11 +571,11 @@ input.radio:empty ~ label:before {
 	width: 2.5em;
 	background: #D1D3D4;
 	border-radius: 3px 0 0 3px;
-}
+}*/
 
 /* toggle hover */
 
-#mTagWrapper input.radio:hover:not(:checked) ~ label:before {
+/*#mTagWrapper input.radio:hover:not(:checked) ~ label:before {
 	content:'\2714';
 	text-indent: .9em;
 	color: #C2C2C2;
@@ -581,12 +583,12 @@ input.radio:empty ~ label:before {
 
 #mTagWrapper input.radio:hover:not(:checked) ~ label {
 	color: #888;
-}
+}*/
 
 
 /* toggle on */
 
-#mTagWrapper input.radio:checked ~ label:before {
+/*#mTagWrapper input.radio:checked ~ label:before {
 	content:'\2714';
 	text-indent: .9em;0
 	color: #9CE2AE;
@@ -595,14 +597,14 @@ input.radio:empty ~ label:before {
 
 #mTagWrapper input.radio:checked ~ label {
 	color: white;
-}
+}*/
 
 
 /* radio focus */
 
-#mTagWrapper input.radio:focus ~ label:before {
+/*#mTagWrapper input.radio:focus ~ label:before {
 	box-shadow: 0 0 0 3px #999;
-}
+}*/
 
 
 /** range sliders **/
@@ -956,19 +958,19 @@ input.radio:empty ~ label:before {
 /** Playlist Selection CSS **/
 .select-style {
     border: 1px solid #ccc;
-    width: 120px;
+    width: 200px;
     border-radius: 3px;
     overflow: hidden;
+    color: white;
 }
 
 .select-style select {
     padding: 5px 8px;
     width: 130%;
     border: none;
-    box-shadow: none;
-    background: transparent;
-    background-image: none;
-    -webkit-appearance: none;
+    /*box-shadow: none;*/
+    background-color: white;
+    /*-webkit-appearance: none;*/
 }
 
 .select-style select:focus {

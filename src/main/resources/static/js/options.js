@@ -40,7 +40,7 @@ $(document).on('click', '#generateCustom', function() {
 })
 
 $(document).on('click', '#generateCustom', function() {
-	customizePlaylist();
+	customizePlaylist(currentEventID);
 })
 
 
@@ -60,19 +60,6 @@ $(document).on('click', '#editEvent', (function() {
 $("#EditAddNewEvent").click(function() {
 	console.log("Current event id " + currentEventID);
 	requestEdit(currentEventID);
-
-	var $msg = $("<p>", {
-		class: "contentMsg", 
-		id: "successMsg"
-	});
-
-	$msg.append("Event edit successful!");
-	otherContent.html($msg);
-    otherContent.fadeIn('slow');
-
-    setTimeout(function() {
-	    otherContent.fadeOut('slow');
-    }, 2000);
 });
 
 
@@ -311,50 +298,68 @@ function requestEdit(eventID) {
 	    		// 1. send stuff to back end and store in responseObject
 	    		var responseObject = JSON.parse(response);
 
-	    		// 2. Get calendar event from the calendar array
-	    		editableEvent = new CalendarEvent(responseObject);
+	    		if (responseObject["success"] == "true") {
+		    		// 2. Get calendar event from the calendar array
+		    		editableEvent = new CalendarEvent(responseObject["event"]);
 
-	    		// 3. Remove the old event from the eventsArray
-	    		for (var i = 0; i < eventsArray.length; i++) {
-	    			if (eventsArray[i].id === eventID) {
-	    				eventsArray.splice(i,1);
-	    			}
+		    		// 3. Remove the old event from the eventsArray
+		    		for (var i = 0; i < eventsArray.length; i++) {
+		    			if (eventsArray[i].id === eventID) {
+		    				eventsArray.splice(i,1);
+		    			}
+		    		}
+
+		    		// 3a. Remove the old event from the occurrenceArray
+		    		for (var j = 0; j < occurrenceArray.length; j++) {
+		    			if (occurrenceArray[j].id === eventID) {
+		    				occurrenceArray.splice(j,1);
+		    			}
+		    		}
+		    		
+		    		// 4. Add new calendar event to user's list
+		    		eventsArray.push(editableEvent);
+		    		occurrenceArray.push(editableEvent);
+
+		    		
+		    		// 5. sort the list of events
+		    		eventsArray.sort(compareEvents);
+		    		occurrenceArray.sort(compareEvents);
+		    		
+		    		// 6. Find out when the next event is and set the popup
+		    		editCalendarEvent(editableEvent);
+		    		
+			    	nextEventPopup();			
+	    			
+	    			var $msg = $("<p>", {
+						class: "contentMsg", 
+						id: "successMsg"
+					});
+
+					$msg.append("Event edit successful!");
+					otherContent.html($msg);
+				    otherContent.fadeIn('slow');
+
+				    setTimeout(function() {
+					    otherContent.fadeOut('slow');
+				    }, 2000);
+	    		} else {
+	    				    			var $msg = $("<p>", {
+						class: "contentMsg", 
+						id: "successMsg"
+					});
+
+					$msg.append("Event edit failed. Time should be formatted like so. 5:00  , 12:24");
+					otherContent.html($msg);
+				    otherContent.fadeIn('slow');
+
+				    setTimeout(function() {
+					    otherContent.fadeOut('slow');
+				    }, 2000);
 	    		}
 
-	    		// 3a. Remove the old event from the occurrenceArray
-	    		for (var j = 0; j < occurrenceArray.length; j++) {
-	    			if (occurrenceArray[j].id === eventID) {
-	    				occurrenceArray.splice(j,1);
-	    			}
-	    		}
 	    		
-	    		// 4. Add new calendar event to user's list
-	    		eventsArray.push(editableEvent);
-	    		occurrenceArray.push(editableEvent);
-
-	    		
-	    		// 5. sort the list of events
-	    		eventsArray.sort(compareEvents);
-	    		occurrenceArray.sort(compareEvents);
-	    		
-	    		// 6. Find out when the next event is and set the popup
-	    		editCalendarEvent(editableEvent);
-	    		
-		    	nextEventPopup();
 	    	});
 		}
-}
-
-
-/** Object to mirror Customization from the backend **/
-function Customization(preferences) {
-	this.tag = preferences.event;
-	this.mood = preferences.mood;
-	this.popularity = preferences.popularity;
-	this.energy = preferences.energy;
-	this.genre = prefereces.genre;
-	this.playlist = preferences.playlist;
-
 }
 
 /**
@@ -423,10 +428,11 @@ function customizePlaylist(eventID) {
 
 	if(!customize){
 		playlistSelection = document.getElementById('#select-your-playlist').value;
+		console.log(playlistSelection);
 	}
 					
 	
-	if(playlistSelection != null && customize) {
+	if(playlistSelection === "" && !customize) {
 		alert("You must either customize or select Spotify playlists");
 	} else {
     	var postParameters = {
@@ -441,20 +447,41 @@ function customizePlaylist(eventID) {
     	
     	$.post("/customizePlaylist", postParameters, function(response) {
     		// 1. Send information to the back end, store in responseObject
+    		//    backend will generate a new playlist id for this event
+    		//console.log(response);
     		var responseObject = JSON.parse(response);
+    		//console.log(responseObject);
 
     		// 2. Make customization object from responseObject
-    		var custom = new Customization(responseObject);
+    		//var custom = new Customization(responseObject);
 
     	});
 	}
 }
 
 
-function populatePlaylistSelections() {
-
-}
 
 $(document).on('click', '#useOwnPlaylist', function() {
-	
+	$("#select-your-playlist").toggle();
+
+	$(document).on('click', "#submitYourOwn", function() {
+		selectExistingPlaylist(currentEventID);
+	});
 });
+
+function selectExistingPlaylist(id) {
+	var $selectedOption = $("#playlistDropdown option:selected");
+	var uri = $selectedOption.attr('id');
+
+	console.log("Selected uri: " + uri);
+
+
+	var postParams = {
+		playlistURI: uri, 
+		eventID: id
+	};
+
+	$.post("/selectExistingPlaylist", postParams, function(response) {
+
+	});	
+}

@@ -65,8 +65,36 @@
 	<!-- end modal -->
 
 
-	<!-- Displays helpful/error messages -->
+	<!-- Displays helpful messages -->
     <div class="otherContent"></div>
+
+
+    <!-- Edit Event Form -->
+				
+	<div class="hiddenDiv" id="editDiv">    
+		<form id='editEventForm' form method="POST" action="/editEvent" class='smart-green'>
+  		   <h7> Edit Event </h7>
+	       <label for='name' >Event Name: </label>
+	       <input type='text' id='editEventName' name='name' maxlength="30" class="form-textbox"/>
+	       <br/><br/>
+
+	       <label for='start-time' >Start Time:</label> 
+	       <input type='text' id='editStartTime' name='startTime' maxlength="5" class="form-textbox-time-start"/> 
+	       &nbsp <input type="radio" id='editStartAM' name="time-selection-start" value="am-start">am
+	       &nbsp <input type="radio" id='editStartPM' name="time-selection-start" value="pm-start" checked>pm
+	       <br/><br/>
+
+	       <label for='end-time' >End Time:</label> 
+	       <input type='text' id='editEndTime' name='endTime' maxlength="5" class="form-textbox-time-end"/>
+	       &nbsp <input type="radio" id='editEndAM' name="time-selection-end" value="am-end">am
+	       &nbsp <input type="radio" id='editEndPM' name="time-selection-end" value="pm-end" checked>pm
+	       <br/><br/>
+
+	       &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
+	       <input type='button' name='AddNewEvent' value='Submit Changes' id="EditAddNewEvent" class="btn btn-success"/>
+	       <!-- <button name="EditEvent" value="Submit Changes" id="EditAddNewEvent" class="btn btn-success"></button> -->
+		</form>
+	</div>
 
 
 	<!-- Page Content -->
@@ -112,7 +140,7 @@
 						<div id="eTagWrapper" class="row section-wrapper">
 							<h2 class="sub-desc">Select an Event Tag</h2>
 							<div>
-								<input type="radio" name="eTradio" id="eTradio1" class="radio" value="Eat/Social" checked/>
+								<input type="radio" name="eTradio" id="eTradio1" class="radio" value="Eat/Social" />
 								<label for="eTradio1">Eat/Social</label>
 							</div>
 
@@ -145,7 +173,7 @@
 							<h2 class="sub-desc">Select an Event Mood</h2>
 
 							<div>
-								<input type="radio" name="mSradio" id="mSradio1" class="radio" value="Happy" checked/>
+								<input type="radio" name="mSradio" id="mSradio1" class="radio" value="Happy" />
 								<label for="mSradio1">Happy</label>
 							</div>
 
@@ -263,7 +291,7 @@
 						</div>
 						
 						<div id='customize-playlist-submit' class="row">
-							<!-- <input type="button" class="btn btn-primary cbutton" value="Use your Own Playlist" id="useOwnPlaylist"> -->
+							<!-- <input type="button" class="btn btn-primary cbutton" value="Use Your Own Playlist" id="useOwnPlaylist"> -->
 						
 							<!-- <dl id='select-your-playlist' class="plDropdown btn btn-primary cbutton"> 
 								<dt>
@@ -276,43 +304,40 @@
 								<dd>
 								    <div class="plmutliSelect">
 								        <ul>
-								            add in li elements for each playlist you have -->
-							<!-- 	        </ul>
+								            <!-- add in li elements for each playlist you have -->
+								<!--         </ul>
 								    </div>
 								</dd>
 							</dl> -->
-						
+
+
+							<input type="button" class="btn btn-primary cbutton" value="Use Your Own Playlist" id="useOwnPlaylist">
+							<div class="hiddenDiv" id="select-your-playlist">
+						    	<!-- <div class="input-group-btn">
+									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select Playlists <span class="caret"></span></button>
+									<ul class="dropdown-menu" id="playlistDropdown">
+										<!-- Add in li elements for each playlist the user has -->
+									<!--</ul>
+								</div> -->
+								<!-- /btn-group -->
+								<div class="select-style">
+									<select id="playlistDropdown">
+										<!-- Fill this in with options -->
+									</select>
+								</div>
+								<input type="button" class="btn btn-success" value="Done" id="submitYourOwn">
+								
+
+								<!-- <input type="text" id="selectedPlaylist"> -->
+						    </div><!-- /input-group -->
+
+
 							<input type="button" class="btn btn-success cbutton" value="Generate Custom Playlist" id="generateCustom">
 						</div>
 					</form>
 				</div>
 
-				<!-- Edit Event Form -->
 				
-				<div class="hiddenDiv" id="editDiv">    
-					<form id='editEventForm' form method="POST" action="/editEvent" class='smart-green'>
-			  		   <h7> Edit Event </h7>
-				       <label for='name' >Event Name: </label>
-				       <input type='text' id='editEventName' name='name' maxlength="30" class="form-textbox"/>
-				       <br/><br/>
-
-				       <label for='start-time' >Start Time:</label> 
-				       <input type='text' id='editStartTime' name='startTime' maxlength="5" class="form-textbox-time-start"/> 
-				       &nbsp <input type="radio" id='editStartAM' name="time-selection-start" value="am-start">am
-				       &nbsp <input type="radio" id='editStartPM' name="time-selection-start" value="pm-start" checked>pm
-				       <br/><br/>
-
-				       <label for='end-time' >End Time:</label> 
-				       <input type='text' id='editEndTime' name='endTime' maxlength="5" class="form-textbox-time-end"/>
-				       &nbsp <input type="radio" id='editEndAM' name="time-selection-end" value="am-end">am
-				       &nbsp <input type="radio" id='editEndPM' name="time-selection-end" value="pm-end" checked>pm
-				       <br/><br/>
-
-				       &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
-				       <!-- <input type='button' name='AddNewEvent' value='Submit Changes' id="EditAddNewEvent" class="button"/> -->
-				       <button name="EditEvent" value="Submit Changes" id="EditAddNewEvent" class="btn btn-success"></button>
-					</form>
-				</div>
 
 				<div>
 					<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>

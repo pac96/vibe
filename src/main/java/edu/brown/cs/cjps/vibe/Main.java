@@ -159,12 +159,6 @@ public final class Main {
     }
   }
 
-  // TODO: Call this method from some sort of handler
-  private String generatePlaylist() {
-
-    return null;
-  }
-
   /**
    * Creates a new templating engine for free marker
    *
@@ -497,7 +491,7 @@ public final class Main {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
+          Map<String, Object> frontEndInfo;
           //(2): Make modifications to the event if the times match the correct format
           if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)) {
               System.out.println("The input matches");
@@ -509,12 +503,13 @@ public final class Main {
                   //(3): Generate the playlist associated with this event
                  // hq.generateFromTag(editedEvent, api, currentUser, accessToken);
 
+                  //(4): Return the event along to true so front end can recognize that edit was succesful
+                  frontEndInfo = ImmutableMap.of("event",editedEvent,"success",true);
 
-                  //(4): Return the event
-                  return GSON.toJson(editedEvent);
-
+          } else {
+              frontEndInfo = ImmutableMap.of("event",event,"success",false);
           }
-
+          return GSON.toJson(frontEndInfo);
     }
   }
 
@@ -531,10 +526,16 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
+      // Create a new event and add it to the database
+      // CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm, end,
+      // endAMOrPM, eventName);
 
       // Playlist stuff
       String eventID = qm.value("eventID");
       String tag = qm.value("tag");
+
+      System.out.println("the tag is + " + tag);
+      @SuppressWarnings("unchecked")
       List<String> genres = GSON.fromJson(qm.value("genres"), List.class);
       String energy = qm.value("energy");
       System.out.println("main e is " + energy);
@@ -585,11 +586,9 @@ public final class Main {
           e.printStackTrace();
         }
         thisEvent.setPlayListURI(playlistURI);
-
         return playlistURI;
-
-      }
-    }
+}
+  }
 
   private class GetAllPlaylistsHandler implements Route {
       @Override
@@ -598,13 +597,16 @@ public final class Main {
         JsonArray jarray = new JsonArray();
         JsonParser jp = new JsonParser();
         for (String[] playlist : playlistNames) {
+          // TODO: something is wrong with this loop I think. It's only going
+          // through this once instead of 10 times!
           JsonObject jobj = new JsonObject();
-          jobj.add("name", jp.parse(playlist[0]));
-          jobj.add("id", jp.parse(playlist[1]));
+          jobj.addProperty("name", playlist[0]);
+          jobj.addProperty("uri", playlist[1]);
           jarray.add(jobj);
         }
-        return jarray;
+
+        return GSON.toJson(jarray);
       }
     }
-
 }
+

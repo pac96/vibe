@@ -24,16 +24,6 @@
 
   <body>
     ${content}
- <!--    <div class="container-fluid">
-        <div class="row outer">
-            <div class="vcenter">
-                <div class="spotify">
-                    <a id="loginLink" class="sign-in-button">Sign In</a>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
 
     <script src="js/js.cookie.js"></script>
     <script src="js/URI.min.js"></script>

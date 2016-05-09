@@ -1,9 +1,6 @@
 <#assign content>
 
-
 <div class="other-bg img-responsive">
-
-
 
 <div id="wrapper">
 	<!-- Sidebar -->
@@ -70,6 +67,33 @@
 	<!-- end modal -->
 
 
+	<!-- Playlist Association Modal -->
+	<div class="modal fade" id="new-playlist-modal" role="dialog">
+		<!-- Modal dialog -->
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title" id="playlist-alert"></h4>
+				</div>
+
+				<div class="modal-body">
+					<p id="modal-msg-playlist"></p>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary modalbtn" id="yesBtn" data-dismiss="modal">Yes</button>
+					<button type="button" class="btn btn-warning modalbtn" id="noBtn" data-dismiss="modal">No</button>
+				</div>
+			</div>
+			<!-- end modal content -->
+		</div>
+		<!-- end modal dialog -->
+	</div>
+	<!-- end modal -->
+
+
 	<!-- Displays helpful messages -->
     <div class="otherContent"></div>
 
@@ -95,8 +119,7 @@
 				</div>
 		    </div>
 
-		    <!-- Edit Event Form -->
-				
+		    <!-- Edit Event Form -->				
 			<div class="hiddenDiv row" id="editDiv">    
 			<p> <br> </br> </p> <!-- add some space -->
 				<form id='editEventForm' form method="POST" action="/editEvent" class='smart-green'>
@@ -123,6 +146,7 @@
 			       <input type='button' name='QuitEditEvent' value='Exit Edit Event' id="ExitEditEvent" class="btn btn-success"/>
 				</form>
 			</div>
+			<!-- end Edit event div -->
 				    
 				    
 			<div class="row">
@@ -144,30 +168,31 @@
 						</div>
 
 						<div class="col-md-6">
-							<input type="button" class="btn btn-success othercbutton" value="Generate Custom Playlist" id="generateCustom">
+							<input type="button" class="btn btn-success cbutton" value="Generate Custom Playlist" id="generateCustom">
 						</div>
 					</div>
 
 					<!-- Select Playlist Dropdown -->
 					<form id="selectPlaylistForm" method="POST" action="/selectExistingPlaylist" class="hiddenDiv">
+						<h2 class="boxed-text">Pick one of your own playlists!</h2>
 						<div class="select-style">
 							<select id="playlistDropdown">
 								<!-- Will be filled up with options -->
 							</select>
 						</div>
 
-						<input type="button" class="btn btn-success cbutton" value="Use one of your own!" id="existingSubmit">
+						<input type="button" class="btn btn-success cbutton" value="Submit one of your own!" id="existingSubmit">
 					</form>
 
 
 					<!-- Customize Form -->
-					<p> <br> </br> </p> <!-- add some space -->
+					<p> </p> <!-- add some space -->
 					<form id='customizePlaylistForm' method="POST" action="/customizePlaylist" class="hiddenDiv">
 						<!-- Choosing a Playlist from Existing Spotify Playlist for Event -->						
 						
 						<!-- Event Tags -->
 						<div id="eTagWrapper" class="row section-wrapper">
-							<h2 class="sub-desc">Select an Event Tag</h2>
+							<h2 class="boxed-text">Select an Event Tag</h2>
 							<div>
 								<input type="radio" name="eTradio" id="eTradio1" class="radio" value="Eat/Social" />
 								<label for="eTradio1">Eat/Social</label>
@@ -199,8 +224,8 @@
 						
 						<!-- Mood Selection -->
 						<div id="mTagWrapper" class="row section-wrapper">
-						<p> <br> </br> </p> <!-- add some space -->
-							<h2 class="sub-desc">Select an Event Mood</h2>
+						<p> </p> <!-- add some space -->
+							<h2 class="boxed-text">Select an Event Mood</h2>
 
 							<div>
 								<input type="radio" name="mSradio" id="mSradio1" class="radio" value="Happy" />
@@ -334,7 +359,7 @@
 								<dd>
 								    <div class="plmutliSelect">
 								        <ul>
-								            <!-- add in li elements for each playlist you have -->
+								             add in li elements for each playlist you have -->
 								<!--         </ul>
 								    </div>
 								</dd>
@@ -346,7 +371,8 @@
 
 				
 
-				<div>
+				<div class="row">
+					<button class="btn btn-primary hiddenDiv" id="hidePlaylist">Hide Playlist</button>
 					<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>
 			    </div>
 			</div>
@@ -358,9 +384,6 @@
 </div>
 <!-- /#wrapper -->
 </div>
-
-</div>
-
 
 <!-- Menu Toggle Script -->
 <script>

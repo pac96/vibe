@@ -333,9 +333,9 @@ public final class Main {
         e.printStackTrace();
       }
 
-      // for (CalendarEvent e : events) {
-      // VibeCache.getEventCache().put(e.getId(), e);
-      // }
+      for (CalendarEvent e : events) {
+        VibeCache.getEventCache().put(e.getId(), e);
+      }
 
       return GSON.toJson(frontEndInfo);
     }
@@ -424,7 +424,6 @@ public final class Main {
         System.out.println("ERROR: Event time invalid");
         frontEndInfo = ImmutableMap.of("event", "null", "success", false);
       }
-
       return GSON.toJson(frontEndInfo);
 
     }
@@ -559,12 +558,13 @@ public final class Main {
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
       String eventID = qm.value("id");
+      Boolean keepPlaylist = Boolean.parseBoolean(qm.value("keepOldPlaylist"));
 
       Map<String, Object> frontEndInfo;
 
       // Error check
       if (start == null || end == null || amOrPm == null || endAMOrPM == null
-          || eventName == null || eventID == null) {
+          || eventName == null || eventID == null || keepPlaylist == null) {
         System.out.println("ERROR: Bad info from the front end");
         frontEndInfo = ImmutableMap.of("event", "null", "success", false);
         return frontEndInfo;
@@ -600,7 +600,8 @@ public final class Main {
 
         // Replace the event in the cache, keeping the playlist that was
         // associated
-        if (!oldEvent.getPlayListURI().equals("")) {
+        if (keepPlaylist && !oldEvent.getPlayListURI().equals("")) {
+          System.out.println("keeping old playlist");
           editedEvent.setPlayListURI(oldEvent.getPlayListURI());
         } else {
           // This case means a spotify playlist doesn't yet exist, in which case
@@ -612,6 +613,9 @@ public final class Main {
             frontEndInfo = ImmutableMap.of("event", "null", "success", false);
             return frontEndInfo;
           }
+          // Clear the URI so on the next "view playlist" the new playlist
+          // appears
+          editedEvent.setPlayListURI("");
         }
 
         // Recache this edited event

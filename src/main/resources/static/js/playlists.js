@@ -60,7 +60,6 @@ if (window.location.pathname === "/playlists") {
 
 /* Handles adding an event */
 $("#AddNewEvent").click(function() {
-	console.log("Adding new event...");
 	addEvent();
 }); // end add new click handler
 
@@ -75,6 +74,11 @@ $(document).on('click', '.anEvent', function() {
 	console.log("Curr: " + currentEventID);
 	createDropdown(currentEventID);
 }); // end click on event handler
+
+
+$(document).on('click', '#hidePlaylist', function() {
+	playlist.hide();
+});
 
 
 /////////////////////////////////////
@@ -129,9 +133,10 @@ function CalendarEvent(event) {
 
 
 
-/////////////////////////////////////
-// Function Declarations
-////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+// FUNCTION DECLARATIONS
+////////////////////////////////////////////////////////////////////////
+
 function compareEvents(eventA, eventB) {
 	if (eventA == null || eventB == null) {
 		return -1;
@@ -432,6 +437,7 @@ function populateUserPlaylists() {
 				class: "plName",
 				value: currentPlaylist.name
 			}).append(currentPlaylist.name);
+			$plElt.css('overflow-y', 'scroll');
 			$dropdown.append($plElt);
 		}
 	});

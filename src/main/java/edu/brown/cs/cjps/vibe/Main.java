@@ -371,13 +371,18 @@ public final class Main {
 
       Map<String, Object> frontEndInfo;
 
+      // Error check
+      if (start == null || end == null || amOrPm == null || endAmOrPm == null) {
+        System.out.println("ERROR: Bad info from the front end");
+        frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+        return frontEndInfo;
+      }
+
       // (2): Check if the input times have the correct format
       if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)
           && timeErrorHelper(start, end)
           && startBeforeEnd(start, amOrPm, end, endAmOrPm)) {
         // Need to check that nothing is > 12 or 59 and start is before end
-
-        System.out.println("The input maches the regex");
 
         // (3): Add the event to the database
         try {
@@ -388,19 +393,33 @@ public final class Main {
           e.printStackTrace();
         }
 
+        // Another error check
+        if (newEvent == null) {
+          System.out.println("ERROR: Problem creating event");
+          frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+          return frontEndInfo;
+        }
+
         // Add event to the cache
-        VibeCache.getEventCache().put(newEvent.getId(), newEvent);
+        CalendarEvent cachedEvent = VibeCache.getEventCache().put(
+            newEvent.getId(), newEvent);
 
         // Generate the playlist associated with this event
-        hq.generateFromTag(newEvent, api, currentUser, accessToken);
+        VibePlaylist newP = hq.generateFromTag(newEvent, api, currentUser,
+            accessToken);
+        // Error check again
+        if (newP == null) {
+          System.out.println("ERROR: Problem generating playlist");
+          frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+          return frontEndInfo;
+        }
 
+        // Success scenario
         frontEndInfo = ImmutableMap.of("event", newEvent, "success", true);
       } else {
-        System.out.println("The input does not match the regex");
+        System.out.println("ERROR: Event time invalid");
         frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-        System.out.println("where is the error");
       }
-      System.out.println("about to return");
       return GSON.toJson(frontEndInfo);
 
     }
@@ -500,20 +519,35 @@ public final class Main {
 
       String eventID = qm.value("eventID");
 
+      // Error check
+      if (eventID == null) {
+        return "FAILURE";
+      }
+
       try {
         eventProcessor.deleteEvent(eventID, currentUser.getId());
       } catch (SQLException e) {
-        System.out.println("Error: delteEvent failed");
+        System.out.println("Error: deleteEvent failed");
         response = "FAILURE";
-        e.printStackTrace();
+        return response;
       }
 
-      // remove this event from the cache
-      VibeCache.getEventCache().remove(UUID.fromString(eventID));
-      VibeCache.getPlaylistCache().remove(UUID.fromString(eventID));
+      // remove this event from the caches
+      CalendarEvent e = VibeCache.getEventCache().remove(
+          UUID.fromString(eventID));
+      // error check
+      if (e == null) {
+        System.out.println("ERROR: Problem removing event from cache");
+        return "FAILURE";
+      }
 
-      // TODO: catch an error and store the response if there's an issue
-
+      VibePlaylist p = VibeCache.getPlaylistCache().remove(
+          UUID.fromString(eventID));
+      // error check
+      if (p == null) {
+        System.out.println("ERROR: Problem removing playlist from cache");
+        return "FAILURE";
+      }
       return response;
     }
   }
@@ -534,20 +568,40 @@ public final class Main {
       String eventName = qm.value("name");
       String eventID = qm.value("id");
 
+      Map<String, Object> frontEndInfo;
+
+      // Error check
+      if (start == null || end == null || amOrPm == null || endAMOrPM == null
+          || eventName == null || eventID == null) {
+        System.out.println("ERROR: Bad info from the front end");
+        frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+        return frontEndInfo;
+      }
+
       // If the edits are valid an event will be returned to the front-end
       // (1): Grab the event from the cache
       CalendarEvent oldEvent = VibeCache.getEventCache().get(
           UUID.fromString(eventID));
+      // Error check
+      if (oldEvent == null) {
+        System.out.println("ERROR: couldn't get event associated with this id");
+        frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+        return frontEndInfo;
+      }
 
-      Map<String, Object> frontEndInfo;
-      // (2): Make modifications to the event i;f the times match the correct
+      // (2): Make modifications to the event if the times match the correct
       // format
       if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)
           && startBeforeEnd(start, amOrPm, end, endAMOrPM)
           && timeErrorHelper(start, end)) {
-        System.out.println("The input matches");
+
         CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm,
             end, endAMOrPM, eventName, oldEvent);
+        if (editedEvent == null) {
+          System.out.println("ERROR: couldn't edit event");
+          frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+          return frontEndInfo;
+        }
 
         // (3): Generate the playlist associated with this event
 
@@ -558,7 +612,13 @@ public final class Main {
         } else {
           // This case means a spotify playlist doesn't yet exist, in which case
           // create a new VibePlaylist for later conversion to spotify
-          hq.generateFromTag(editedEvent, api, currentUser, accessToken);
+          VibePlaylist p = hq.generateFromTag(editedEvent, api, currentUser,
+              accessToken);
+          if (p == null) {
+            System.out.println("ERROR: couldn't create playlist");
+            frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+            return frontEndInfo;
+          }
         }
 
         // Recache this edited event

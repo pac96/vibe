@@ -29,18 +29,31 @@ public class PlaylistHQ {
   // NOTE: this method caches the playlist
   public VibePlaylist generateFromTag(CalendarEvent event, Api api,
       User curentUser, String accessToken) {
-    String eventName = event.getName();
-    Tag tag = this.findTag(eventName);
-    // Tag tag = Tag.RESTFUL;
-    // System.out.println("tag is " + tag);
+    // Error check
+    if (event == null || api == null || curentUser == null
+        || accessToken == null) {
+      return null;
+    }
 
+    String eventName = event.getName();
+    // Error check
+    if (eventName == null) {
+      return null;
+    }
+
+    Tag tag = this.findTag(eventName);
     Settings defaults = this.getDefaults(tag);
 
     VibePlaylist p;
 
     p = pg.makePlaylist(defaults, event.getDuration(), api, curentUser,
         accessToken);
+    // Error check
+    if (p == null) {
+      return null;
+    }
     VibeCache.getPlaylistCache().put(event.getId(), p);
+
     return p;
   }
 

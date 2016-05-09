@@ -67,6 +67,33 @@
 	<!-- end modal -->
 
 
+	<!-- Playlist Association Modal -->
+	<div class="modal fade" id="new-playlist-modal" role="dialog">
+		<!-- Modal dialog -->
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title" id="playlist-alert"></h4>
+				</div>
+
+				<div class="modal-body">
+					<p id="modal-msg-playlist"></p>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary modalbtn" id="yesBtn" data-dismiss="modal">Yes</button>
+					<button type="button" class="btn btn-warning modalbtn" id="noBtn" data-dismiss="modal">No</button>
+				</div>
+			</div>
+			<!-- end modal content -->
+		</div>
+		<!-- end modal dialog -->
+	</div>
+	<!-- end modal -->
+
+
 	<!-- Displays helpful messages -->
     <div class="otherContent"></div>
 

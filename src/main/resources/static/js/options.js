@@ -434,6 +434,8 @@ function customizePlaylist(eventID) {
 
 	$('#eTagWrapper :radio:checked').each(function() {
 		eventTag = this.value;
+		console.log("just the event tag");
+		console.log(eventTag);
 	});
 
 	$('#mTagWrapper :radio:checked').each(function() {

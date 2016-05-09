@@ -608,13 +608,8 @@ public final class Main {
       System.out.println("main mood " + mood);
 
       System.out.println("the event ID + " + eventID);
-      CalendarEvent thisEvent = null;
-      try {
-        thisEvent = eventProcessor.getEventFromEventID(eventID);
-      } catch (SQLException e) {
-        System.out.println("SQL EXCEPTION");
-        e.printStackTrace();
-      }
+      CalendarEvent thisEvent = VibeCache.getEventCache().get(
+          UUID.fromString(eventID));
 
       // Add these things to a list
       List<String> settingsList = Arrays.asList(tag, energy, hotness, mood);

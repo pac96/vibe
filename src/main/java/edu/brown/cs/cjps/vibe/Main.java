@@ -333,6 +333,10 @@ public final class Main {
         e.printStackTrace();
       }
 
+      // for (CalendarEvent e : events) {
+      // VibeCache.getEventCache().put(e.getId(), e);
+      // }
+
       return GSON.toJson(frontEndInfo);
     }
   }
@@ -377,8 +381,6 @@ public final class Main {
           && startBeforeEnd(start, amOrPm, end, endAmOrPm)) {
         // Need to check that nothing is > 12 or 59 and start is before end
 
-        System.out.println("The input maches the regex");
-
         // (3): Add the event to the database
         try {
           newEvent = eventProcessor.addEvent(start, amOrPm, end, endAmOrPm,
@@ -396,11 +398,10 @@ public final class Main {
 
         frontEndInfo = ImmutableMap.of("event", newEvent, "success", true);
       } else {
-        System.out.println("The input does not match the regex");
         frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-        System.out.println("where is the error");
       }
-      System.out.println("about to return");
+
+      System.out.println("new event id is " + newEvent.getId());
       return GSON.toJson(frontEndInfo);
 
     }
@@ -499,7 +500,7 @@ public final class Main {
       String response = "SUCCESS";
 
       String eventID = qm.value("eventID");
-
+      System.out.println("The event ID in delete event is " + eventID);
       try {
         eventProcessor.deleteEvent(eventID, currentUser.getId());
       } catch (SQLException e) {
@@ -538,6 +539,7 @@ public final class Main {
       // (1): Grab the event from the cache
       CalendarEvent oldEvent = VibeCache.getEventCache().get(
           UUID.fromString(eventID));
+      System.out.println("Old event: " + oldEvent);
 
       Map<String, Object> frontEndInfo;
       // (2): Make modifications to the event i;f the times match the correct
@@ -572,7 +574,7 @@ public final class Main {
       } else {
         frontEndInfo = ImmutableMap.of("event", oldEvent, "success", false);
       }
-
+      System.out.println("the edited event ID is " + eventID);
       return GSON.toJson(frontEndInfo);
     }
   }

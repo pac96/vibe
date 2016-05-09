@@ -121,20 +121,41 @@
 				    
 			<div class="row">
 				<div class="hiddenDiv" id="customizeDiv">    
-					<!-- Customize Form -->
-					<form id='customizePlaylistForm' form method="POST" action="/customizePlaylist">
-					
-						<!-- Customization Panel Title -->
-						<div id='customizeTitle' class ='scustomizeTitle'> 
-							<text color = "white"> 
-								Customize Your Playlist Settings 
-							</text> 
+					<!-- Customization Panel Title -->
+					<div id='customizeTitle' class='scustomizeTitle'> 
+						<text color="white"> 
+							Customize Your Playlist Settings 
+						</text> 
+					</div>
+
+					<!-- Horizontal Line -->
+					<hr color='white' size='2'>
+
+					<div class="row">
+						<div class="col-md-6">
+							<input type="button" class="btn btn-primary cbutton" value="Use Your Own Playlist" id="useOwnPlaylist">
 						</div>
-					
-						<!-- Choosing a Playlist from Existing Spotify Playlist for Event -->
-						<!-- Horizontal Line -->
-						<hr color='white' size='2'>
-						
+
+						<div class="col-md-6">
+							<input type="button" class="btn btn-success cbutton" value="Generate Custom Playlist" id="generateCustom">
+						</div>
+					</div>
+
+					<!-- Select Playlist Dropdown -->
+					<form id="selectPlaylistForm" method="POST" action="/selectExistingPlaylist" class="hiddenDiv">
+						<div class="select-style">
+							<select id="playlistDropdown">
+								<!-- Will be filled up with options -->
+							</select>
+						</div>
+
+						<input type="button" class="btn btn-success cbutton" value="Use one of your own!" id="existingSubmit">
+					</form>
+
+
+					<!-- Customize Form -->
+					<form id='customizePlaylistForm' method="POST" action="/customizePlaylist" class="hiddenDiv">
+						<!-- Choosing a Playlist from Existing Spotify Playlist for Event -->						
 						
 						<!-- Event Tags -->
 						<div id="eTagWrapper" class="row section-wrapper">
@@ -308,31 +329,8 @@
 								<!--         </ul>
 								    </div>
 								</dd>
-							</dl> -->
-
-
-							<input type="button" class="btn btn-primary cbutton" value="Use Your Own Playlist" id="useOwnPlaylist">
-							<div class="hiddenDiv" id="select-your-playlist">
-						    	<!-- <div class="input-group-btn">
-									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select Playlists <span class="caret"></span></button>
-									<ul class="dropdown-menu" id="playlistDropdown">
-										<!-- Add in li elements for each playlist the user has -->
-									<!--</ul>
-								</div> -->
-								<!-- /btn-group -->
-								<div class="select-style">
-									<select id="playlistDropdown">
-										<!-- Fill this in with options -->
-									</select>
-								</div>
-								<input type="button" class="btn btn-success" value="Done" id="submitYourOwn">
-								
-
-								<!-- <input type="text" id="selectedPlaylist"> -->
-						    </div><!-- /input-group -->
-
-
-							<input type="button" class="btn btn-success cbutton" value="Generate Custom Playlist" id="generateCustom">
+							</dl> -->			
+							<input type="button" class="btn btn-success cbutton" value="Customize!" id="customizeSubmit">
 						</div>
 					</form>
 				</div>
@@ -344,7 +342,7 @@
 			    </div>
 			</div>
 
-		</div>
+		</div> <!-- end container-fluid -->
 
 	</div>
 		<!-- /#page-content-wrapper -->

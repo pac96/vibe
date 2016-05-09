@@ -155,12 +155,6 @@ public final class Main {
     }
   }
 
-  // TODO: Call this method from some sort of handler
-  private String generatePlaylist() {
-
-    return null;
-  }
-
   /**
    * Creates a new templating engine for free marker
    *
@@ -537,13 +531,14 @@ public final class Main {
       JsonArray jarray = new JsonArray();
       JsonParser jp = new JsonParser();
       for (String[] playlist : playlistNames) {
+        // TODO: something is wrong with this loop I think. It's only going
+        // through this once instead of 10 times!
         JsonObject jobj = new JsonObject();
-        jobj.add("name", jp.parse(playlist[0]));
-        jobj.add("uri", jp.parse(playlist[1]));
+        jobj.addProperty("name", playlist[0]);
+        jobj.addProperty("uri", playlist[1]);
         jarray.add(jobj);
       }
-      
-      System.out.println(jarray);
+
       return GSON.toJson(jarray);
     }
   }

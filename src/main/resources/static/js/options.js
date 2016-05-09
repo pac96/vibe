@@ -457,19 +457,22 @@ $(document).on('click', '#useOwnPlaylist', function() {
 
 	$(document).on('click', "#submitYourOwn", function() {
 		selectExistingPlaylist(currentEventID);
-
 	});
 });
 
 function selectExistingPlaylist(id) {
 	var $selectedOption = $("#playlistDropdown option:selected");
-	var uri = $selectedOption.id;
+	var uri = $selectedOption.attr('id');
+
+	console.log("Selected uri: " + uri);
+
+
 	var postParams = {
 		playlistURI: uri, 
 		eventID: id
 	};
 
 	$.post("/selectExistingPlaylist", postParams, function(response) {
-		
+
 	});	
 }

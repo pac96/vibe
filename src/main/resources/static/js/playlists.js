@@ -410,16 +410,9 @@ function populateUserPlaylists() {
 		var playlists = JSON.parse(jarray);
 		var names = [];
 		var $dropdown = $("#playlistDropdown");
-		console.log("Parsed jarray");
-		console.log(playlists);
 
-		for (var i = 0; i < jarray.length; i++) {
+		for (var i = 0; i < playlists.length; i++) {
 			var currentPlaylist = playlists[i];
-			// names[i].push(currentPlaylist.name);
-			// each li will store the uri of the playlist as its id
-			// var $plElt = $("<li>").attr({
-			// 	'id', currentPlaylist.uri
-			// }).append(currentPlaylist.name); 
 			var $plElt = $("<option>").attr({
 				id: currentPlaylist.uri,
 				class: "plName",

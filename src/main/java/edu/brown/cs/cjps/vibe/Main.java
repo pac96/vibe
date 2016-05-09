@@ -345,19 +345,11 @@ public final class Main {
         e.printStackTrace();
       }
 
+      // Add event to the cache
+      VibeCache.getEventCache().put(newEvent.getId(), newEvent);
+
       // Generate the playlist associated with this event
       hq.generateFromTag(newEvent, api, currentUser, accessToken);
-
-      hq.getAllPlaylists(api, currentUser);
-
-      // ~~~~~~~~~These lines are only for testing
-      // VibePlaylist p = VibeCache.getPlaylistCache().get(newEvent.getId());
-      // String tempURI = hq.convertForSpotify(p2, newEvent.getName(), api,
-      // currentUser);
-      // System.out.println("~~~THE TRACKS~~~");
-      // System.out.println(p.getTracks());
-      // System.out.println(p.getTracks().size());
-      // ~~~~~end of testing
 
       // Return an event object to the front-end
 
@@ -375,29 +367,29 @@ public final class Main {
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
       String returnURI = null;
+
       // Retrieve the event ID and find the associated playlist
       String idString = qm.value("eventID");
       UUID eventID = UUID.fromString(idString);
-
       // Check to see if a prexisting playlist was associated with this event
-      CalendarEvent thisEvent = null;
-      try {
-        thisEvent = eventProcessor.getEventFromEventID(idString);
-      } catch (SQLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      // Case for new playlist
+      CalendarEvent thisEvent = VibeCache.getEventCache().get(eventID);
+
       if (thisEvent.getPlayListURI().equals("")) {
+        System.out.println("no uri set");
         VibePlaylist playlist = VibeCache.getPlaylistCache().get(eventID);
-        // TODO: Need to get the name from the eventID
+
         String eventName = thisEvent.getName();
         returnURI = hq.convertForSpotify(playlist, eventName, api, currentUser);
+        thisEvent.setPlayListURI(returnURI);
+        System.out.println("confirming uri set " + thisEvent.getPlayListURI());
         // This is the case where an existing URI is set
       } else {
+        System.out.println("uri was set");
         returnURI = thisEvent.getPlayListURI();
+        System.out.println("return uri is " + returnURI);
       }
 
+      System.out.println("about to return");
       return returnURI;
     }
   }
@@ -423,6 +415,10 @@ public final class Main {
         e.printStackTrace();
       }
 
+      // remove this event from the cache
+      VibeCache.getEventCache().remove(UUID.fromString(eventID));
+      VibeCache.getPlaylistCache().remove(UUID.fromString(eventID));
+
       // TODO: catch an error and store the response if there's an issue
 
       return response;
@@ -446,24 +442,26 @@ public final class Main {
       String eventID = qm.value("id");
       System.out.println("Event id of event you want to edit is " + eventID);
 
-      CalendarEvent event = null;
-      try {
-        event = eventProcessor.getEventFromEventID(eventID);
-      } catch (SQLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
+      // Save the playlist from the old event
+      CalendarEvent oldEvent = VibeCache.getEventCache().get(
+          UUID.fromString(eventID));
+
       CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm, end,
-          endAMOrPM, eventName, event);
+          endAMOrPM, eventName, oldEvent);
       System.out.println("Edited event: " + editedEvent.toString());
 
-      // Generate the playlist associated with this event
-      hq.generateFromTag(editedEvent, api, currentUser, accessToken);
-      // These lines are only for testing
-      // VibePlaylist p2 =
-      // VibeCache.getPlaylistCache().get(editedEvent.getId());
-      // System.out.println("~~~THE TRACKS~~~");
-      // System.out.println(p2.getTracks());
+      // Replace the event in the cache, keeping the playlist that was
+      // associated
+      if (!oldEvent.getPlayListURI().equals("")) {
+        editedEvent.setPlayListURI(oldEvent.getPlayListURI());
+      } else {
+        // This case means a spotify playlist doesn't yet exist, in which case
+        // create a new VibePlaylist for later conversion to spotify
+        hq.generateFromTag(editedEvent, api, currentUser, accessToken);
+      }
+
+      // Recache this edited event
+      VibeCache.getEventCache().replace(UUID.fromString(eventID), editedEvent);
 
       return GSON.toJson(editedEvent);
     }

@@ -52,9 +52,13 @@ if (window.location.pathname === "/playlists") {
 	  $("#displayname").html(username);
 
 	  loadCachedEvents(backendInfo.cachedEvents);
+	  
 
 	}); // end access token code post
-}
+
+	// Populates the dropdown selection for user playlists
+  	populateUserPlaylists();
+}	
 
 /* Handles adding an event */
 $("#AddNewEvent").click(function() {
@@ -398,4 +402,24 @@ function loadCachedEvents(cachedEvents) {
 
 		nextEventPopup();	
 	}
+}
+
+
+
+function populateUserPlaylists() {
+	$.post("/getAllPlaylists", function(jarray) {
+		// returns a jarray with an object at each index having access to a name and URI
+		var playlists = JSON.parse(jarray);
+		var names = [];
+		var $dropdownUL = $("#playlistDropdown");
+
+
+		for (var i = 0; i < jarray.length; i++) {
+			var currentPlaylist = playlists[i];
+			// names[i].push(currentPlaylist.name);
+			// each li will store the uri of the playlist as its id
+			var $plElt = $("<li>").attr('id', currentPlaylist.uri).append(currentPlaylist.name); 
+			$dropdownUL.append($plElt);
+		}
+	});
 }

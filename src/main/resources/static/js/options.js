@@ -451,19 +451,8 @@ function customizePlaylist(eventID) {
 }
 
 
-function getUserPlaylists() {
-	$.post('/getAllPlaylists', function(jarray) {
-		// returns a jarray with an object at each index having access to a name and URI
-		var playlists = JSON.parse(jarray);
-		for (var i = 0; i < jarray.length; i++) {
-
-		}
-	});
-	
-}
-
 $(document).on('click', '#useOwnPlaylist', function() {
-	$("#select-your-playlist")
+	$("#select-your-playlist").show();
 
 	// TODO: Display dropdown
 	var playlists = [];

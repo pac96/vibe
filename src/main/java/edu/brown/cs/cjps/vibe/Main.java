@@ -542,7 +542,9 @@ public final class Main {
         jobj.add("uri", jp.parse(playlist[1]));
         jarray.add(jobj);
       }
-      return jarray;
+      
+      System.out.println(jarray);
+      return GSON.toJson(jarray);
     }
   }
 

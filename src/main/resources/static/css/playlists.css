@@ -5,9 +5,9 @@
  */
 
 /* Toggle Styles */
-
+/*
 body{
-	/*background-image:url("/images/river.jpg");*/
+	background-image:url("/images/river.jpg");
   background-color: black; 
 	color: white; 
 	font-family: 'Open Sans', sans-serif; 
@@ -17,7 +17,7 @@ body{
 	margin: 0 0 72px; 
 	
 }
-
+*/
 
 /** Sidebar **/
 #wrapper {
@@ -57,12 +57,6 @@ body{
     width: 100%;
     position: absolute;
     padding: 15px;
-    
-    
-    background-image:url("/images/vibe-background.jpg");
-    background-size:125%,170%;
-  	background-repeat: repeat;
-  	background-position: center;
    
 }
 
@@ -273,8 +267,8 @@ body{
 /** Genre drop down styling **/
 .gDropdown {
   position: absolute;
-  /*top:113%;*/
-  /*left: 32%;*/
+  top:113%;
+  left: 35%;
   transform: translateY(-50%);
 }
 
@@ -314,6 +308,7 @@ yy {
   border: 0;
   width: 550px;
   word-wrap: break-word;
+  text-align:center;
 }
 
 .gDropdown dt yy span,
@@ -535,7 +530,7 @@ input.radio:empty ~ label:before {
 
 /* Mood Tag */
 
-/*#mTagWrapper.form {
+#mTagWrapper.form {
 	margin: 40px 0;
 }
 
@@ -549,16 +544,16 @@ input.radio:empty ~ label:before {
   border-radius: 3px;
   border: 1px solid white;
   color: white;
-}*/
+}
 
 /* hide input */
-/*#mTagWrapper input.radio:empty {
+#mTagWrapper input.radio:empty {
 	margin-left: -999px;
 	display: none;
-}*/
+}
 
 /* style label */
-/*#mTagWrapper input.radio:empty ~ label {
+#mTagWrapper input.radio:empty ~ label {
 	left: 70%;
 	position: relative;
 	float: left;
@@ -582,11 +577,11 @@ input.radio:empty ~ label:before {
 	width: 2.5em;
 	background: #D1D3D4;
 	border-radius: 3px 0 0 3px;
-}*/
+}
 
 /* toggle hover */
 
-/*#mTagWrapper input.radio:hover:not(:checked) ~ label:before {
+#mTagWrapper input.radio:hover:not(:checked) ~ label:before {
 	content:'\2714';
 	text-indent: .9em;
 	color: #C2C2C2;
@@ -594,12 +589,12 @@ input.radio:empty ~ label:before {
 
 #mTagWrapper input.radio:hover:not(:checked) ~ label {
 	color: #888;
-}*/
+}
 
 
 /* toggle on */
 
-/*#mTagWrapper input.radio:checked ~ label:before {
+#mTagWrapper input.radio:checked ~ label:before {
 	content:'\2714';
 	text-indent: .9em;0
 	color: #9CE2AE;
@@ -608,14 +603,14 @@ input.radio:empty ~ label:before {
 
 #mTagWrapper input.radio:checked ~ label {
 	color: white;
-}*/
+}
 
 
 /* radio focus */
 
-/*#mTagWrapper input.radio:focus ~ label:before {
+#mTagWrapper input.radio:focus ~ label:before {
 	box-shadow: 0 0 0 3px #999;
-}*/
+}
 
 
 /** range sliders **/
@@ -821,10 +816,10 @@ input.radio:empty ~ label:before {
 }
 
 .cbutton {
-	/*position: absolute;
-  	top:148%;
-  	left: 50%;
-    background-color: #4CAF50;
+	position: absolute;
+  	top:20px;
+  	left: 10%;
+    /* background-color: #4CAF50; */
     border: none;
     color: white;
     font-family: 'Segoe UI', Frutiger, 
@@ -838,9 +833,63 @@ input.radio:empty ~ label:before {
     font-size: 30px;
     margin: 4px 2px;
     cursor: pointer;
-    width: 550px;
+    width: 350px;
   	height: 50px;
-    overflow: hidden;*/
+    overflow: hidden;
+    font-size: 1.3em;
+    font-weight: bold;
+    padding: 8px 8px 8px 8px;
+    text-align: center;
+}
+
+.custbutton {
+	position: absolute;
+  	top:1000px;
+  	left: 650px ;
+    /* background-color: #4CAF50; */
+    border: none;
+    color: white;
+    font-family: 'Segoe UI', Frutiger, 
+	'Frutiger Linotype', 'Dejavu Sans', 
+	'Helvetica Neue', Arial, sans-serif;
+	
+    padding: 8px 20px 44px 44px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 30px;
+    margin: 4px 2px;
+    cursor: pointer;
+    width: 450px;
+  	height: 75px;
+    overflow: hidden;
+    font-size: 2.5em;
+    font-weight: bold;
+    padding: 8px 8px 8px 8px;
+    text-align: center;
+}
+
+.othercbutton {
+	position: absolute;
+  	top:20px;
+  	left: 15%;
+    /* background-color: #4CAF50; */
+    border: none;
+    color: white;
+    font-family: 'Segoe UI', Frutiger, 
+	'Frutiger Linotype', 'Dejavu Sans', 
+	'Helvetica Neue', Arial, sans-serif;
+	
+    padding: 8px 20px 44px 44px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 30px;
+    margin: 4px 2px;
+    cursor: pointer;
+    width: 350px;
+  	height: 50px;
+    overflow: hidden;
     font-size: 1.3em;
     font-weight: bold;
     padding: 8px 8px 8px 8px;
@@ -878,7 +927,8 @@ input.radio:empty ~ label:before {
 .smart-green {
   margin-left:auto;
   margin-right:auto;
-
+  align: "center";
+ 
   max-width: 700px;
   background: #F8F8F8;
   padding: 30px 30px 20px 30px;

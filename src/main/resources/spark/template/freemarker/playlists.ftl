@@ -1,5 +1,7 @@
 <#assign content>
 
+<div class = "other-bg">
+
 <div id="wrapper">
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper">
@@ -93,6 +95,7 @@
 		    <!-- Edit Event Form -->
 				
 			<div class="hiddenDiv row" id="editDiv">    
+			<p> <br> </br> </p> <!-- add some space -->
 				<form id='editEventForm' form method="POST" action="/editEvent" class='smart-green'>
 					   <h7> Edit Event </h7>
 			       <label for='name' >Event Name: </label>
@@ -101,19 +104,20 @@
 
 			       <label for='start-time' >Start Time:</label> 
 			       <input type='text' id='editStartTime' name='startTime' maxlength="5" class="form-textbox-time-start"/> 
-			       &nbsp <input type="radio" id='editStartAM' name="time-selection-start" value="am-start">am
+			       &nbsp &nbsp &nbsp<input type="radio" id='editStartAM' name="time-selection-start" value="am-start">am
 			       &nbsp <input type="radio" id='editStartPM' name="time-selection-start" value="pm-start" checked>pm
 			       <br/><br/>
 
 			       <label for='end-time' >End Time:</label> 
 			       <input type='text' id='editEndTime' name='endTime' maxlength="5" class="form-textbox-time-end"/>
-			       &nbsp <input type="radio" id='editEndAM' name="time-selection-end" value="am-end">am
+			       &nbsp &nbsp<input type="radio" id='editEndAM' name="time-selection-end" value="am-end">am
 			       &nbsp <input type="radio" id='editEndPM' name="time-selection-end" value="pm-end" checked>pm
 			       <br/><br/>
 
-			       &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
+			       &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
 			       <input type='button' name='AddNewEvent' value='Submit Changes' id="EditAddNewEvent" class="btn btn-success"/>
-			       <!-- <button name="EditEvent" value="Submit Changes" id="EditAddNewEvent" class="btn btn-success"></button> -->
+			       &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+			       <input type='button' name='QuitEditEvent' value='Exit Edit Event' id="ExitEditEvent" class="btn btn-success"/>
 				</form>
 			</div>
 				    
@@ -121,6 +125,7 @@
 			<div class="row">
 				<div class="hiddenDiv" id="customizeDiv">    
 					<!-- Customization Panel Title -->
+					<p> <br> </br> </p> <!-- add some space -->
 					<div id='customizeTitle' class='scustomizeTitle'> 
 						<text color="white"> 
 							Customize Your Playlist Settings 
@@ -130,13 +135,13 @@
 					<!-- Horizontal Line -->
 					<hr color='white' size='2'>
 
-					<div class="row">
+					<div id='customOptions' class="row">
 						<div class="col-md-6">
 							<input type="button" class="btn btn-primary cbutton" value="Use Your Own Playlist" id="useOwnPlaylist">
 						</div>
 
 						<div class="col-md-6">
-							<input type="button" class="btn btn-success cbutton" value="Generate Custom Playlist" id="generateCustom">
+							<input type="button" class="btn btn-success othercbutton" value="Generate Custom Playlist" id="generateCustom">
 						</div>
 					</div>
 
@@ -153,6 +158,7 @@
 
 
 					<!-- Customize Form -->
+					<p> <br> </br> </p> <!-- add some space -->
 					<form id='customizePlaylistForm' method="POST" action="/customizePlaylist" class="hiddenDiv">
 						<!-- Choosing a Playlist from Existing Spotify Playlist for Event -->						
 						
@@ -190,6 +196,7 @@
 						
 						<!-- Mood Selection -->
 						<div id="mTagWrapper" class="row section-wrapper">
+						<p> <br> </br> </p> <!-- add some space -->
 							<h2 class="sub-desc">Select an Event Mood</h2>
 
 							<div>
@@ -329,7 +336,7 @@
 								    </div>
 								</dd>
 							</dl> -->			
-							<input type="button" class="btn btn-success cbutton" value="Customize!" id="customizeSubmit">
+							<input type="button" class="btn btn-success custbutton" value="Customize!" id="customizeSubmit">
 						</div>
 					</form>
 				</div>
@@ -347,6 +354,7 @@
 		<!-- /#page-content-wrapper -->
 </div>
 <!-- /#wrapper -->
+</div>
 
 <!-- Menu Toggle Script -->
 <script>

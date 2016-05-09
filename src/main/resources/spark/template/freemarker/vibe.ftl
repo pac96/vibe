@@ -1,4 +1,5 @@
 <#assign content>
+<div class = "home-bg">
 <div class="row outer">
 	<div class="vcenter">
 
@@ -11,7 +12,7 @@
 		</div>
 	</div>
 </div>
-
+</div>
 
 </#assign>
 <#include "main.ftl">

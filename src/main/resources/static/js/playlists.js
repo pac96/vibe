@@ -52,12 +52,10 @@ if (window.location.pathname === "/playlists") {
 	  $("#displayname").html(username);
 
 	  loadCachedEvents(backendInfo.cachedEvents);
-	  
+	  // Populates the dropdown selection for user playlists
+	  populateUserPlaylists();	  
 
 	}); // end access token code post
-
-	// Populates the dropdown selection for user playlists
-  	populateUserPlaylists();
 }	
 
 /* Handles adding an event */
@@ -411,15 +409,23 @@ function populateUserPlaylists() {
 		// returns a jarray with an object at each index having access to a name and URI
 		var playlists = JSON.parse(jarray);
 		var names = [];
-		var $dropdownUL = $("#playlistDropdown");
-
+		var $dropdown = $("#playlistDropdown");
+		console.log("Parsed jarray");
+		console.log(playlists);
 
 		for (var i = 0; i < jarray.length; i++) {
 			var currentPlaylist = playlists[i];
 			// names[i].push(currentPlaylist.name);
 			// each li will store the uri of the playlist as its id
-			var $plElt = $("<li>").attr('id', currentPlaylist.uri).append(currentPlaylist.name); 
-			$dropdownUL.append($plElt);
+			// var $plElt = $("<li>").attr({
+			// 	'id', currentPlaylist.uri
+			// }).append(currentPlaylist.name); 
+			var $plElt = $("<option>").attr({
+				id: currentPlaylist.uri,
+				class: "plName",
+				value: currentPlaylist.name
+			}).append(currentPlaylist.name);
+			$dropdown.append($plElt);
 		}
 	});
 }

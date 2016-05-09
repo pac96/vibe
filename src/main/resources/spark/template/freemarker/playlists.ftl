@@ -312,15 +312,23 @@
 
 
 							<input type="button" class="btn btn-primary cbutton" value="Use your Own Playlist" id="useOwnPlaylist">
-							<div class="input-group hiddenDiv" id="select-your-playlist">
-						    	<div class="input-group-btn">
+							<div class="hiddenDiv" id="select-your-playlist">
+						    	<!-- <div class="input-group-btn">
 									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select Playlists <span class="caret"></span></button>
 									<ul class="dropdown-menu" id="playlistDropdown">
 										<!-- Add in li elements for each playlist the user has -->
-									</ul>
-								</div><!-- /btn-group -->
+									<!--</ul>
+								</div> -->
+								<!-- /btn-group -->
+								<div class="select-style">
+									<select id="playlistDropdown">
+										<!-- Fill this in with options -->
+									</select>
+								</div>
+								<input type="button" class="btn btn-success" value="Done" id="submitYourOwn">
+								
 
-								<input type="text" class="form-control" aria-label="..." id="selectedPlaylist">
+								<!-- <input type="text" id="selectedPlaylist"> -->
 						    </div><!-- /input-group -->
 
 

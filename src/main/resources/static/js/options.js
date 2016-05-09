@@ -451,16 +451,25 @@ function customizePlaylist(eventID) {
 }
 
 
+
 $(document).on('click', '#useOwnPlaylist', function() {
-	$("#select-your-playlist").show();
+	$("#select-your-playlist").toggle();
 
-	// TODO: Display dropdown
-	var playlists = [];
+	$(document).on('click', "#submitYourOwn", function() {
+		selectExistingPlaylist(currentEventID);
 
-
-	
-
-	// TODO: Get value from selected dropdown
-
-	// TODO: 
+	});
 });
+
+function selectExistingPlaylist(id) {
+	var $selectedOption = $("#playlistDropdown option:selected");
+	var uri = $selectedOption.id;
+	var postParams = {
+		playlistURI: uri, 
+		eventID: id
+	};
+
+	$.post("/selectExistingPlaylist", postParams, function(response) {
+		
+	});	
+}

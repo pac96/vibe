@@ -1,7 +1,8 @@
 // "View Playlist" option
 $(document).on('click', '#viewPlaylist', (function() {
-
 	var eventObject = getEvent(currentEventID);
+	console.log("Current id: " + currentEventID);
+	console.log("Current event: " + eventObject.name);
 
 	if (eventObject.playlistURI == null) {
 		// Retrieve the playlist URI from the backend and show it
@@ -313,7 +314,7 @@ function requestEdit(eventID) {
 	    	$.post("/editEvent", postParameters, function(response) {
 	    		// 1. send stuff to back end and store in responseObject
 	    		var responseObject = JSON.parse(response);
-
+	    		console.log(responseObject["success"]);
 	    		if (responseObject["success"] == "true") {
 		    		// 2. Get calendar event from the calendar array
 		    		editableEvent = new CalendarEvent(responseObject["event"]);

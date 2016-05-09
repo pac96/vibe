@@ -8,6 +8,10 @@
 		<div class="spotify">
 			<a id="loginLink" class="btn btn-success">Sign In with Spotify</a>
 		</div>
+		
+		<div class="about">
+			<p>What is Vibe?</p>
+		</div>
 	</div>
 </div>
 

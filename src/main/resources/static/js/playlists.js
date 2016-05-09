@@ -49,12 +49,12 @@ if (window.location.pathname === "/playlists") {
 	  var username = backendInfo.username;
 
 	  console.log("Username: " + username);
-	  $("#displayname").html(username);
+	  $("#displayname").append(username);
 
 	  loadCachedEvents(backendInfo.cachedEvents);
+
 	  // Populates the dropdown selection for user playlists
 	  populateUserPlaylists();	  
-
 	}); // end access token code post
 }	
 

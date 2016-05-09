@@ -21,6 +21,14 @@ h1 span {
 }
 
 
+#displayname {
+  text-decoration: none;
+  font-weight: bold;
+  color: black;
+  border-bottom: 2px solid black;
+  text-align: right;
+}
+
 /* Playlist Page */
 #calendar { /* References the div col */
   border-right: 1px solid black;
@@ -97,3 +105,6 @@ p#modal-msg {
   display: none;
 }
 
+#calendarEvents {
+
+}

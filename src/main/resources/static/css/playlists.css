@@ -262,7 +262,7 @@ body{
 /** Genre drop down styling **/
 .gDropdown {
   position: absolute;
-  top:113%;
+  /*top:113%;*/
   /*left: 32%;*/
   transform: translateY(-50%);
 }

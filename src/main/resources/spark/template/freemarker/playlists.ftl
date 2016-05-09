@@ -1,6 +1,9 @@
 <#assign content>
 
-<div class = "other-bg">
+
+<div class="other-bg img-responsive">
+
+
 
 <div id="wrapper">
 	<!-- Sidebar -->
@@ -355,6 +358,9 @@
 </div>
 <!-- /#wrapper -->
 </div>
+
+</div>
+
 
 <!-- Menu Toggle Script -->
 <script>

@@ -25,7 +25,6 @@
   <body>
     ${content}
 
-
     <script src="js/js.cookie.js"></script>
     <script src="js/URI.min.js"></script>
     <script src="js/moment.min.js"></script>

@@ -1,17 +1,12 @@
 <#assign content>
-<div class = "home-bg">
-<div class="row outer">
-	<div class="vcenter">
-
-		<div class="spotify">
-			<a id="loginLink" class="sign-in-button">Sign In</a>
-		</div>
-		
-		<div class="about">
-			<p>What is Vibe?</p>
+<div class="container-fluid img-responsive home-bg">
+	<div class="row">
+		<div class="vcenter">
+			<div class="spotify">
+				<a id="loginLink" class="sign-in-button">Sign In</a>
+			</div>
 		</div>
 	</div>
-</div>
 </div>
 
 </#assign>

@@ -28,6 +28,9 @@ import spark.template.freemarker.FreeMarkerEngine;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.wrapper.spotify.Api;
 import com.wrapper.spotify.models.AuthorizationCodeCredentials;
 import com.wrapper.spotify.models.User;
@@ -48,6 +51,7 @@ import freemarker.template.Configuration;
 public final class Main {
 
   /**
+   * 
    * Launching point of program.
    *
    * @param args
@@ -81,6 +85,8 @@ public final class Main {
   private Api api;
 
   private String code;
+
+  private final String TIMEREGEX = "(\\d\\d|\\d):\\d\\d";
 
   /**
    * Current spotify user
@@ -119,17 +125,19 @@ public final class Main {
     VibeCache vc = new VibeCache();
     hq = new PlaylistHQ();
 
-    //Grab the database from the command line args.
+    // Grab the database from the command line args.
     String db = args[0];
-    UserDBCreator dbCreator = null;
-    
-	try {
-		dbCreator = new UserDBCreator(db);
-	} catch (ClassNotFoundException | SQLException e) {
-		e.printStackTrace();
-	}
 
-    //Run should take in a database
+    UserDBCreator dbCreator = null;
+
+    // Run should take in a database
+    try {
+      dbCreator = new UserDBCreator(db);
+    } catch (ClassNotFoundException | SQLException e) {
+      e.printStackTrace();
+    }
+
+    // Run should take in a database
     eventProcessor = new EventProcessor(db);
 
     System.out.println("Starting Vibe...");
@@ -145,30 +153,10 @@ public final class Main {
     api = Api.builder().clientId(clientID).clientSecret(clientSecret)
         .redirectURI(redirectURI).build();
 
-    // SOME TEST STUFF
-    // this.generatePlaylist();
-
-    // END TEST STUFF
-
     if (options.has("gui")) {
       // Runs the GUI
       runSparkServer();
     }
-  }
-
-  // TODO: Call this method from some sort of handler
-  private String generatePlaylist() {
-
-    // String playlistName = "Party";
-    // hq.generateFromTag(playlistName, api, currentUser, accessToken);
-    // VibePlaylist p2 = VibeCache.getPlaylistCache().get(playlistName);
-    // System.out.println("~~~THE TRACKS~~~");
-    // System.out.println(p2.getTracks());
-    // String playlistURI = hq.convertForSpotify(p2, playlistName, api,
-    // currentUser);
-
-    // return playlistURI;
-    return null;
   }
 
   /**
@@ -207,7 +195,29 @@ public final class Main {
     Spark.post("/getPlaylist", new GetPlaylistHandler());
     Spark.post("/deleteEvent", new DeleteEventHandler());
     Spark.post("/editEvent", new EditEventHandler());
+    Spark.post("/customizePlaylist", new AddCustomPlaylistHandler());
+    Spark.post("/getAllPlaylists", new GetAllPlaylistsHandler());
+    Spark.post("/selectExistingPlaylist", new SelectExistingPlaylistHandler());
+  }
 
+  /**
+   * Handles printing out exceptions to the GUI
+   *
+   * @author cjps
+   *
+   */
+  private static class ExceptionPrinter implements ExceptionHandler {
+    @Override
+    public void handle(Exception e, Request req, Response res) {
+      res.status(500);
+      StringWriter stacktrace = new StringWriter();
+      try (PrintWriter pw = new PrintWriter(stacktrace)) {
+        pw.println("<pre>");
+        e.printStackTrace(pw);
+        pw.println("</pre>");
+      }
+      res.body(stacktrace.toString());
+    }
   }
 
   /**
@@ -220,8 +230,8 @@ public final class Main {
     @Override
     public ModelAndView handle(Request req, Response res) {
       receivedCode = false;
-	  Map<String, Object> variables = ImmutableMap.of("title", "Vibe");
-	  return new ModelAndView(variables, "vibe.ftl");
+      Map<String, Object> variables = ImmutableMap.of("title", "Vibe");
+      return new ModelAndView(variables, "vibe.ftl");
     }
   }
 
@@ -236,7 +246,7 @@ public final class Main {
     public Object handle(Request req, Response res) {
       /*
        * Set the necessary scopes that the application will need from the user
-       *
+       * 
        * Vibe can read the user's email and modify public and private playlists
        */
       final List<String> scopes = Arrays.asList("user-read-email",
@@ -249,13 +259,13 @@ public final class Main {
       String authorizeURL = api.createAuthorizeURL(scopes, state);
 
       return GSON.toJson(authorizeURL);
-    }
+    };
   }
 
   /**
    * Handles acquiring and utilizing the code for the user to create an access
-   * token
-   *
+   * token ;
+   * 
    * @author cjps
    *
    */
@@ -266,35 +276,35 @@ public final class Main {
 
       if (!receivedCode) {
 
-    	// Retrieve the code from the front-end to get an access token
-          code = qm.value("code").trim();
-          System.out.println("Code: " + code);
-          receivedCode = true;
+        // Retrieve the code from the front-end to get an access token
+        code = qm.value("code").trim();
+        System.out.println("Code: " + code);
+        receivedCode = true;
 
-          /*
-           * Make a token request. Asynchronous requests are made with the .getAsync
-           * method and synchronous requests are made with the .get method. This
-           * holds for all type of requests.
-           */
-          AuthorizationCodeCredentials acg = null;
-          currentUser = null;
-          accessToken = "";
-          refreshToken = "";
+        /*
+         * Make a token request. Asynchronous requests are made with the
+         * .getAsync method and synchronous requests are made with the .get
+         * method. This holds for all type of requests.
+         */
+        AuthorizationCodeCredentials acg = null;
+        currentUser = null;
+        accessToken = "";
+        refreshToken = "";
 
-          try {
-            acg = api.authorizationCodeGrant(code).build().get();
-            System.out.println("API authorization code grant is good");
-            accessToken = acg.getAccessToken();
-            refreshToken = acg.getRefreshToken();
+        try {
+          acg = api.authorizationCodeGrant(code).build().get();
+          System.out.println("API authorization code grant is good");
+          accessToken = acg.getAccessToken();
+          refreshToken = acg.getRefreshToken();
 
-            api.setAccessToken(accessToken);
-            api.setRefreshToken(refreshToken);
+          api.setAccessToken(accessToken);
+          api.setRefreshToken(refreshToken);
 
-            currentUser = api.getMe().accessToken(accessToken).build().get();
-          } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.toString());
-          }
+          currentUser = api.getMe().accessToken(accessToken).build().get();
+        } catch (Exception e) {
+          e.printStackTrace();
+          System.out.println(e.toString());
+        }
       }
 
       String display = currentUser.getDisplayName();
@@ -302,19 +312,26 @@ public final class Main {
       if (display == null) {
         display = currentUser.getId();
       }
-      System.out.printf("Current User: %s\n", display);    
+      System.out.printf("Current User: %s\n", display);
       List<CalendarEvent> events = null;
-      
+
       try {
-		events = eventProcessor.getEventsFromUserID(currentUser.getId());
-	} catch (SQLException e) {
-		e.printStackTrace();
-		System.out.println("ERROR: Database issues");
-	}
-      
-      Map<String, Object> frontEndInfo = ImmutableMap
-    		  .of("username", display, "cachedEvents", events);
-      
+        events = eventProcessor.getEventsFromUserID(currentUser.getId());
+      } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("ERROR: Database issues");
+      }
+
+      Map<String, Object> frontEndInfo = ImmutableMap.of("username", display,
+          "cachedEvents", events);
+
+      // Look at this later
+      try {
+        events = eventProcessor.getEventsFromUserID(currentUser.getId());
+      } catch (SQLException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
 
       return GSON.toJson(frontEndInfo);
     }
@@ -344,44 +361,45 @@ public final class Main {
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
 
-
-      // Retrieve event information from the front-end
+      // (1): Retrieve event information from the front-end
       String start = qm.value("start");
       Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
       String end = qm.value("end");
       Boolean endAmOrPm = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
       CalendarEvent newEvent = null;
-      
-      try {
-       newEvent = eventProcessor
-        	  .addEvent(start, amOrPm, end, endAmOrPm, eventName, currentUser.getId());
-      } catch (SQLException e) {
-        System.out.println("Error in adding event");
-        e.printStackTrace();
+
+      Map<String, Object> frontEndInfo;
+
+      // (2): Check if the input times have the correct format
+      if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)) {
+        System.out.println("The input maches the regex");
+
+        // (3): Add the event to the database
+        try {
+          newEvent = eventProcessor.addEvent(start, amOrPm, end, endAmOrPm,
+              eventName, currentUser.getId());
+        } catch (SQLException e) {
+          System.out.println("Error in adding event");
+          e.printStackTrace();
+        }
+
+        // Add event to the cache
+        VibeCache.getEventCache().put(newEvent.getId(), newEvent);
+
+        // Generate the playlist associated with this event
+        hq.generateFromTag(newEvent, api, currentUser, accessToken);
+
+        frontEndInfo = ImmutableMap.of("event", newEvent, "success", true);
+      } else {
+        System.out.println("The input does not match the regex");
+        frontEndInfo = ImmutableMap.of("event", newEvent, "success", false);
       }
 
-      // Generate the playlist associated with this event
-//      VibePlaylist playlist = 
-      	hq.generateFromTag(newEvent, api, currentUser, accessToken);
-      
-//      String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
-//      newEvent.setPlayListId(uri);
+      return GSON.toJson(frontEndInfo);
 
-      
-      // ~~~~~~~~~These lines are only for testing
-//      VibePlaylist p = VibeCache.getPlaylistCache().get(newEvent.getId());
-      // String tempURI = hq.convertForSpotify(p2, newEvent.getName(), api,
-      // currentUser);
-//      System.out.println("~~~THE TRACKS~~~");
-//      System.out.println(p.getTracks());
-//      System.out.println(p.getTracks().size());
-      // ~~~~~end of testing
-
-      // Return an event object to the front-end
-
-      return GSON.toJson(newEvent);
     }
+
   }
 
   /**
@@ -393,17 +411,30 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
+      String returnURI = null;
 
       // Retrieve the event ID and find the associated playlist
-      UUID eventID = UUID.fromString(qm.value("eventID"));
-      VibePlaylist playlist = VibeCache.getPlaylistCache().get(eventID);
+      String idString = qm.value("eventID");
+      UUID eventID = UUID.fromString(idString);
+      // Check to see if a prexisting playlist was associated with this event
+      CalendarEvent thisEvent = VibeCache.getEventCache().get(eventID);
 
-      // TODO: Need to get the name from the eventID
-      String eventName = qm.value("eventName");
+      if (thisEvent.getPlayListURI().equals("")) {
+        System.out.println("no uri set");
+        VibePlaylist playlist = VibeCache.getPlaylistCache().get(eventID);
 
-      String uri = hq.convertForSpotify(playlist, eventName, api, currentUser);
-      
-      return uri;
+        String eventName = thisEvent.getName();
+        returnURI = hq.convertForSpotify(playlist, eventName, api, currentUser);
+        thisEvent.setPlayListURI(returnURI);
+        System.out.println("confirming uri set " + thisEvent.getPlayListURI());
+        // This is the case where an existing URI is set
+      } else {
+        System.out.println("uri was set");
+        returnURI = thisEvent.getPlayListURI();
+        System.out.println("return uri is " + returnURI);
+      }
+
+      return returnURI;
     }
   }
 
@@ -428,6 +459,9 @@ public final class Main {
         e.printStackTrace();
       }
 
+      // remove this event from the cache
+      VibeCache.getEventCache().remove(UUID.fromString(eventID));
+      VibeCache.getPlaylistCache().remove(UUID.fromString(eventID));
 
       // TODO: catch an error and store the response if there's an issue
 
@@ -450,100 +484,142 @@ public final class Main {
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
       String eventID = qm.value("id");
-      System.out.println("Event id of event you want to edit is " + eventID);
-      
 
-      CalendarEvent event = null;
-      try {
-    	  event = eventProcessor.getEventFromEventID(eventID);
-      } catch (SQLException e) {
-    	  // TODO Auto-generated catch block
-    	  e.printStackTrace();
+      // If the edits are valid an event will be returned to the front-end
+      // (1): Grab the event from the cache
+      CalendarEvent oldEvent = VibeCache.getEventCache().get(
+          UUID.fromString(eventID));
+      ;
+
+      Map<String, Object> frontEndInfo;
+      // (2): Make modifications to the event i;f the times match the correct
+      // format
+      if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)) {
+        System.out.println("The input matches");
+        CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm,
+            end, endAMOrPM, eventName, oldEvent);
+
+        System.out.println("Edited event: " + editedEvent.toString());
+
+        // (3): Generate the playlist associated with this event
+
+        // Replace the event in the cache, keeping the playlist that was
+        // associated
+        if (!oldEvent.getPlayListURI().equals("")) {
+          editedEvent.setPlayListURI(oldEvent.getPlayListURI());
+        } else {
+          // This case means a spotify playlist doesn't yet exist, in which case
+          // create a new VibePlaylist for later conversion to spotify
+          hq.generateFromTag(editedEvent, api, currentUser, accessToken);
+        }
+
+        // Recache this edited event
+        VibeCache.getEventCache()
+            .replace(UUID.fromString(eventID), editedEvent);
+
+        // (4): Return the event along to true so front end can recognize that
+        // edit was succesful
+        frontEndInfo = ImmutableMap.of("event", editedEvent, "success", true);
+
+      } else {
+        frontEndInfo = ImmutableMap.of("event", oldEvent, "success", false);
       }
-      CalendarEvent editedEvent = eventProcessor
-    		  .editEvent(start, amOrPm, end, endAMOrPM, eventName, event);
-      System.out.println("Edited event: " + editedEvent.toString());
-      
-      // Generate the playlist associated with this event
-      hq.generateFromTag(editedEvent, api, currentUser, accessToken);
-      // These lines are only for testing
-//      VibePlaylist p2 = VibeCache.getPlaylistCache().get(editedEvent.getId());
-//      System.out.println("~~~THE TRACKS~~~");
-//      System.out.println(p2.getTracks());
-      
 
-      return GSON.toJson(editedEvent);
+      return GSON.toJson(frontEndInfo);
     }
   }
-
 
   /**
    * Class to handle adding custom playlists to events. I'm assuming that the
    * event and the settings will be passed back.
    *
+   *
+   *
    * @author smayfiel
    *
    */
-  private class AddCustomEventHandler implements Route {
+  private class AddCustomPlaylistHandler implements Route {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-      // Event stuff
-      String start = qm.value("start");
-      Boolean amOrPm = Boolean.parseBoolean(qm.value("startAMPM"));
-      String end = qm.value("end");
-      Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
-      String eventName = qm.value("name");
-
-
-
-      //Create a new event and add it to the database
-//      CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm, end,
-//          endAMOrPM, eventName);
-      CalendarEvent newEvent = null;
+      // Create a new event and add it to the database
+      // CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm, end,
+      // endAMOrPM, eventName);
 
       // Playlist stuff
+      String eventID = qm.value("eventID");
       String tag = qm.value("tag");
-      String genres = qm.value("genres");
+
+      System.out.println("the tag is + " + tag);
+      @SuppressWarnings("unchecked")
+      List<String> genres = GSON.fromJson(qm.value("genres"), List.class);
       String energy = qm.value("energy");
-      String hotness = qm.value("hotness");
+      System.out.println("main e is " + energy);
+      String hotness = qm.value("popularity");
       String mood = qm.value("mood");
+      System.out.println("main mood " + mood);
+
+      System.out.println("the event ID + " + eventID);
+      CalendarEvent thisEvent = null;
+      try {
+        thisEvent = eventProcessor.getEventFromEventID(eventID);
+      } catch (SQLException e) {
+        System.out.println("SQL EXCEPTION");
+        e.printStackTrace();
+      }
 
       // Add these things to a list
-      List<String> settingsList = Arrays.asList(tag, genres, energy, hotness,
-          mood);
+      List<String> settingsList = Arrays.asList(tag, energy, hotness, mood);
 
       // Generate the playlist
-      hq.generateCustom(settingsList, newEvent, api, currentUser, accessToken);
+      hq.generateCustom(genres, settingsList, thisEvent, api, currentUser,
+          accessToken);
+      System.out.println("returned from generatecustom");
 
       // These lines are only for testing
-      VibePlaylist p2 = VibeCache.getPlaylistCache().get(newEvent.getId());
+      VibePlaylist p2 = VibeCache.getPlaylistCache().get(thisEvent.getId());
       System.out.println("~~~THE TRACKS~~~");
       System.out.println(p2.getTracks());
 
       // TODO: I have no idea what this should return
-      return newEvent;
+      return GSON.toJson(thisEvent);
     }
   }
 
-  /**
-   * Handles printing out exceptions to the GUI
-   *
-   * @author cjps
-   *
-   */
-  private static class ExceptionPrinter implements ExceptionHandler {
+  private class GetAllPlaylistsHandler implements Route {
     @Override
-    public void handle(Exception e, Request req, Response res) {
-      res.status(500);
-      StringWriter stacktrace = new StringWriter();
-      try (PrintWriter pw = new PrintWriter(stacktrace)) {
-        pw.println("<pre>");
-        e.printStackTrace(pw);
-        pw.println("</pre>");
+    public Object handle(Request req, Response res) {
+      List<String[]> playlistNames = hq.getAllPlaylists(api, currentUser);
+      JsonArray jarray = new JsonArray();
+      JsonParser jp = new JsonParser();
+      for (String[] playlist : playlistNames) {
+        JsonObject jobj = new JsonObject();
+        jobj.addProperty("name", playlist[0]);
+        jobj.addProperty("uri", playlist[1]);
+        jarray.add(jobj);
       }
-      res.body(stacktrace.toString());
+
+      return GSON.toJson(jarray);
     }
   }
 
+  private class SelectExistingPlaylistHandler implements Route {
+    @Override
+    public Object handle(Request req, Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String playlistURI = qm.value("playlistURI");
+      String eventID = qm.value("eventID");
+
+      // Associate this eventID with this URI
+      CalendarEvent thisEvent = null;
+      try {
+        thisEvent = eventProcessor.getEventFromEventID(eventID);
+      } catch (SQLException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      thisEvent.setPlayListURI(playlistURI);
+      return playlistURI;
+    }
+  }
 }

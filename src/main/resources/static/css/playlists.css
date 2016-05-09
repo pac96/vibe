@@ -7,12 +7,15 @@
 /* Toggle Styles */
 
 body{
-	background-image:url("/images/river.jpg");
+	/*background-image:url("/images/river.jpg");*/
+  background-color: black; 
 	color: white; 
 	font-family: 'Open Sans', sans-serif; 
-	font-size: 15px; font-weight: 100; 
+	font-size: 15px; 
+  font-weight: 100; 
 	line-height: 20px; 
 	margin: 0 0 72px; 
+	
 }
 
 
@@ -23,6 +26,7 @@ body{
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
+    
     
 }
 
@@ -53,12 +57,20 @@ body{
     width: 100%;
     position: absolute;
     padding: 15px;
+    
+    
+    background-image:url("/images/vibe-background.jpg");
+    background-size:125%,170%;
+  	background-repeat: repeat;
+  	background-position: center;
+   
 }
 
 
 #wrapper.toggled #page-content-wrapper {
     position: absolute;
     margin-right: -250px;
+    
 }
 
 /* Sidebar Styles */
@@ -70,6 +82,7 @@ body{
     margin: 0;
     padding: 0;
     list-style: none;
+    
 }
 
 .sidebar-nav li {
@@ -260,8 +273,8 @@ body{
 /** Genre drop down styling **/
 .gDropdown {
   position: absolute;
-  top:47%;
-  left: 30%;
+  /*top:113%;*/
+  /*left: 32%;*/
   transform: translateY(-50%);
 }
 
@@ -299,7 +312,8 @@ yy {
   line-height: 24px;
   overflow: hidden;
   border: 0;
-  width: 300%;
+  width: 550px;
+  word-wrap: break-word;
 }
 
 .gDropdown dt yy span,
@@ -318,7 +332,7 @@ yy {
   padding: 2px 15px 2px 5px;
   position: absolute;
   top: 2px;
-  width: 300%;
+  width: 550px;
   list-style: none;
   height: 100px;
   overflow: auto;
@@ -343,9 +357,9 @@ yy {
 /** Playlist Selection drop down styling **/
 .plDropdown {
   position: absolute;
-  top:56%;
-  left: 10%;
-  transform: translateY(-50%);
+  /*top:155%;*/
+  /*left: 10%;*/
+  /*transform: translateY(-50%);*/
 }
 
 yy {
@@ -368,26 +382,30 @@ yy {
 
 .plDropdown yy,
 .plDropdown yy:visited {
-  color: #4CAF50; /** #fff **/
+  /*color: #4CAF50; /** #fff **/*/
+  color: white;
   text-decoration: none;
   outline: none;
-  font-size: 22px;
+  /*font-size: 30px;*/
+  font-size: 1.3em;
   text-align: center;
   font-family: 'Segoe UI', Frutiger, 
 	'Frutiger Linotype', 'Dejavu Sans', 
 	'Helvetica Neue', Arial, sans-serif;
 }
 
+
 .plDropdown dt yy {
   background-color: white;
   display: block;
-  padding: 8px 20px 5px 10px;
+  /*padding: 8px 20px 5px 10px;*/
+  padding: 8px 8px 8px 8px;
   min-height: 25px;
   line-height: 24px;
   overflow: hidden;
   border: 0;
-  width: 150%;
-  height: 150%;
+  width: 550px;
+  height: 50px;
 }
 
 .plDropdown dt yy span,
@@ -406,7 +424,7 @@ yy {
   padding: 2px 15px 2px 5px;
   position: absolute;
   top: 2px;
-  width: 150%;
+  width: 550px;
   list-style: none;
   height: 100px;
   overflow: auto;
@@ -428,19 +446,26 @@ yy {
 }
 
 
+/* Sub-description header */
+.sub-desc {
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  text-decoration: underline;
+}
 
-/* Event Tag */
-#eTagWrapper.form {
+
+/* Handles Mood and Event Tag Wrappers */
+.section-wrapper.form {
 	margin: 40px 0;
 }
 
-#eTagWrapper div {
-	/**clear: both;**/
+.section-wrapper div {
 	margin: 0 50px;
 	float: left;
 }
 
-#eTagWrapper label {
+.section-wrapper label {
   width: 200px;
   border-radius: 3px;
   border: 1px solid white;
@@ -448,12 +473,13 @@ yy {
 }
 
 /* hide input */
-#eTagWrapper input.radio:empty {
+.section-wrapper input.radio:empty {
 	margin-left: -999px;
+  display: none;
 }
 
 /* style label */
-#eTagWrapper input.radio:empty ~ label {
+.section-wrapper input.radio:empty ~ label {
 	position: relative;
 	float: left;
 	line-height: 2.5em;
@@ -479,41 +505,41 @@ input.radio:empty ~ label:before {
 }
 
 /* toggle hover */
-#eTagWrapper input.radio:hover:not(:checked) ~ label:before {
+.section-wrapper input.radio:hover:not(:checked) ~ label:before {
 	content:'\2714';
 	text-indent: .9em;
 	color: #C2C2C2;
 }
 
-#eTagWrapper input.radio:hover:not(:checked) ~ label {
+.section-wrapper input.radio:hover:not(:checked) ~ label {
 	color: #888;
 }
 
 /* toggle on */
-#eTagWrapper input.radio:checked ~ label:before {
+.section-wrapper input.radio:checked ~ label:before {
 	content:'\2714';
 	text-indent: .9em;
 	color: #9CE2AE;
 	background-color: #4DCB6D;
 }
 
-#eTagWrapper input.radio:checked ~ label {
+.section-wrapper input.radio:checked ~ label {
 	color: white;
 }
 
 /* radio focus */
-#eTagWrapper input.radio:focus ~ label:before {
+.section-wrapper input.radio:focus ~ label:before {
 	box-shadow: 0 0 0 3px #999;
 }
 
 
 /* Mood Tag */
-#mTagWrapper.form {
+
+/*#mTagWrapper.form {
 	margin: 40px 0;
 }
 
 #mTagWrapper div {
-	/**clear: both;**/
 	margin: 0 50px;
 	float: left;
 }
@@ -523,15 +549,17 @@ input.radio:empty ~ label:before {
   border-radius: 3px;
   border: 1px solid white;
   color: white;
-}
+}*/
 
 /* hide input */
-#mTagWrapper input.radio:empty {
+/*#mTagWrapper input.radio:empty {
 	margin-left: -999px;
-}
+	display: none;
+}*/
 
 /* style label */
-#mTagWrapper input.radio:empty ~ label {
+/*#mTagWrapper input.radio:empty ~ label {
+	left: 70%;
 	position: relative;
 	float: left;
 	line-height: 2.5em;
@@ -554,10 +582,11 @@ input.radio:empty ~ label:before {
 	width: 2.5em;
 	background: #D1D3D4;
 	border-radius: 3px 0 0 3px;
-}
+}*/
 
 /* toggle hover */
-#mTagWrapper input.radio:hover:not(:checked) ~ label:before {
+
+/*#mTagWrapper input.radio:hover:not(:checked) ~ label:before {
 	content:'\2714';
 	text-indent: .9em;
 	color: #C2C2C2;
@@ -565,24 +594,29 @@ input.radio:empty ~ label:before {
 
 #mTagWrapper input.radio:hover:not(:checked) ~ label {
 	color: #888;
-}
+}*/
+
 
 /* toggle on */
-#mTagWrapper input.radio:checked ~ label:before {
+
+/*#mTagWrapper input.radio:checked ~ label:before {
 	content:'\2714';
-	text-indent: .9em;
+	text-indent: .9em;0
 	color: #9CE2AE;
 	background-color: #4DCB6D;
 }
 
 #mTagWrapper input.radio:checked ~ label {
 	color: white;
-}
+}*/
+
 
 /* radio focus */
-#mTagWrapper input.radio:focus ~ label:before {
+
+/*#mTagWrapper input.radio:focus ~ label:before {
 	box-shadow: 0 0 0 3px #999;
-}
+}*/
+
 
 /** range sliders **/
 
@@ -787,24 +821,30 @@ input.radio:empty ~ label:before {
 }
 
 .cbutton {
-	position: absolute;
-  	top:53%;
-  	left: 57%;
+	/*position: absolute;
+  	top:148%;
+  	left: 50%;
     background-color: #4CAF50;
     border: none;
     color: white;
     font-family: 'Segoe UI', Frutiger, 
 	'Frutiger Linotype', 'Dejavu Sans', 
 	'Helvetica Neue', Arial, sans-serif;
-    padding: 15px 32px;
+	
+    padding: 8px 20px 44px 44px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 25px;
+    font-size: 30px;
     margin: 4px 2px;
     cursor: pointer;
-    width: 30%;
-    height: 5%;
+    width: 550px;
+  	height: 50px;
+    overflow: hidden;*/
+    font-size: 1.3em;
+    font-weight: bold;
+    padding: 8px 8px 8px 8px;
+    text-align: center;
 }
 
 .scustomizeTitle { 
@@ -820,7 +860,11 @@ input.radio:empty ~ label:before {
 	
 .rangeSliderTitle { 
 	color: white; 
-	font-family: 'Helvetica Neue', sans-serif; 
+	font-size: 30px; 
+	font-family: 'Segoe UI', Frutiger, 
+	'Frutiger Linotype', 'Dejavu Sans', 
+	'Helvetica Neue', Arial, sans-serif;
+	margin-top: 30px;
 	font-size: 15px; 
 	font-weight: bold; 
 	letter-spacing: -1px; 
@@ -832,17 +876,17 @@ input.radio:empty ~ label:before {
 	
 /** Edit Event CSS **/
 .smart-green {
-    margin-left:auto;
-    margin-right:auto;
+  margin-left:auto;
+  margin-right:auto;
 
-    max-width: 500px;
-    background: #F8F8F8;
-    padding: 30px 30px 20px 30px;
-    font: 12px Arial, Helvetica, sans-serif;
-    color: #666;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
+  max-width: 700px;
+  background: #F8F8F8;
+  padding: 30px 30px 20px 30px;
+  font: 12px Arial, Helvetica, sans-serif;
+  color: #666;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
 }
 .smart-green h7 {
     font: 24px "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -919,4 +963,27 @@ input.radio:empty ~ label:before {
 }
 .smart-green .button:hover {
     background-color:#80A24A;
+}
+
+
+/** Playlist Selection CSS **/
+.select-style {
+    border: 1px solid #ccc;
+    width: 200px;
+    border-radius: 3px;
+    overflow: hidden;
+    color: white;
+}
+
+.select-style select {
+    padding: 5px 8px;
+    width: 130%;
+    border: none;
+    /*box-shadow: none;*/
+    background-color: white;
+    /*-webkit-appearance: none;*/
+}
+
+.select-style select:focus {
+    outline: none;
 }

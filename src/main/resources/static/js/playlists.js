@@ -14,20 +14,6 @@ var port = window.location.port;
 
 
 
-function compareEvents(eventA, eventB) {
-	if (eventA == null || eventB == null) {
-		return -1;
-	}
-
-	if (eventA.startDate < eventB.startDate) {
-		return -1;
-	} else {
-		return 1;
-	}
-}
-
-
-
 if (window.location.pathname === "/playlists") {
 	var home = "http://localhost:" + port + "/vibe";
 	var uri = new URI(window.location.href);
@@ -37,12 +23,14 @@ if (window.location.pathname === "/playlists") {
 		window.location.href = home;
 	}
 
-	var d = new Date();
-	document.getElementById("date").innerHTML = d.toDateString();
+	// var d = new Date();
+	// document.getElementById("date").innerHTML = d.toDateString();
+	document.getElementById("date").innerHTML = moment().format("dddd, MMMM Do YYYY");
+
 
 	otherContent.hide();
 	editDiv = $("#editDiv");
-	customizeDiv = $("#customDiv");
+	customizeDiv = $("#customizePlaylistForm");
 	panel = $("#view-playlist-panel");
 
 	// First, set the logout link 
@@ -61,12 +49,14 @@ if (window.location.pathname === "/playlists") {
 	  var username = backendInfo.username;
 
 	  console.log("Username: " + username);
-	  $("#displayname").html(username);
+	  $("#displayname").append(username);
 
 	  loadCachedEvents(backendInfo.cachedEvents);
 
+	  // Populates the dropdown selection for user playlists
+	  populateUserPlaylists();	  
 	}); // end access token code post
-}
+}	
 
 /* Handles adding an event */
 $("#AddNewEvent").click(function() {
@@ -105,7 +95,7 @@ function CalendarEvent(event) {
 	this.end = new EventTime(event.end);
 	this.name = event.name;
 	this.id = event.id;
-	this.playlistId = event.playlistID;
+	this.playlistURI = event.playlistURI;
 	var m = moment();
 	var startD = new Date();
 
@@ -143,6 +133,19 @@ function CalendarEvent(event) {
 /////////////////////////////////////
 // Function Declarations
 ////////////////////////////////////
+function compareEvents(eventA, eventB) {
+	if (eventA == null || eventB == null) {
+		return -1;
+	}
+
+	if (eventA.startDate < eventB.startDate) {
+		return -1;
+	} else {
+		return 1;
+	}
+}
+
+
 /**
  * Renders the calendar so that we can 
  * @param  {CalendarEvent} event - the calendar event object 
@@ -243,9 +246,11 @@ function addEvent() {
 		}
 
 		// Set up the event format and time format
-		eventFormat = /^[a-zA-Z]+$/;
-		timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+		var eventFormat = /^[a-zA-Z]+$/;
+		var timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
 		
+		// if ()
+
 		if(eventName == null || startTime == null ||
 		 endTime == null || startAP == null || endAP == null) {
 			alert("One or more event fields are empty");
@@ -268,21 +273,36 @@ function addEvent() {
 	    		// 1. send stuff to back end and store in responseObject
 	    		var responseObject = JSON.parse(response);
 
-	    		// 2. Make calendar event object from responseObject
-	    		var newEvent = new CalendarEvent(responseObject);
+	    		if (responseObject.success == "true") {
+	    			// 2. Make calendar event object from responseObject
+		    		var newEvent = new CalendarEvent(responseObject.event);
 
-	    		// 3. Add new calendar event to user's list
-	    		eventsArray.push(newEvent);
-	    		occurrenceArray.push(newEvent);
+		    		// 3. Add new calendar event to user's list
+		    		eventsArray.push(newEvent);
+		    		// 4. sort the list 
+		    		eventsArray.sort(compareEvents);
+		    		// 5. Render calendar
+		    		renderCalendar(newEvent);
+
+		    		occurrenceArray.push(newEvent);
+		    		occurrenceArray.sort(compareEvents);
+
+	   				nextEventPopup();	
+	    		} else {
+	    			var $msg = $("<p>", {
+						class: "contentMsg", 
+						id: "errorMsg"
+					});
+
+					$msg.append("Add event failed. Time should be formatted like this: 5:00  , 12:24");
+					otherContent.html($msg);
+				    otherContent.fadeIn('slow');
+
+				    setTimeout(function() {
+					    otherContent.fadeOut('slow');
+				    }, 2000);
+	    		}
 	    		
-	    		// 4. sort the list 
-	    		eventsArray.sort(compareEvents);
-	    		occurrenceArray.push(compareEvents);
-
-	    		//5. Render calendar
-	    		renderCalendar(newEvent);
-
-   				nextEventPopup();
 	    	});
 		}
 }
@@ -396,4 +416,25 @@ function loadCachedEvents(cachedEvents) {
 
 		nextEventPopup();	
 	}
+}
+
+
+
+function populateUserPlaylists() {
+	$.post("/getAllPlaylists", function(jarray) {
+		// returns a jarray with an object at each index having access to a name and URI
+		var playlists = JSON.parse(jarray);
+		var names = [];
+		var $dropdown = $("#playlistDropdown");
+
+		for (var i = 0; i < playlists.length; i++) {
+			var currentPlaylist = playlists[i];
+			var $plElt = $("<option>").attr({
+				id: currentPlaylist.uri,
+				class: "plName",
+				value: currentPlaylist.name
+			}).append(currentPlaylist.name);
+			$dropdown.append($plElt);
+		}
+	});
 }

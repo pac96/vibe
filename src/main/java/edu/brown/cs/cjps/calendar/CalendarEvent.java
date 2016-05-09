@@ -9,22 +9,21 @@ import com.google.common.collect.ImmutableMap;
 public class CalendarEvent {
 
   private String name;
-  
 
-private EventTime start;
+  private EventTime start;
   private EventTime end;
   private UUID id;
 
   // We set the playlist id to this default. Spotify playlist IDs are
-  private String playListId = "";
+  private String playListId; // = "";
 
   public CalendarEvent(String name, EventTime start, EventTime end) {
     this.name = name;
     this.start = start;
     this.end = end;
     this.id = UUID.randomUUID();
+    this.playListId = "";
   }
-
 
   public EventTime getStart() {
     return start;
@@ -37,10 +36,10 @@ private EventTime start;
   public String getName() {
     return name;
   }
-  
+
   public void setName(String name) {
-		this.name = name;
-	}
+    this.name = name;
+  }
 
   /**
    * @param id
@@ -54,16 +53,15 @@ private EventTime start;
     return id;
   }
 
-  public String getPlayListId() {
+  public String getPlayListURI() {
     return playListId;
   }
 
-  public void setPlayListId(String playListID) {
+  public void setPlayListURI(String playListID) {
     this.playListId = playListID;
   }
 
-
-  public void setStart(int newHour, int newMinute, boolean amOrPm) {
+  public void setStart(int newHour, int newMinute, boolean amOrPm) throws IllegalArgumentException {
     start.update(newHour, newMinute, amOrPm);
 
     if (start.compareTo(end) > 0) {
@@ -73,7 +71,7 @@ private EventTime start;
     }
   }
 
-  public void setEnd(int newHour, int newMinute, boolean amOrPm) {
+  public void setEnd(int newHour, int newMinute, boolean amOrPm) throws IllegalArgumentException {
     end.update(newHour, newMinute, amOrPm);
 
     if (end.compareTo(start) < 0) {
@@ -117,7 +115,7 @@ private EventTime start;
           && this.getEnd().equals(other.getEnd())
           && this.getId().equals(other.getId())
           && this.getName().equals(other.getName())
-          && this.getPlayListId().equals(other.getPlayListId());
+          && this.getPlayListURI().equals(other.getPlayListURI());
     }
   }
 

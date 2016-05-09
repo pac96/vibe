@@ -531,8 +531,6 @@ public final class Main {
       JsonArray jarray = new JsonArray();
       JsonParser jp = new JsonParser();
       for (String[] playlist : playlistNames) {
-        // TODO: something is wrong with this loop I think. It's only going
-        // through this once instead of 10 times!
         JsonObject jobj = new JsonObject();
         jobj.addProperty("name", playlist[0]);
         jobj.addProperty("uri", playlist[1]);

@@ -8,31 +8,31 @@ import org.junit.Test;
 
 import edu.brown.cs.cjps.db.DBQuerier;
 
-public class dbQueryTest {
-    @Test
-    public void userTableInsertion() {
-        String db = "vibe.sqlite3";
-        DBQuerier querier;
-        try {
-            querier = new DBQuerier(db);
-            querier.insertUser("12", "John");
-            System.out.println(querier.userIsInDatabase("12"));
-            assertTrue(querier.userIsInDatabase("12"));
-            System.out.println(querier.userIsInDatabase("15"));
-            assertTrue(!querier.userIsInDatabase("15"));
-
-
-        } catch (SQLException e) {
-            System.out.println("Error in db query");
-            assertTrue(1 == 0);
-        } catch (ClassNotFoundException e) {
-            System.out.println("Class Not found");
-            assertTrue(1 == 0);
-        }
-
-    }
-
-}
+//public class dbQueryTest {
+//    @Test
+//    public void userTableInsertion() {
+//        String db = "vibe.sqlite3";
+//        DBQuerier querier;
+//        try {
+//            querier = new DBQuerier(db);
+//            querier.insertUser("12", "John");
+//            System.out.println(querier.userIsInDatabase("12"));
+//            assertTrue(querier.userIsInDatabase("12"));
+//            System.out.println(querier.userIsInDatabase("15"));
+//            assertTrue(!querier.userIsInDatabase("15"));
+//
+//
+//        } catch (SQLException e) {
+//            System.out.println("Error in db query");
+//            assertTrue(1 == 0);
+//        } catch (ClassNotFoundException e) {
+//            System.out.println("Class Not found");
+//            assertTrue(1 == 0);
+//        }
+//
+//    }
+//
+//}
 //package edu.brown.cs.cjps.vibetests;
 //
 //import static org.junit.Assert.assertTrue;

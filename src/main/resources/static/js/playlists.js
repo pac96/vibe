@@ -273,20 +273,36 @@ function addEvent() {
 	    		// 1. send stuff to back end and store in responseObject
 	    		var responseObject = JSON.parse(response);
 
-	    		// 2. Make calendar event object from responseObject
-	    		var newEvent = new CalendarEvent(responseObject);
+	    		if (responseObject.success == "true") {
+	    			// 2. Make calendar event object from responseObject
+		    		var newEvent = new CalendarEvent(responseObject.event);
 
-	    		// 3. Add new calendar event to user's list
-	    		eventsArray.push(newEvent);
-	    		// 4. sort the list 
-	    		eventsArray.sort(compareEvents);
-	    		// 5. Render calendar
-	    		renderCalendar(newEvent);
+		    		// 3. Add new calendar event to user's list
+		    		eventsArray.push(newEvent);
+		    		// 4. sort the list 
+		    		eventsArray.sort(compareEvents);
+		    		// 5. Render calendar
+		    		renderCalendar(newEvent);
 
-	    		occurrenceArray.push(newEvent);
-	    		occurrenceArray.sort(compareEvents);
+		    		occurrenceArray.push(newEvent);
+		    		occurrenceArray.sort(compareEvents);
 
-   				nextEventPopup();
+	   				nextEventPopup();	
+	    		} else {
+	    			var $msg = $("<p>", {
+						class: "contentMsg", 
+						id: "errorMsg"
+					});
+
+					$msg.append("Add event failed. Time should be formatted like this: 5:00  , 12:24");
+					otherContent.html($msg);
+				    otherContent.fadeIn('slow');
+
+				    setTimeout(function() {
+					    otherContent.fadeOut('slow');
+				    }, 2000);
+	    		}
+	    		
 	    	});
 		}
 }

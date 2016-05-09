@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import edu.brown.cs.cjps.calendar.CalendarEvent;
 import edu.brown.cs.cjps.music.VibePlaylist;
 import edu.brown.cs.cjps.vibe.MusicEventTag.Tag;
 
@@ -19,12 +20,14 @@ public class VibeCache {
   private static HashMap<UUID, VibePlaylist> playlistCache;
   // private static ListMultimap<Tag, String> tags;
   private static HashMap<String, Tag> tags;
+  private static HashMap<UUID, CalendarEvent> eventCache;
 
   /**
    * Constuctor just initializes the HashMap cache.
    */
   public VibeCache() {
     playlistCache = new HashMap<UUID, VibePlaylist>();
+    eventCache = new HashMap<UUID, CalendarEvent>();
 
     // Music tags
     // tags = ArrayListMultimap.create();
@@ -72,6 +75,10 @@ public class VibeCache {
 
   public static HashMap<String, Tag> getTagMap() {
     return tags;
+  }
+
+  public static HashMap<UUID, CalendarEvent> getEventCache() {
+    return eventCache;
   }
 
   // List of genres:

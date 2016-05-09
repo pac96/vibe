@@ -15,13 +15,14 @@ public class CalendarEvent {
   private UUID id;
 
   // We set the playlist id to this default. Spotify playlist IDs are
-  private String playListId = "";
+  private String playListId; // = "";
 
   public CalendarEvent(String name, EventTime start, EventTime end) {
     this.name = name;
     this.start = start;
     this.end = end;
     this.id = UUID.randomUUID();
+    this.playListId = "";
   }
 
   public EventTime getStart() {

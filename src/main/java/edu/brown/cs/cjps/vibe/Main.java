@@ -30,7 +30,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.wrapper.spotify.Api;
 import com.wrapper.spotify.models.AuthorizationCodeCredentials;
 import com.wrapper.spotify.models.User;
@@ -379,7 +378,7 @@ public final class Main {
       if (start == null || end == null || amOrPm == null || endAmOrPm == null) {
         System.out.println("ERROR: Bad info from the front end");
         frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-        return frontEndInfo;
+        return GSON.toJson(frontEndInfo);
       }
 
       // (2): Check if the input times have the correct format
@@ -394,14 +393,15 @@ public final class Main {
               eventName, currentUser.getId());
         } catch (SQLException e) {
           System.out.println("Error in adding event");
-          e.printStackTrace();
+          frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+          return GSON.toJson(frontEndInfo);
         }
 
         // Another error check
         if (newEvent == null) {
           System.out.println("ERROR: Problem creating event");
           frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-          return frontEndInfo;
+          return GSON.toJson(frontEndInfo);
         }
 
         // Add event to the cache
@@ -415,7 +415,7 @@ public final class Main {
         if (newP == null) {
           System.out.println("ERROR: Problem generating playlist");
           frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-          return frontEndInfo;
+          return GSON.toJson(frontEndInfo);
         }
 
         // Success scenario
@@ -567,7 +567,7 @@ public final class Main {
           || eventName == null || eventID == null || keepPlaylist == null) {
         System.out.println("ERROR: Bad info from the front end");
         frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-        return frontEndInfo;
+        return GSON.toJson(frontEndInfo);
       }
 
       // If the edits are valid an event will be returned to the front-end
@@ -579,7 +579,7 @@ public final class Main {
       if (oldEvent == null) {
         System.out.println("ERROR: couldn't get event associated with this id");
         frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-        return frontEndInfo;
+        return GSON.toJson(frontEndInfo);
       }
 
       // (2): Make modifications to the event if the times match the correct
@@ -593,7 +593,7 @@ public final class Main {
         if (editedEvent == null) {
           System.out.println("ERROR: couldn't edit event");
           frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-          return frontEndInfo;
+          return GSON.toJson(frontEndInfo);
         }
 
         // (3): Generate the playlist associated with this event
@@ -611,7 +611,7 @@ public final class Main {
           if (p == null) {
             System.out.println("ERROR: couldn't create playlist");
             frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-            return frontEndInfo;
+            return GSON.toJson(frontEndInfo);
           }
           // Clear the URI so on the next "view playlist" the new playlist
           // appears
@@ -648,7 +648,6 @@ public final class Main {
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
 
-      Map<String, Object> frontEndInfo;
       // Playlist stuff
       String eventID = qm.value("eventID");
       String tag = qm.value("tag");
@@ -663,7 +662,7 @@ public final class Main {
       if (eventID == null || tag == null || energy == null || hotness == null
           || mood == null) {
         System.out.println("ERROR: Bad info from front end");
-        return ImmutableMap.of("event", "null", "success", false);
+        return GSON.toJson(ImmutableMap.of("event", "null", "success", false));
       }
 
       CalendarEvent thisEvent = VibeCache.getEventCache().get(
@@ -672,27 +671,26 @@ public final class Main {
       // Error check
       if (thisEvent == null) {
         System.out.println("ERROR: Problem accessing event");
-        return ImmutableMap.of("event", "null", "success", false);
+        return GSON.toJson(ImmutableMap.of("event", "null", "success", false));
       }
 
       // Add these things to a list
       List<String> settingsList = Arrays.asList(tag, energy, hotness, mood);
 
       // Generate the playlist
-      hq.generateCustom(genres, settingsList, thisEvent, api, currentUser,
-          accessToken);
+      VibePlaylist p = hq.generateCustom(genres, settingsList, thisEvent, api,
+          currentUser, accessToken);
+      // Error check
+      if (p == null) {
+        System.out.println("ERROR: Problem creating playlist");
+        return GSON.toJson(ImmutableMap.of("event", "null", "success", false));
+      }
 
       // If this event previously had a playlistURI, remove it so this playlist
       // will be created
       thisEvent.setPlayListURI("");
 
-      // These lines are only for testing
-      VibePlaylist p2 = VibeCache.getPlaylistCache().get(thisEvent.getId());
-      System.out.println("~~~THE TRACKS~~~");
-      System.out.println(p2.getTracks());
-
-      // TODO: I have no idea what this should return
-      return GSON.toJson(thisEvent);
+      return GSON.toJson(ImmutableMap.of("event", thisEvent, "success", true));
     }
   }
 
@@ -701,7 +699,6 @@ public final class Main {
     public Object handle(Request req, Response res) {
       List<String[]> playlistNames = hq.getAllPlaylists(api, currentUser);
       JsonArray jarray = new JsonArray();
-      JsonParser jp = new JsonParser();
       for (String[] playlist : playlistNames) {
         JsonObject jobj = new JsonObject();
         jobj.addProperty("name", playlist[0]);

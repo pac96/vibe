@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.gson.JsonArray;
@@ -97,6 +98,9 @@ public class PlaylistGenerator {
       trackList.add(trackString);
     }
 
+    // Before returning, shuffle the track order to give variety to the
+    // playlists
+    Collections.shuffle(trackList);
     VibePlaylist vp = new VibePlaylist(trackList, s);
     return vp;
   }

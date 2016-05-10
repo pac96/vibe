@@ -45,7 +45,6 @@ h1 span {
 
 .no-list-style {
   list-style-type: none;
-
 }
 
 .anEvent {
@@ -77,6 +76,10 @@ h1 span {
   text-align: center;
 }
 
+.under {
+  position: absolute;
+}
+
 .playlistDiv {
   margin-top: 50px;
 }
@@ -85,7 +88,6 @@ h1 span {
   text-decoration: none;
   font-weight: bold;
   color: black;
-  border-bottom: 2px solid black;
   text-align: right;
 }
 

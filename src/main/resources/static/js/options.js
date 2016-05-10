@@ -42,6 +42,7 @@ $(document).on('click', '#useOwnPlaylist', function() {
 $(document).on('click', '#editEvent', (function() {
 	    // hide unneeded divs
     customizeDiv.hide();
+    hidePlaylist();
 
 	var dropdownID = $(this).parent().attr('id');
 	currentEventID = dropdownID.split("_")[1];
@@ -149,8 +150,9 @@ function showPlaylist(eventID) {
 		// Set the source of the playlist to be the input URI
 		playlist.attr('src', "https://embed.spotify.com/?uri=" + uri);
 		eventObject.playlistURI = uri;
-		$("div.bar").addClass("hiddenDiv");
+		console.log("Backend uri");
 		playlist.fadeIn("slow");
+		$("div.bar").fadeOut("fast");
 		$("#hidePlaylist").fadeIn("slow");
     }); 
 }
@@ -294,9 +296,6 @@ function requestEdit(eventID) {
 			if ($(this).attr('id') == "yesBtn") {
 				keepOldPlaylist = false;
 			}
-
-
-			console.log("only if i click a button!!!");
 
 			var editableEvent;
 			var eventName = $('#editEventName').val();

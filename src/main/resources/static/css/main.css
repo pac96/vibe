@@ -76,9 +76,9 @@ h1 span {
   text-align: center;
 }
 
-/*.loading {
-  background: url("/images/loading.gif");
-}*/
+.under {
+  position: absolute;
+}
 
 .playlistDiv {
   margin-top: 50px;

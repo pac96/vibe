@@ -69,44 +69,16 @@ $("#AddNewEvent").click(function() {
 }); // end add new click handler
 
 
-/*
- * When the user clicks on an event, initiate the dropdown
- * and display the name of the event in the main content panel section
- */
 
-$(document).on('click', '.anEvent', function() {
-	// $(".loading").attr('id', "loadingBar");
-	// // Loading bar
-	// var bar = new ProgressBar.Line("#loadingBar", {
-	//   strokeWidth: 5,
-	//   easing: 'easeInOut',
-	//   duration: 1000,
-	//   color: 'green',
-	//   trailColor: '#eee',
-	//   trailWidth: 10,
-	//   svgStyle: {width: '80%', height: '100%'},
-	//   text: {
-	//     style: {
-	//       // Text color.
-	//       // Default: same as stroke color (options.color)
-	//       color: '#999',
-	//       position: 'absolute',
-	//       right: '0',
-	//       top: '30px',
-	//       padding: 0,
-	//       margin: 0,
-	//       transform: null
-	//     },
-	//     autoStyleContainer: false
-	//   },
-	//   from: {color: '#FFEA82'},
-	//   to: {color: '#ED6A5A'},
-	//   step: (state, bar) => {
-	//     bar.setText(Math.round(bar.value() * 100) + ' %');
-	//   }
-	// });
 
-	// bar.animate(1.0);
+// Makes sure that if elements in the dropdown are clicked, the 
+// handler that shows the playlist does not occur
+ $('#calendarEvents').find('.anEvent li').on('click', function(e) {
+	e.stopPropagation();
+});
+
+$(document).on('click', 'li.anEvent', function() {
+	console.log($(this).attr('id'));
 
 	$("div.bar").removeClass("hiddenDiv");
 	currentEventID = this.id;
@@ -114,18 +86,8 @@ $(document).on('click', '.anEvent', function() {
 	var eventObject = getEvent(currentEventID);
 	console.log("Current event: " + eventObject.name);
 
-
-	if (eventObject.playlistURI == null) {
-		// Retrieve the playlist URI from the backend and show it
-		showPlaylist(currentEventID);			
-	} else {
-		// bar.animate(1.0); // start loading bar
-		// playlist.attr('src', "https://embed.spotify.com/?uri=" + eventObject.playlistURI);
-		$("div.bar").addClass("hiddenDiv");
-		playlist.fadeIn("slow");
-		$("#hidePlaylist").fadeIn("slow");
-	}
-}); // end click on event handler
+	showPlaylist(currentEventID);			
+});
 
 
 $(document).on('click', '#hidePlaylist', function() {
@@ -228,6 +190,37 @@ function renderCalendar(event){
 	});
 
 	$eventHTML.append(htmlCode);
+	
+
+	// $dropdown = $("<ul>", {
+	// 	id: targetID,
+	// 	class: "collapse"
+	// }).append("<li id='customizePlaylist'>" +
+	// 			"<a>Customize Playlist</a>" +
+	// 		"</li>" +
+	// 		"<li id='editEvent'>" +
+	// 			"<a>Edit Event</a>" +
+	// 		"</li>" +
+	// 		"<li id='deleteEvent'>" +
+	// 			"<a>Delete Event</a>" +
+	// 		"</li>");
+
+	// // "<ul id='" + targetID + "' class='collapse no-list-style'>" +
+	// 		// "<li id='viewPlaylist'>" +
+	// 		// 	"<a>View Playlist" + "</a>" +
+	// 		// "</li>" +
+	// 		// "<li id='customizePlaylist'>" +
+	// 		// 	"<a>Customize Playlist</a>" +
+	// 		// "</li>" +
+	// 		// "<li id='editEvent'>" +
+	// 		// 	"<a>Edit Event</a>" +
+	// 		// "</li>" +
+	// 		// "<li id='deleteEvent'>" +
+	// 		// 	"<a>Delete Event</a>" +
+	// 		// "</li>" +
+	// 	// "</ul>";
+	// $dropdown.insertAfter($eventHTML);
+	// console.log($dropdown.parent());
 
 	// Find all li tags and dynamically remove the bullet points
 	// $("ul.collapse").css('list-style-type', 'none');
@@ -375,11 +368,11 @@ function addEvent() {
 function htmlDropdown(dataTargetID, timePeriod, cEvent) {
 	var htmlStr = 
 	"<a href='javascript:;' data-toggle='collapse' data-target='#" + dataTargetID + "'>" +
-		"<i class='fa fa-fw fa-arrows-v'></i> " +
+		"<i class='fa fa-fw fa-arrows-v' color='white'></i> " +
 		// event.start.hour + ":" +  event.start.minute 
 		"<span class='eventDesc'>" + cEvent.moment.format("h:mm") + " " + timePeriod 
 		+ " | " + cEvent.name + " </span>" +
-		"<i class='fa fa-fw fa-caret-down'></i></a>" +
+		"<i class='fa fa-fw fa-caret-down'></i>" +
 		"<ul id='" + dataTargetID + "' class='collapse no-list-style'>" +
 			// "<li id='viewPlaylist'>" +
 			// 	"<a>View Playlist" + "</a>" +
@@ -500,6 +493,7 @@ function populateUserPlaylists() {
 
 
 function hidePlaylist() {
+	$(".playlistDiv").fadeOut("fast");
 	playlist.removeClass("loading");
 	playlist.fadeOut("fast");	
     $("#hidePlaylist").fadeOut("fast");

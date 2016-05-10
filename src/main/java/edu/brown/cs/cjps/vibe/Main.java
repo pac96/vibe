@@ -759,7 +759,7 @@ public final class Main {
       }
 
       thisEvent.setPlayListURI(playlistURI);
-      System.out.println(playlistURI);
+      System.out.println("Set playlist URI to " + playlistURI);
       frontEndInfo = ImmutableMap.of("playlistURI", playlistURI,
     		  "success", true, "error", "");
       

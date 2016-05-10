@@ -79,17 +79,13 @@ $(document).on('click', '.anEvent', function() {
 	console.log("Current event: " + eventObject.name);
 
 
-//	if (eventObject.playlistURI == null) {
+	if (eventObject.playlistURI == null) {
 		// Retrieve the playlist URI from the backend and show it
 	showPlaylist(currentEventID);			
-//	} 
-//	else {
-//		 playlist.attr('src', "https://embed.spotify.com/?uri=" + eventObject.playlistURI);
-//		// bar.animate(1.0); // start loading bar
-////		$("div.bar").addClass("hiddenDiv");
-//		playlist.fadeIn("slow");
-//		$("#hidePlaylist").fadeIn("slow");
-//	}
+	} 
+	else {
+		showPlaylistWithURI(eventObject.playlistURI, currentEventID);
+	}
 }); // end click on event handler
 
 // Makes sure that if elements in the dropdown are clicked, the 

@@ -75,6 +75,18 @@ body{
     
 }
 
+#eventForm {
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+#dateDiv {
+	display: inline-block;
+	vertical-align: middle;
+	font-size : 135%;
+}
+
+
 /* Sidebar Styles */
 
 .sidebar-nav {

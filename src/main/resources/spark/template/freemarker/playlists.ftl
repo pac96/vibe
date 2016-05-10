@@ -5,8 +5,9 @@
 <div id="wrapper">
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper">
+		<div id = "alterable-sidebar">
 	    <ul class="sidebar-nav">
-	        <li class="sidebar-brand" id="date">
+	        <li class="sidebar-brand" id="dateDiv">
 	            <a href="#"><p id="date"></p></a>
 	        </li>
 
@@ -28,14 +29,14 @@
 	            <input type="radio" id='endPM' name="time-selection-end" value="pm-end" checked>pm
 	            <br/><br/>
 
-	            <!-- &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  -->
-	            <input type='button' name='AddNewEvent' value='Add New Event' id="AddNewEvent" class="btn btn-success"/>
+	            <input type='button' name='AddNewEvent' value='Add New Event' id="AddNewEvent" class="btn btn-success center-block text-center"/>
 
 	        </form>
 	        <hr>
 
 	        <ul id="calendarEvents"></ul>
 	    </ul>
+	    </div>
 	</div>
 	<!-- /#sidebar-wrapper -->
 

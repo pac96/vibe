@@ -5,7 +5,6 @@ var currentEvent;
 var currentEventID;
 var otherContent = $("div.otherContent");
 var editDiv;
-var customizeDiv;
 var panel;
 var eventModal;
 var playlistDiv;
@@ -22,8 +21,6 @@ if (window.location.pathname === "/playlists") {
 	var uri = new URI(window.location.href);
 	var urlParams = uri.search(true);
 	editDiv = $("#editDiv");
-	customizeDiv = $("#customizePlaylistForm");
-	panel = $("#view-playlist-panel");
 	playlistDiv = $(".playlistDiv");
 
 	if (urlParams.error === "access_denied") {
@@ -84,7 +81,7 @@ $(document).on('click', '.anEvent', function() {
 
 //	if (eventObject.playlistURI == null) {
 		// Retrieve the playlist URI from the backend and show it
-		showPlaylist(currentEventID);			
+	showPlaylist(currentEventID);			
 //	} 
 //	else {
 //		 playlist.attr('src', "https://embed.spotify.com/?uri=" + eventObject.playlistURI);
@@ -256,7 +253,7 @@ function renderCalendar(event){
 	}	
 
 	if (!appended) {
-		eventTimeline.append($eventHTML);
+		$eventHTML.appendTo(eventTimeline);
 	}	
 }
 

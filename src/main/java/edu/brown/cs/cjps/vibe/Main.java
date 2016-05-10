@@ -745,6 +745,8 @@ public final class Main {
       QueryParamsMap qm = req.queryMap();
       String playlistURI = qm.value("playlistURI");
       String eventID = qm.value("eventID");
+      Map<String, Object> frontEndInfo = null;
+
 
       // Associate this eventID with this URI
       CalendarEvent thisEvent = null;
@@ -752,10 +754,17 @@ public final class Main {
         thisEvent = eventProcessor.getEventFromEventID(eventID);
       } catch (SQLException e) {
         System.out.println("ERROR: error processing event");
-        return null;
+        frontEndInfo = ImmutableMap.of("playlistURI", "", "success", false, "error", "Error processing event!");
+        return frontEndInfo;
       }
+
       thisEvent.setPlayListURI(playlistURI);
-      return playlistURI;
+      System.out.println(playlistURI);
+      frontEndInfo = ImmutableMap.of("playlistURI", playlistURI,
+    		  "success", true, "error", "");
+      
+
+      return frontEndInfo;
     }
   }
 }

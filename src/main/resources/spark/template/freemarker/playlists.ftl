@@ -162,26 +162,28 @@
 					<hr color='white' size='2'>
 
 					<div id='customOptions' class="row">
-						<div class="col-md-6">
-							<input type="button" class="btn btn-primary cbutton" value="Use Your Own Playlist" id="useOwnPlaylist">
-						</div>
+						<!-- <div class="col-md-6"> -->
+							<input type="button" class="btn btn-primary cbutton" value="Use Your Own Playlist" id="selectPlaylistBtn">
+						<!-- </div> -->
 
-						<div class="col-md-6">
-							<input type="button" class="btn btn-success cbutton" value="Generate Custom Playlist" id="generateCustom">
-						</div>
+						<!-- <div class="col-md-6"> -->
+							<input type="button" class="btn btn-success cbutton" value="Generate Custom Playlist" id="generateCustomBtn">
+						<!-- </div> -->
 					</div>
 
 					<!-- Select Playlist Dropdown -->
-					<form id="selectPlaylistForm" method="POST" action="/selectExistingPlaylist" class="hiddenDiv">
-						<h2 class="boxed-text">Pick one of your own playlists!</h2>
-						<div class="select-style">
-							<select id="playlistDropdown">
-								<!-- Will be filled up with options -->
-							</select>
-						</div>
+					<div>
+						<form id="selectPlaylistForm" method="POST" action="/selectExistingPlaylist" class="hiddenDiv">
+							<h2 class="boxed-text">Pick one of your own playlists!</h2>
+							<div class="select-style center-block">
+								<select id="playlistDropdown">
+									<!-- Will be filled up with options -->
+								</select>
+							</div>
 
-						<input type="button" class="btn btn-success cbutton" value="Submit one of your own!" id="existingSubmit">
-					</form>
+							<input type="button" class="btn btn-success cbutton" value="Submit one of your own!" id="existingSubmit">
+						</form>
+					</div>
 
 
 					<!-- Customize Form -->
@@ -385,8 +387,8 @@
 
 	</div>
 		<!-- /#page-content-wrapper -->
-</div>
-<!-- /#wrapper -->
+</div> <!-- /#wrapper -->
+
 </div>
 
 <!-- Menu Toggle Script -->

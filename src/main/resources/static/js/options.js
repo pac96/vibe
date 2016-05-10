@@ -5,30 +5,42 @@ $(document).on('click', '#customizePlaylist', (function() {
 	
 	$('#view-playlist-panel').hide();
 	editDiv.hide();
-	playlist.hide();
+	hidePlaylist();
 
+	// Show the div and buttons
 	$("#customizeDiv").show();
-	
+	$("#selectPlaylistBtn").show();
+	$("#generateCustomBtn").show();
+
+	// Hide the forms
+	$("#selectPlaylistForm").hide();
+	$("#customizePlaylistForm").hide();
 }));
 
 // Load customization options
-$(document).on('click', '#generateCustom', function() {
-	// $("#customOptions").hide();
+$(document).on('click', '#generateCustomBtn', function() {
+	// Hide the select playlist form and buttons
 	$("#selectPlaylistForm").hide();
-	$("#customizePlaylistForm").show();
+	$("#selectPlaylistBtn").hide();
+
+	// Bring in the customize playlist form and make the button appear active
+	$("#generateCustomBtn").addClass("active");
+	$("#customizePlaylistForm").fadeIn("fast");
 });
 
 // Submit customization options 
 $(document).on('click', '#customizeSubmit', function() {
 	customizePlaylist(currentEventID);
-})
+});
 
 
 
-
-$(document).on('click', '#useOwnPlaylist', function() {
+$(document).on('click', '#selectPlaylistBtn', function() {
 	$("#customizePlaylistForm").hide();
-	$("#selectPlaylistForm").show();
+	$("#generateCustomBtn").hide();
+
+	$("#selectPlaylistBtn").addClass("active");
+	$("#selectPlaylistForm").fadeIn("fast");
 
 	$(document).on('click', "#existingSubmit", function() {
 		selectExistingPlaylist(currentEventID);
@@ -41,7 +53,7 @@ $(document).on('click', '#useOwnPlaylist', function() {
 // "Edit Event" option
 $(document).on('click', '#editEvent', (function() {
 	    // hide unneeded divs
-    customizeDiv.hide();
+    $("#customizeDiv").hide();
     hidePlaylist();
 
 	var dropdownID = $(this).parent().attr('id');
@@ -50,7 +62,6 @@ $(document).on('click', '#editEvent', (function() {
     editDiv.show();
     
     // hide unneeded divs
-    $("#customizeDiv").hide();
     $('#view-playlist-panel').hide();
 }));
 
@@ -152,9 +163,34 @@ function showPlaylist(eventID) {
 		eventObject.playlistURI = uri;
 		console.log("Backend uri");
 		playlist.fadeIn("slow");
+
+		$("#customizeDiv").hide();
+		$("#selectPlaylistForm").hide();
+		$("#selectPlaylistBtn").hide();
+		$("#customizePlaylistForm").hide();
+		$("#generateCustomBtn").hide();		
+
 		$("div.bar").fadeOut("fast");
 		$("#hidePlaylist").fadeIn("slow");
     }); 
+}
+
+function showPlaylistWithURI(uri, eventID) {
+    var eventObject = getEvent(eventID);
+	eventObject.playlistURI = uri;
+
+	console.log('https://embed.spotify.com/?uri=' + uri);
+	playlist.attr('src', 'https://embed.spotify.com/?uri=' + uri);
+	playlist.fadeIn("slow");
+
+	$("#customizeDiv").hide();
+	$("#selectPlaylistForm").hide();
+	$("#selectPlaylistBtn").hide();
+	$("#customizePlaylistForm").hide();
+	$("#generateCustomBtn").hide();		
+
+	$("div.bar").fadeOut("fast");
+	$("#hidePlaylist").fadeIn("slow");
 }
 
 
@@ -257,7 +293,7 @@ function deleteEvent(id) {
 
 			// hide unneeded divs
 		    editDiv.hide();
-		    customizeDiv.hide();
+		    $("#customizeDiv").hide();
 		    hidePlaylist();
 		    playlist.attr('src', null);
 		}
@@ -547,6 +583,8 @@ function customizePlaylist(eventID) {
 			    setTimeout(function() {
 				    otherContent.fadeOut('slow');
 			    }, 2000);
+
+	   			showPlaylist(eventID);
     		}
     	});
     	// empty playlist selection and no custom options 
@@ -567,13 +605,6 @@ function customizePlaylist(eventID) {
 			class: "contentMsg", 
 			id: "errorMsg"
 		});
-
-		// $msg.append("Complete Your Customization or Select a Playlist");
-		// otherContent.html($msg);
-	 //    otherContent.fadeIn('slow');
-	 //    setTimeout(function() {
-		//     otherContent.fadeOut('slow');
-	 //    }, 2000);
 	
 		// incomplete custom option selection and empty playlist selection
 		// or incomplete custom option selection and non-empty playlist selection
@@ -589,17 +620,7 @@ function customizePlaylist(eventID) {
 	    otherContent.fadeIn('slow');
 	    setTimeout(function() {
 		    otherContent.fadeOut('slow');
-	    }, 2000);var $msg = $("<p>", {
-			class: "contentMsg", 
-			id: "errorMsg"
-		});
-
-		// $msg.append("Complete Your Customization or Select a Playlist");
-		// otherContent.html($msg);
-	 //    otherContent.fadeIn('slow');
-	 //    setTimeout(function() {
-		//     otherContent.fadeOut('slow');
-	 //    }, 2000);
+	    }, 3000);
 	}
 }
 
@@ -621,7 +642,34 @@ function selectExistingPlaylist(id) {
 	};
 
 	$.post("/selectExistingPlaylist", postParams, function(response) {
+		if (response.success === "false") {
+			var $msg = $("<p>", {
+				class: "contentMsg", 
+				id: "errorMsg"
+			});
 
+			$msg.append("There was an error handling your event.");
+			otherContent.html($msg);
+		    otherContent.fadeIn('slow');
+		    setTimeout(function() {
+			    otherContent.fadeOut('slow');
+		    }, 3000);
+		} else {
+			var $msg = $("<p>", {
+				class: "contentMsg", 
+				id: "successMsg"
+			});
+
+			$msg.append("Using your playlist!");
+			otherContent.html($msg);
+		    otherContent.fadeIn('slow');
+
+			var eventObject = getEvent(id);
+			console.log("Response uri: " + response.playlistURI);
+
+			eventObject.playlistURI = uri;
+			showPlaylistWithURI(uri, id);
+		}
 	});	
 }
 

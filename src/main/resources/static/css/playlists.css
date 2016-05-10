@@ -1030,12 +1030,11 @@ input.radio:empty ~ label:before {
 
 .select-style select {
     padding: 5px 8px;
-    width: 130%;
+    width: 100%;
     border: none;
     /*box-shadow: none;*/
     background-color: white;
     /*-webkit-appearance: none;*/
-    size: 5;
 }
 
 .select-style select:focus {
@@ -1057,3 +1056,7 @@ input.radio:empty ~ label:before {
 }
 
 
+#customOptions {
+  margin: auto;
+  text-align: center;
+}

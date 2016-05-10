@@ -476,7 +476,7 @@ public final class Main {
 
   /**
    *
-   * Handles retrieving a playlist for a specific event. <<<<<<< HEAD
+   * Handles retrieving a playlist for a specific event.
    * */
   private class GetPlaylistHandler implements Route {
     @Override
@@ -486,23 +486,50 @@ public final class Main {
 
       // Retrieve the event ID and find the associated playlist
       String idString = qm.value("eventID");
+
+      // Error check
+      if (idString == null) {
+        System.out.println("ERROR: front end returned null");
+        return null;
+      }
       UUID eventID = UUID.fromString(idString);
       // Check to see if a prexisting playlist was associated with this event
       CalendarEvent thisEvent = VibeCache.getEventCache().get(eventID);
 
+      // Error check
+      if (thisEvent == null) {
+        System.out.println("ERROR: couldn't get event from cache");
+        return null;
+      }
+
       if (thisEvent.getPlayListURI().equals("")) {
-        System.out.println("no uri set");
         VibePlaylist playlist = VibeCache.getPlaylistCache().get(eventID);
+
+        // Error check
+        if (playlist == null) {
+          System.out.println("ERROR: couldn't get playlist");
+          return null;
+        }
 
         String eventName = thisEvent.getName();
         returnURI = hq.convertForSpotify(playlist, eventName, api, currentUser);
+
+        // Error check
+        if (returnURI == null) {
+          System.out.println("ERROR: spotify conversion error");
+          return null;
+        }
+
         thisEvent.setPlayListURI(returnURI);
-        System.out.println("confirming uri set " + thisEvent.getPlayListURI());
         // This is the case where an existing URI is set
       } else {
-        System.out.println("uri was set");
         returnURI = thisEvent.getPlayListURI();
-        System.out.println("return uri is " + returnURI);
+
+        // Error check
+        if (returnURI == null) {
+          System.out.println("ERROR: Playlist error");
+          return null;
+        }
       }
 
       return returnURI;
@@ -698,6 +725,9 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       List<String[]> playlistNames = hq.getAllPlaylists(api, currentUser);
+      if (playlistNames == null) {
+        return null;
+      }
       JsonArray jarray = new JsonArray();
       for (String[] playlist : playlistNames) {
         JsonObject jobj = new JsonObject();
@@ -722,8 +752,8 @@ public final class Main {
       try {
         thisEvent = eventProcessor.getEventFromEventID(eventID);
       } catch (SQLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        System.out.println("ERROR: error processing event");
+        return null;
       }
       thisEvent.setPlayListURI(playlistURI);
       return playlistURI;

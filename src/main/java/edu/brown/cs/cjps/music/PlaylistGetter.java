@@ -29,6 +29,7 @@ public class PlaylistGetter {
       }
     } catch (Exception e) {
       System.out.println("Something went wrong!" + e.getMessage());
+      return null;
     }
     return playlistList;
   }

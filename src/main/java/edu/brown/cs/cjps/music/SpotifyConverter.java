@@ -10,16 +10,7 @@ import com.wrapper.spotify.models.User;
 
 public class SpotifyConverter {
 
-  // private Api api;
-  // private User user;
-  // private List<String> trackList;
-  // private String playlistID;
-
   public SpotifyConverter() {
-    // this.api = api;
-    // user = currentUser;
-    // trackList = tracks;
-    // this.makeSpotifyPlaylist(api, user, trackList);
   }
 
   public String makeSpotifyPlaylist(String eventName, Api api, User user,
@@ -36,15 +27,12 @@ public class SpotifyConverter {
       playlist = request.get();
       playlistID = playlist.getId();
       playlistURI = playlist.getUri();
-      // System.out.println(playlistID);
-      // System.out.println("uri: " + playlist.getUri());
 
-      // System.out.println("You just created this playlist!");
       System.out.println("Playlist created with title " + playlist.getName()
           + " and link " + playlistURI);
     } catch (Exception e) {
       System.out.println("P1: Something went wrong!" + e.getMessage());
-      e.printStackTrace();
+      return null;
     }
 
     // FILLING THE PLAYLIST
@@ -60,7 +48,7 @@ public class SpotifyConverter {
       addRequest.get();
     } catch (Exception e) {
       System.out.println("P2: Something went wrong!" + e.getMessage());
-      e.printStackTrace();
+      return null;
     }
     // }
     System.out.println("Tracklist: " + trackList);

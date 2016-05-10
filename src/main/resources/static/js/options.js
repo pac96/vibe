@@ -1,36 +1,3 @@
-// "View Playlist" option
-$(document).on('click', '#viewPlaylist', (function() {
-	var dropdownID = $(this).parent().attr('id');
-	currentEventID = dropdownID.split("_")[1];
-
-	var eventObject = getEvent(currentEventID);
-	console.log("Current event: " + eventObject.name);
-
-	if (eventObject.playlistURI == null) {
-		// Retrieve the playlist URI from the backend and show it
-		showPlaylist(currentEventID);			
-	} else {
-		playlist.attr('src', "https://embed.spotify.com/?uri=" + eventObject.playlistURI);
-		playlist.show();
-	}
-    
-	
-	// show name of event at top of page 
-	var eventName = $('#name').val();
-	var startTime = $('#startTime').val();
-	var endTime = $('#endTime').val();
-	var eventDIV = document.getElementById('view-playlist-panel');
-	//eventDIV.innerHTML = currentEvent.name + ' | ' + currentEvent.start.hour + ' - ' + currentEvent.end.hour;
-	//console.log(eventName);
-	$('#view-playlist-panel').show();
-	
-	//hide unneded divs
-	$("#customizeDiv").hide();
-	editDiv.hide();
-	// playlist.hide();
-}));
-
-
 // "Customize Playlist" option
 $(document).on('click', '#customizePlaylist', (function() {
 	var dropdownID = $(this).parent().attr('id');
@@ -182,7 +149,9 @@ function showPlaylist(eventID) {
 		// Set the source of the playlist to be the input URI
 		playlist.attr('src', "https://embed.spotify.com/?uri=" + uri);
 		eventObject.playlistURI = uri;
+		$("div.bar").addClass("hiddenDiv");
 		playlist.fadeIn("slow");
+		$("#hidePlaylist").fadeIn("slow");
     }); 
 }
 
@@ -231,6 +200,17 @@ function deleteEvent(id) {
 		if (response != "SUCCESS") {
 			// do some stuff
 			alert(response);
+			var $msg = $("<p>", {
+				class: "contentMsg", 
+				id: "error"
+			});
+
+			$msg.append("There was an error trying to delete your event.");
+			otherContent.html($msg);
+		    otherContent.fadeIn('slow');
+		    setTimeout(function() {
+			    otherContent.fadeOut('slow');
+		    }, 3000);
 		} else {
 			$("#" + id).remove();
 			// The same as <p class='contentMsg' id='successMsg'>Deletion successful!</p>
@@ -250,16 +230,18 @@ function deleteEvent(id) {
 		    for (var i = 0; i < eventsArray.length; i++) {
     			if (eventsArray[i].id === id) {
     				if (playlist.src === eventsArray[i].playlistURI) {
-    					playlist.attr('src', "");
-    					playlist.hide();
+    					playlist.attr('src', null);
+    					hidePlaylist();
     				}
     				eventsArray.splice(i,1);
+    				break;
     			}
     		}
 
     		for (var j = 0; j < occurrenceArray.length; j++) {
     			if (occurrenceArray[j].id === id) {
     				occurrenceArray.splice(j,1);
+    				break;
     			}
     		}
 
@@ -274,12 +256,10 @@ function deleteEvent(id) {
 			// hide unneeded divs
 		    editDiv.hide();
 		    customizeDiv.hide();
-		    playlist.hide();
+		    hidePlaylist();
 		    playlist.attr('src', null);
 		}
 	});
-
-
 }
 
 

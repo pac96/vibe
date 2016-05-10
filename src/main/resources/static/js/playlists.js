@@ -12,6 +12,8 @@ var playlistDiv;
 var eventToTimeout = new Map();
 var playlist = $("#playlist");
 var port = window.location.port;
+// var ProgressBar = require('progressbar.js');
+
 
 
 
@@ -73,6 +75,40 @@ $("#AddNewEvent").click(function() {
  */
 
 $(document).on('click', '.anEvent', function() {
+	// $(".loading").attr('id', "loadingBar");
+	// // Loading bar
+	// var bar = new ProgressBar.Line("#loadingBar", {
+	//   strokeWidth: 5,
+	//   easing: 'easeInOut',
+	//   duration: 1000,
+	//   color: 'green',
+	//   trailColor: '#eee',
+	//   trailWidth: 10,
+	//   svgStyle: {width: '80%', height: '100%'},
+	//   text: {
+	//     style: {
+	//       // Text color.
+	//       // Default: same as stroke color (options.color)
+	//       color: '#999',
+	//       position: 'absolute',
+	//       right: '0',
+	//       top: '30px',
+	//       padding: 0,
+	//       margin: 0,
+	//       transform: null
+	//     },
+	//     autoStyleContainer: false
+	//   },
+	//   from: {color: '#FFEA82'},
+	//   to: {color: '#ED6A5A'},
+	//   step: (state, bar) => {
+	//     bar.setText(Math.round(bar.value() * 100) + ' %');
+	//   }
+	// });
+
+	// bar.animate(1.0);
+
+	$("div.bar").removeClass("hiddenDiv");
 	currentEventID = this.id;
 	createDropdown(currentEventID);
 	var eventObject = getEvent(currentEventID);
@@ -83,7 +119,9 @@ $(document).on('click', '.anEvent', function() {
 		// Retrieve the playlist URI from the backend and show it
 		showPlaylist(currentEventID);			
 	} else {
+		// bar.animate(1.0); // start loading bar
 		// playlist.attr('src', "https://embed.spotify.com/?uri=" + eventObject.playlistURI);
+		$("div.bar").addClass("hiddenDiv");
 		playlist.fadeIn("slow");
 		$("#hidePlaylist").fadeIn("slow");
 	}
@@ -462,6 +500,7 @@ function populateUserPlaylists() {
 
 
 function hidePlaylist() {
+	playlist.removeClass("loading");
 	playlist.fadeOut("fast");	
     $("#hidePlaylist").fadeOut("fast");
 }

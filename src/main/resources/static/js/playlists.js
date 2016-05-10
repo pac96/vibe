@@ -81,7 +81,7 @@ $(document).on('click', '.anEvent', function() {
 
 	if (eventObject.playlistURI == null) {
 		// Retrieve the playlist URI from the backend and show it
-	showPlaylist(currentEventID);			
+		showPlaylist(currentEventID);			
 	} 
 	else {
 		showPlaylistWithURI(eventObject.playlistURI, currentEventID);

@@ -287,9 +287,16 @@ body{
 /** Genre drop down styling **/
 .gDropdown {
   position: absolute;
-  top:113%;
+  display: block;
+  top:93%;
   left: 25%;
   transform: translateY(-50%);
+  text-align: center;
+  z-index: 10;
+}
+
+.pleaseCenter {
+  text-align: center;
 }
 
 yy {
@@ -336,6 +343,7 @@ yy {
   cursor: pointer;
   display: inline-block;
   padding: 0 3px 2px 0;
+  /*z-index: 100;*/
   
 }
 
@@ -863,27 +871,29 @@ input.radio:empty ~ label:before {
 }
 
 .custbutton {
-/*  position: absolute;
-    top:750px;
-    left: 325px ;*/
+  position: absolute;
+    top:550px;
+    left: 375px ;
     /* background-color: #4CAF50; */
+    /*position: absolute;*/
+    /*top: 50px;*/
     border: none;
     color: white;
     font-family: 'Segoe UI', Frutiger, 
   'Frutiger Linotype', 'Dejavu Sans', 
   'Helvetica Neue', Arial, sans-serif;
   
-    padding: 8px 20px 44px 44px;
+    padding: 10px 20px 44px 44px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     /*font-size: 30px;*/
     margin: 4px 2px;
     cursor: pointer;
-    width: 450px;
+    width: 350px;
     height: 75px;
     overflow: hidden;
-    font-size: 2.5em;
+    font-size: 2.2em;
     font-weight: bold;
 }
 
@@ -1064,7 +1074,8 @@ input.radio:empty ~ label:before {
   letter-spacing: -1px; 
   line-height: 1; 
   text-align: center;
-  margin-left: 225px;
+  /*margin-left: 225px;*/
+  margin-left: 23%;
 }
 
 

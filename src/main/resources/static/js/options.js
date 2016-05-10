@@ -169,6 +169,7 @@ function showPlaylist(eventID) {
 		$("#selectPlaylistBtn").hide();
 		$("#customizePlaylistForm").hide();
 		$("#generateCustomBtn").hide();		
+		$("#editDiv").hide();	
 
 		$("div.bar").fadeOut("fast");
 		$("#hidePlaylist").fadeIn("slow");
@@ -187,7 +188,8 @@ function showPlaylistWithURI(uri, eventID) {
 	$("#selectPlaylistForm").hide();
 	$("#selectPlaylistBtn").hide();
 	$("#customizePlaylistForm").hide();
-	$("#generateCustomBtn").hide();		
+	$("#generateCustomBtn").hide();	
+	$("#editDiv").hide();	
 
 	$("div.bar").fadeOut("fast");
 	$("#hidePlaylist").fadeIn("slow");

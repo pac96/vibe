@@ -202,7 +202,7 @@ p#modal-msg {
 
 .vcenter {
   position: absolute;
-  top: 80%;
+  top: 90%;
   left:49%;
-  transform: translate(-49%,-80%);
+  transform: translate(-49%,-90%);
 }

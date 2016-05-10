@@ -152,15 +152,15 @@
 			<div class="row">
 				<div class="hiddenDiv" id="customizeDiv">    
 					<!-- Customization Panel Title -->
-					<p> <br> </br> </p> <!-- add some space -->
+<#-- 					<p> <br> </br> </p>
 					<div id='customizeTitle' class='scustomizeTitle'> 
 						<text color="white"> 
 							Customize Your Playlist Settings 
 						</text> 
-					</div>
+					</div> -->
 
 					<!-- Horizontal Line -->
-					<hr color='white' size='2'>
+					<#-- <hr color='white' size='2'> -->
 
 					<div id='customOptions' class="row">
 						<!-- <div class="col-md-6"> -->
@@ -175,7 +175,7 @@
 					<!-- Select Playlist Dropdown -->
 					<div>
 						<form id="selectPlaylistForm" method="POST" action="/selectExistingPlaylist" class="hiddenDiv">
-							<h2 class="boxed-text">Pick one of your own playlists!</h2>
+							<#-- <h2 class="boxed-text">Pick one of your own playlists!</h2> -->
 							<div class="select-style center-block">
 								<select id="playlistDropdown">
 									<!-- Will be filled up with options -->
@@ -253,8 +253,26 @@
 						<!-- Horizontal Line -->
 						<!-- <hr color='white' size='2' width='100%'> -->
 
-						<!-- Genre Selection -->
+												<!-- Range sliders for popularity and energy bars -->
 						<div class="row">
+							<div class="col-xs-6">
+								<label for="popularitySlider" class='rangeSliderTitle'>Popularity</label>
+					  			<div class="range range-success">
+					    		<input type="range" name="range" min="0" max="10" value="5" onchange="popularitySlider.value=value">
+					    		<output id="popularitySlider">5</output>
+					  			</div>
+					  		</div>
+					  		<div class="col-xs-6">
+					  			<label for="energySlider" class='rangeSliderTitle'>Energy</label>
+					  			<div class="range range-success">
+					    			<input type="range" name="range" min="0" max="10" value="5" onchange="energySlider.value=value">
+					    			<output id="energySlider">5</output>
+					  			</div>
+							</div>
+						</div>
+
+						<!-- Genre Selection -->
+						<div class="row pleaseCenter">
 							<dl id='genre-selector' class="gDropdown"> 
 								<dt>
 									<yy href="#">
@@ -329,23 +347,6 @@
 							</dl>
 						</div>
 								
-						<!-- Range sliders for popularity and energy bars -->
-						<div class="row">
-							<div class="col-xs-6">
-								<label for="popularitySlider" class='rangeSliderTitle'>Popularity</label>
-					  			<div class="range range-success">
-					    		<input type="range" name="range" min="0" max="10" value="5" onchange="popularitySlider.value=value">
-					    		<output id="popularitySlider">5</output>
-					  			</div>
-					  		</div>
-					  		<div class="col-xs-6">
-					  			<label for="energySlider" class='rangeSliderTitle'>Energy</label>
-					  			<div class="range range-success">
-					    			<input type="range" name="range" min="0" max="10" value="5" onchange="energySlider.value=value">
-					    			<output id="energySlider">5</output>
-					  			</div>
-							</div>
-						</div>
 						
 						<div id='customize-playlist-submit' class="row">
 							<!-- <input type="button" class="btn btn-primary cbutton" value="Use Your Own Playlist" id="useOwnPlaylist"> -->

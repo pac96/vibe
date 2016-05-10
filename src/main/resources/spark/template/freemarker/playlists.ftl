@@ -9,7 +9,7 @@
 	        <li class="sidebar-brand" id="date">
 	            <a href="#"><p id="date"></p></a>
 	        </li>
-	        
+
 	        <hr>
 	        <form id='eventForm' method="POST" action="/newEvent">
 	            <label for='name' >Event Name: </label>
@@ -18,19 +18,18 @@
 
 	            <label for='startTime' >Start Time:</label> 
 	            <input type='text' id='startTime' name='startTime' maxlength="5" class="form-textbox-time-start"/> 
-	            &nbsp <input type="radio" id='startAM' name="time-selection-start" value="am-start">am
-	            &nbsp <input type="radio" id='startPM' name="time-selection-start" value="pm-start" checked>pm
+	            <input type="radio" id='startAM' name="time-selection-start" value="am-start">am
+	            <input type="radio" id='startPM' name="time-selection-start" value="pm-start" checked>pm
 	            <br/><br/>
 
 	            <label for='endTime' >End Time:</label> 
 	            <input type='text' id='endTime' name='endTime' maxlength="5" class="form-textbox-time-end"/>
-	            &nbsp <input type="radio" id='endAM' name="time-selection-end" value="am-end">am
-	            &nbsp <input type="radio" id='endPM' name="time-selection-end" value="pm-end" checked>pm
+	            <input type="radio" id='endAM' name="time-selection-end" value="am-end">am
+	            <input type="radio" id='endPM' name="time-selection-end" value="pm-end" checked>pm
 	            <br/><br/>
 
-	            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
+	            <!-- &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  -->
 	            <input type='button' name='AddNewEvent' value='Add New Event' id="AddNewEvent" class="btn btn-success"/>
-   		       <!-- <button name='AddNewEvent' value='Add New Event' id="AddNewEvent" class="btn btn-success">Add New Event</button> -->
 
 	        </form>
 	        <hr>
@@ -103,7 +102,7 @@
 	    <div class="container-fluid">
 		    <ul class="nav navbar-right top-nav">
 		        <li class="dropdown">
-		            <a href="#" class="dropdown-toggle" id="displayname" data-toggle="dropdown"><i class="fa fa-user"></i><span class="caret"></span>Logged in as </a>
+		            <a href="#" class="dropdown-toggle" id="displayname" data-toggle="dropdown"><i class="fa fa-user"></i><span class="caret"></span> Logged in as </a>
 		            <ul class="dropdown-menu">
 		                <li>
 		                    <a href="" id="logoutLink"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
@@ -194,7 +193,7 @@
 						<div id="eTagWrapper" class="row section-wrapper">
 							<h2 class="boxed-text">Select an Event Tag</h2>
 							<div>
-								<input type="radio" name="eTradio" id="eTradio1" class="radio" value="Eat/Social" />
+								<input type="radio" name="eTradio" id="eTradio1" class="radio" value="Eat/Social" checked/>
 								<label for="eTradio1">Eat/Social</label>
 							</div>
 
@@ -228,7 +227,7 @@
 							<h2 class="boxed-text">Select an Event Mood</h2>
 
 							<div>
-								<input type="radio" name="mSradio" id="mSradio1" class="radio" value="Happy" />
+								<input type="radio" name="mSradio" id="mSradio1" class="radio" value="Happy" checked/>
 								<label for="mSradio1">Happy</label>
 							</div>
 
@@ -374,6 +373,9 @@
 				<div class="row">
 					<div class="text-center playlistDiv">
 						<button class="btn btn-primary hiddenDiv" id="hidePlaylist">Hide Playlist</button>
+						<div class="bar hiddenDiv">
+							<i class="sphere"></i>
+						</div>
 						<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>
 			    	</div>
 			    </div>

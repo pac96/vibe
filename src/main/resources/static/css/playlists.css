@@ -17,11 +17,17 @@ body{
   margin: 0 0 72px; 
   
 }
-*/
 
-/*ul.collapse li {
-  cursor: pointer;
-}*/
+#eventForm {
+  padding-left: 3px;
+}
+
+#AddNewEvent {
+  text-align: center;
+  border: 2px solid white;
+
+}
+
 
 /** Sidebar **/
 #wrapper {

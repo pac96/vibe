@@ -451,47 +451,6 @@ public final class Main {
     return true;
   }
 
-  // // Start time before end time checker
-  // public boolean startBeforeEnd(String start, boolean isAm, String end,
-  // boolean isAm2) {
-  // String[] startAr = start.split(":");
-  // int startHour = Integer.parseInt(startAr[0]);
-  // int startMin = Integer.parseInt(startAr[1]);
-  // String[] endAr = end.split(":");
-  // int endHour = Integer.parseInt(endAr[0]);
-  // int endMin = Integer.parseInt(endAr[1]);
-  // int startinMin = this.getTimeInMins(startHour, startMin, isAm);
-  // int endinMin = this.getTimeInMins(endHour, endMin, isAm2);
-  // return (endinMin - startinMin >= 0);
-  // }
-
-  // // returns the time in military minutes from midnight
-  // public int getTimeInMins(int startH, int startM, boolean isAm) {
-  // // If PM and not 12pm, add 12 hours
-  // if ((!isAm && (startH != 12))) {
-  // startH = startH + 12; // accounting for 24 hour time
-  // }
-  // // If 12AM, convert to 0
-  // if (isAm && startH == 12) {
-  // startH = 0;
-  // }
-  // int startinMins = startH * 60 + startM;
-  // return startinMins;// returns the time in military minutes from midnight
-  // public int getTimeInMins(int startH, int startM, boolean isAm) {
-  // // If PM and not 12pm, add 12 hours
-  // if ((!isAm && (startH != 12))) {
-  // startH = startH + 12; // accounting for 24 hour time
-  // }
-  // // If 12AM, convert to 0
-  // if (isAm && startH == 12) {
-  // startH = 0;
-  // }
-  // int startinMins = startH * 60 + startM;
-  // return startinMins;
-  // }
-
-  // }
-
   /**
    *
    * Handles retrieving a playlist for a specific event.
@@ -501,6 +460,8 @@ public final class Main {
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
       String returnURI = null;
+
+      System.out.println("Beginning to get playlist");
 
       // Retrieve the event ID and find the associated playlist
       String idString = qm.value("eventID");
@@ -521,6 +482,9 @@ public final class Main {
       }
 
       if (thisEvent.getPlayListURI().equals("")) {
+
+        System.out.println("No playlist set");
+
         VibePlaylist playlist = VibeCache.getPlaylistCache().get(eventID);
 
         // Error check
@@ -541,6 +505,7 @@ public final class Main {
         thisEvent.setPlayListURI(returnURI);
         // This is the case where an existing URI is set
       } else {
+        System.out.println("playlist WAS set");
         returnURI = thisEvent.getPlayListURI();
 
         // Error check
@@ -699,6 +664,7 @@ public final class Main {
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
 
+      System.out.println("in custom handler");
       // Playlist stuff
       String eventID = qm.value("eventID");
       String tag = qm.value("tag");
@@ -748,7 +714,7 @@ public final class Main {
       // VibePlaylist p2 = VibeCache.getPlaylistCache().get(thisEvent.getId());
       // System.out.println("~~~THE TRACKS~~~");
       // System.out.println(p2.getTracks());
-
+      System.out.println("returning");
       return GSON.toJson(ImmutableMap.of("event", thisEvent, "success", true,
           "error", ""));
     }

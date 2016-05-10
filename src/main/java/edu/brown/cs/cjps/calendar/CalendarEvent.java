@@ -90,7 +90,6 @@ public class CalendarEvent {
     if (duration < 0) {
       duration = (24 * 60) + duration; // for wrapping across days
     }
-    System.out.println("duration is " + duration);
     return duration;
   }
 

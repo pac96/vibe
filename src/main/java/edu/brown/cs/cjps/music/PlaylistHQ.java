@@ -44,10 +44,8 @@ public class PlaylistHQ {
     Tag tag = this.findTag(eventName);
     Settings defaults = this.getDefaults(tag);
 
-    VibePlaylist p;
-
-    p = pg.makePlaylist(defaults, event.getDuration(), api, curentUser,
-        accessToken);
+    VibePlaylist p = pg.makePlaylist(defaults, event.getDuration(), api,
+        curentUser, accessToken);
     // Error check
     if (p == null) {
       return null;
@@ -62,12 +60,11 @@ public class PlaylistHQ {
       User curentUser, String accessToken) {
     Settings settings = this.makeSettings(genres, stringSettings);
 
-    // System.out.println("after formatting");
-    // System.out.println("genres " + settings.getGenres());
-    // System.out.println("energy " + settings.getEnergy());
-    // System.out.println("hotness " + settings.getHotness());
-    // System.out.println("mood " + settings.getMood());
-    // System.out.println("tag " + settings.getTag());
+    // Error check
+    if (stringSettings == null || event == null || api == null
+        || curentUser == null || accessToken == null) {
+      return null;
+    }
 
     // Add in the Tag settings to the specific settings that the user chose,
     // and fix anything left null
@@ -77,6 +74,10 @@ public class PlaylistHQ {
 
     VibePlaylist p = pg.makePlaylist(settings, event.getDuration(), api,
         curentUser, accessToken);
+
+    if (p == null) {
+      return null;
+    }
     VibeCache.getPlaylistCache().put(event.getId(), p);
     return p;
   }

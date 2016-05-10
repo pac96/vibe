@@ -30,7 +30,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.wrapper.spotify.Api;
 import com.wrapper.spotify.models.AuthorizationCodeCredentials;
 import com.wrapper.spotify.models.User;
@@ -379,7 +378,7 @@ public final class Main {
       if (start == null || end == null || amOrPm == null || endAmOrPm == null) {
         System.out.println("ERROR: Bad info from the front end");
         frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-        return frontEndInfo;
+        return GSON.toJson(frontEndInfo);
       }
 
       // (2): Check if the input times have the correct format
@@ -394,14 +393,15 @@ public final class Main {
               eventName, currentUser.getId());
         } catch (SQLException e) {
           System.out.println("Error in adding event");
-          e.printStackTrace();
+          frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+          return GSON.toJson(frontEndInfo);
         }
 
         // Another error check
         if (newEvent == null) {
           System.out.println("ERROR: Problem creating event");
           frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-          return frontEndInfo;
+          return GSON.toJson(frontEndInfo);
         }
 
         // Add event to the cache
@@ -415,7 +415,7 @@ public final class Main {
         if (newP == null) {
           System.out.println("ERROR: Problem generating playlist");
           frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-          return frontEndInfo;
+          return GSON.toJson(frontEndInfo);
         }
 
         // Success scenario
@@ -486,23 +486,50 @@ public final class Main {
 
       // Retrieve the event ID and find the associated playlist
       String idString = qm.value("eventID");
+
+      // Error check
+      if (idString == null) {
+        System.out.println("ERROR: front end returned null");
+        return null;
+      }
       UUID eventID = UUID.fromString(idString);
       // Check to see if a prexisting playlist was associated with this event
       CalendarEvent thisEvent = VibeCache.getEventCache().get(eventID);
 
+      // Error check
+      if (thisEvent == null) {
+        System.out.println("ERROR: couldn't get event from cache");
+        return null;
+      }
+
       if (thisEvent.getPlayListURI().equals("")) {
-        System.out.println("no uri set");
         VibePlaylist playlist = VibeCache.getPlaylistCache().get(eventID);
+
+        // Error check
+        if (playlist == null) {
+          System.out.println("ERROR: couldn't get playlist");
+          return null;
+        }
 
         String eventName = thisEvent.getName();
         returnURI = hq.convertForSpotify(playlist, eventName, api, currentUser);
+
+        // Error check
+        if (returnURI == null) {
+          System.out.println("ERROR: spotify conversion error");
+          return null;
+        }
+
         thisEvent.setPlayListURI(returnURI);
-        System.out.println("confirming uri set " + thisEvent.getPlayListURI());
         // This is the case where an existing URI is set
       } else {
-        System.out.println("uri was set");
         returnURI = thisEvent.getPlayListURI();
-        System.out.println("return uri is " + returnURI);
+
+        // Error check
+        if (returnURI == null) {
+          System.out.println("ERROR: Playlist error");
+          return null;
+        }
       }
 
       return returnURI;
@@ -567,7 +594,7 @@ public final class Main {
           || eventName == null || eventID == null || keepPlaylist == null) {
         System.out.println("ERROR: Bad info from the front end");
         frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-        return frontEndInfo;
+        return GSON.toJson(frontEndInfo);
       }
 
       // If the edits are valid an event will be returned to the front-end
@@ -579,7 +606,7 @@ public final class Main {
       if (oldEvent == null) {
         System.out.println("ERROR: couldn't get event associated with this id");
         frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-        return frontEndInfo;
+        return GSON.toJson(frontEndInfo);
       }
 
       // (2): Make modifications to the event if the times match the correct
@@ -593,7 +620,7 @@ public final class Main {
         if (editedEvent == null) {
           System.out.println("ERROR: couldn't edit event");
           frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-          return frontEndInfo;
+          return GSON.toJson(frontEndInfo);
         }
 
         // (3): Generate the playlist associated with this event
@@ -611,7 +638,7 @@ public final class Main {
           if (p == null) {
             System.out.println("ERROR: couldn't create playlist");
             frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-            return frontEndInfo;
+            return GSON.toJson(frontEndInfo);
           }
           // Clear the URI so on the next "view playlist" the new playlist
           // appears
@@ -680,8 +707,13 @@ public final class Main {
       List<String> settingsList = Arrays.asList(tag, energy, hotness, mood);
 
       // Generate the playlist
-      hq.generateCustom(genres, settingsList, thisEvent, api, currentUser,
-          accessToken);
+      VibePlaylist p = hq.generateCustom(genres, settingsList, thisEvent, api,
+          currentUser, accessToken);
+      // Error check
+      if (p == null) {
+        System.out.println("ERROR: Problem creating playlist");
+        return GSON.toJson(ImmutableMap.of("event", "null", "success", false));
+      }
 
       // If this event previously had a playlistURI, remove it so this playlist
       // will be created
@@ -700,8 +732,10 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       List<String[]> playlistNames = hq.getAllPlaylists(api, currentUser);
+      if (playlistNames == null) {
+        return null;
+      }
       JsonArray jarray = new JsonArray();
-      JsonParser jp = new JsonParser();
       for (String[] playlist : playlistNames) {
         JsonObject jobj = new JsonObject();
         jobj.addProperty("name", playlist[0]);
@@ -725,8 +759,8 @@ public final class Main {
       try {
         thisEvent = eventProcessor.getEventFromEventID(eventID);
       } catch (SQLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        System.out.println("ERROR: error processing event");
+        return null;
       }
       thisEvent.setPlayListURI(playlistURI);
       return playlistURI;

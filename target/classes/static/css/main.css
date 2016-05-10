@@ -43,6 +43,16 @@ h1 span {
   height: 100%;
 }
 
+.no-list-style {
+  list-style-type: none;
+
+}
+
+.anEvent {
+  cursor: pointer;
+}
+
+
 
 .other-bg {
 /*	background-image:url("/images/vibe-background.jpg");

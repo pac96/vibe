@@ -377,14 +377,15 @@ public final class Main {
       // Error check
       if (start == null || end == null || amOrPm == null || endAmOrPm == null) {
         System.out.println("ERROR: Bad info from the front end");
-        frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+        frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+            "error", "Error: Not all fields were filled in!");
         return GSON.toJson(frontEndInfo);
       }
 
       // (2): Check if the input times have the correct format
       if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)
-          && timeErrorHelper(start, end)
-          && startBeforeEnd(start, amOrPm, end, endAmOrPm)) {
+          && timeErrorHelper(start, end)) {
+        // && startBeforeEnd(start, amOrPm, end, endAmOrPm)) {
         // Need to check that nothing is > 12 or 59 and start is before end
 
         // (3): Add the event to the database
@@ -393,14 +394,16 @@ public final class Main {
               eventName, currentUser.getId());
         } catch (SQLException e) {
           System.out.println("Error in adding event");
-          frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+          frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+              "error", "Error: Trouble creating event");
           return GSON.toJson(frontEndInfo);
         }
 
         // Another error check
         if (newEvent == null) {
           System.out.println("ERROR: Problem creating event");
-          frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+          frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+              "error", "Error: Trouble creating event");
           return GSON.toJson(frontEndInfo);
         }
 
@@ -414,7 +417,8 @@ public final class Main {
         // Error check again
         if (newP == null) {
           System.out.println("ERROR: Problem generating playlist");
-          frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+          frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+              "error", "Trouble generating playlist");
           return GSON.toJson(frontEndInfo);
         }
 
@@ -422,7 +426,8 @@ public final class Main {
         frontEndInfo = ImmutableMap.of("event", newEvent, "success", true);
       } else {
         System.out.println("ERROR: Event time invalid");
-        frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+        frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+            "error", "Start or end time incorrectly formatted");
       }
       return GSON.toJson(frontEndInfo);
 
@@ -446,33 +451,46 @@ public final class Main {
     return true;
   }
 
-  // Start time before end time checker
-  public boolean startBeforeEnd(String start, boolean isAm, String end,
-      boolean isAm2) {
-    String[] startAr = start.split(":");
-    int startHour = Integer.parseInt(startAr[0]);
-    int startMin = Integer.parseInt(startAr[1]);
-    String[] endAr = end.split(":");
-    int endHour = Integer.parseInt(endAr[0]);
-    int endMin = Integer.parseInt(endAr[1]);
-    int startinMin = this.getTimeInMins(startHour, startMin, isAm);
-    int endinMin = this.getTimeInMins(endHour, endMin, isAm2);
-    return (endinMin - startinMin >= 0);
-  }
+  // // Start time before end time checker
+  // public boolean startBeforeEnd(String start, boolean isAm, String end,
+  // boolean isAm2) {
+  // String[] startAr = start.split(":");
+  // int startHour = Integer.parseInt(startAr[0]);
+  // int startMin = Integer.parseInt(startAr[1]);
+  // String[] endAr = end.split(":");
+  // int endHour = Integer.parseInt(endAr[0]);
+  // int endMin = Integer.parseInt(endAr[1]);
+  // int startinMin = this.getTimeInMins(startHour, startMin, isAm);
+  // int endinMin = this.getTimeInMins(endHour, endMin, isAm2);
+  // return (endinMin - startinMin >= 0);
+  // }
 
-  // returns the time in military minutes from midnight
-  public int getTimeInMins(int startH, int startM, boolean isAm) {
-    // If PM and not 12pm, add 12 hours
-    if ((!isAm && (startH != 12))) {
-      startH = startH + 12; // accounting for 24 hour time
-    }
-    // If 12AM, convert to 0
-    if (isAm && startH == 12) {
-      startH = 0;
-    }
-    int startinMins = startH * 60 + startM;
-    return startinMins;
-  }
+  // // returns the time in military minutes from midnight
+  // public int getTimeInMins(int startH, int startM, boolean isAm) {
+  // // If PM and not 12pm, add 12 hours
+  // if ((!isAm && (startH != 12))) {
+  // startH = startH + 12; // accounting for 24 hour time
+  // }
+  // // If 12AM, convert to 0
+  // if (isAm && startH == 12) {
+  // startH = 0;
+  // }
+  // int startinMins = startH * 60 + startM;
+  // return startinMins;// returns the time in military minutes from midnight
+  // public int getTimeInMins(int startH, int startM, boolean isAm) {
+  // // If PM and not 12pm, add 12 hours
+  // if ((!isAm && (startH != 12))) {
+  // startH = startH + 12; // accounting for 24 hour time
+  // }
+  // // If 12AM, convert to 0
+  // if (isAm && startH == 12) {
+  // startH = 0;
+  // }
+  // int startinMins = startH * 60 + startM;
+  // return startinMins;
+  // }
+
+  // }
 
   /**
    *
@@ -593,7 +611,8 @@ public final class Main {
       if (start == null || end == null || amOrPm == null || endAMOrPM == null
           || eventName == null || eventID == null || keepPlaylist == null) {
         System.out.println("ERROR: Bad info from the front end");
-        frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+        frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+            "error", "Error: Not all fields were filled in!");
         return GSON.toJson(frontEndInfo);
       }
 
@@ -605,21 +624,23 @@ public final class Main {
       // Error check
       if (oldEvent == null) {
         System.out.println("ERROR: couldn't get event associated with this id");
-        frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+        frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+            "error", "Error: Trouble accessing event");
         return GSON.toJson(frontEndInfo);
       }
 
       // (2): Make modifications to the event if the times match the correct
       // format
       if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)
-          && startBeforeEnd(start, amOrPm, end, endAMOrPM)
           && timeErrorHelper(start, end)) {
+        // && startBeforeEnd(start, amOrPm, end, endAMOrPM)) {
 
         CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm,
             end, endAMOrPM, eventName, oldEvent);
         if (editedEvent == null) {
           System.out.println("ERROR: couldn't edit event");
-          frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+          frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+              "error", "Error: Trouble accessing event");
           return GSON.toJson(frontEndInfo);
         }
 
@@ -637,7 +658,8 @@ public final class Main {
               accessToken);
           if (p == null) {
             System.out.println("ERROR: couldn't create playlist");
-            frontEndInfo = ImmutableMap.of("event", "null", "success", false);
+            frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+                "error", "Error: Couldn't create playlist");
             return GSON.toJson(frontEndInfo);
           }
           // Clear the URI so on the next "view playlist" the new playlist
@@ -651,10 +673,12 @@ public final class Main {
 
         // (4): Return the event along to true so front end can recognize that
         // edit was succesful
-        frontEndInfo = ImmutableMap.of("event", editedEvent, "success", true);
+        frontEndInfo = ImmutableMap.of("event", editedEvent, "success", true,
+            "error", "");
 
       } else {
-        frontEndInfo = ImmutableMap.of("event", oldEvent, "success", false);
+        frontEndInfo = ImmutableMap.of("event", oldEvent, "success", false,
+            "error", "Error: Start or end time incorrectly formatted");
       }
       System.out.println("the edited event ID is " + eventID);
       return GSON.toJson(frontEndInfo);
@@ -689,8 +713,8 @@ public final class Main {
       if (eventID == null || tag == null || energy == null || hotness == null
           || mood == null || genres == null) {
         System.out.println("ERROR: Bad info from front end");
-        return  GSON.toJson(ImmutableMap.of("event", "null", "success", false, 
-        		"error", "Error: Not all fields were filled in!"));
+        return GSON.toJson(ImmutableMap.of("event", "null", "success", false,
+            "error", "Error: Not all fields were filled in!"));
       }
 
       CalendarEvent thisEvent = VibeCache.getEventCache().get(
@@ -700,7 +724,7 @@ public final class Main {
       if (thisEvent == null) {
         System.out.println("ERROR: Problem accessing event");
         return GSON.toJson(ImmutableMap.of("event", "null", "success", false,
-        		"error", "Error: problem accessing event"));
+            "error", "Error: problem accessing event"));
       }
 
       // Add these things to a list
@@ -712,7 +736,8 @@ public final class Main {
       // Error check
       if (p == null) {
         System.out.println("ERROR: Problem creating playlist");
-        return GSON.toJson(ImmutableMap.of("event", "null", "success", false));
+        return GSON.toJson(ImmutableMap.of("event", "null", "success", false,
+            "error", "Error: No songs match selected parameters"));
       }
 
       // If this event previously had a playlistURI, remove it so this playlist
@@ -720,11 +745,12 @@ public final class Main {
       thisEvent.setPlayListURI("");
 
       // These lines are only for testing
-//      VibePlaylist p2 = VibeCache.getPlaylistCache().get(thisEvent.getId());
-//      System.out.println("~~~THE TRACKS~~~");
-//      System.out.println(p2.getTracks());
+      // VibePlaylist p2 = VibeCache.getPlaylistCache().get(thisEvent.getId());
+      // System.out.println("~~~THE TRACKS~~~");
+      // System.out.println(p2.getTracks());
 
-      return  GSON.toJson(ImmutableMap.of("event", thisEvent, "success", true, "error", ""));
+      return GSON.toJson(ImmutableMap.of("event", thisEvent, "success", true,
+          "error", ""));
     }
   }
 

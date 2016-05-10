@@ -83,7 +83,7 @@ $(document).on('click', '.anEvent', function() {
 		// Retrieve the playlist URI from the backend and show it
 		showPlaylist(currentEventID);			
 	} else {
-		// playlist.attr('src', "https://embed.spotify.com/?uri=" + eventObject.playlistURI);
+		 playlist.attr('src', "https://embed.spotify.com/?uri=" + eventObject.playlistURI);
 		playlist.fadeIn("slow");
 		$("#hidePlaylist").fadeIn("slow");
 	}

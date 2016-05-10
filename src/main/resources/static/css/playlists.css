@@ -7,17 +7,27 @@
 /* Toggle Styles */
 /*
 body{
-	background-image:url("/images/river.jpg");
+  background-image:url("/images/river.jpg");
   background-color: black; 
-	color: white; 
-	font-family: 'Open Sans', sans-serif; 
-	font-size: 15px; 
+  color: white; 
+  font-family: 'Open Sans', sans-serif; 
+  font-size: 15px; 
   font-weight: 100; 
-	line-height: 20px; 
-	margin: 0 0 72px; 
-	
+  line-height: 20px; 
+  margin: 0 0 72px; 
+  
 }
-*/
+
+#eventForm {
+  padding-left: 3px;
+}
+
+#AddNewEvent {
+  text-align: center;
+  border: 2px solid white;
+
+}
+
 
 /** Sidebar **/
 #wrapper {
@@ -26,8 +36,6 @@ body{
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
-    
-    
 }
 
 #wrapper.toggled {
@@ -162,8 +170,8 @@ body{
 }
 .form-button:hover {
     color:#ffffff;
-	background-color:transparent;
-	border:1px solid #18ab29;
+  background-color:transparent;
+  border:1px solid #18ab29;
 }
 .form-button:active {
     position:relative;
@@ -172,31 +180,31 @@ body{
 
 
 .settings-button {
-	background-color:transparent;
-	-moz-border-radius:28px;
-	-webkit-border-radius:28px;
-	border-radius:28px;
-	border:1px solid transparent;
-	display:inline-block;
-	cursor:pointer;
-	color: white;
-	font-family:Arial;
-	font-size:17px;
-	padding:0px 3px;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #2f6627;
+  background-color:transparent;
+  -moz-border-radius:28px;
+  -webkit-border-radius:28px;
+  border-radius:28px;
+  border:1px solid transparent;
+  display:inline-block;
+  cursor:pointer;
+  color: white;
+  font-family:Arial;
+  font-size:17px;
+  padding:0px 3px;
+  text-decoration:none;
+  text-shadow:0px 1px 0px #2f6627;
 }
 .settings-button:hover {
-	background-color:transparent;
+  background-color:transparent;
 }
 .settings-button:active {
-	position:relative;
-	top:1px;
+  position:relative;
+  top:1px;
 }
 
 
 .btn-default {
-	background-color:transparent;
+  background-color:transparent;
     -moz-border-radius:28px;
     -webkit-border-radius:28px;
     border-radius:28px;
@@ -212,13 +220,13 @@ body{
 }
 
 .btn-default:hover {
-	color:#ffffff;
-	background-color:transparent;
-	border:1px solid #18ab29;
+  color:#ffffff;
+  background-color:transparent;
+  border:1px solid #18ab29;
 }
 .btn-default:active {
-	position:relative;
-	top:1px;
+  position:relative;
+  top:1px;
 }
 
 .dropbtn {
@@ -268,7 +276,7 @@ body{
 .gDropdown {
   position: absolute;
   top:113%;
-  left: 35%;
+  left: 25%;
   transform: translateY(-50%);
 }
 
@@ -385,8 +393,8 @@ yy {
   font-size: 1.3em;
   text-align: center;
   font-family: 'Segoe UI', Frutiger, 
-	'Frutiger Linotype', 'Dejavu Sans', 
-	'Helvetica Neue', Arial, sans-serif;
+  'Frutiger Linotype', 'Dejavu Sans', 
+  'Helvetica Neue', Arial, sans-serif;
 }
 
 
@@ -452,12 +460,12 @@ yy {
 
 /* Handles Mood and Event Tag Wrappers */
 .section-wrapper.form {
-	margin: 40px 0;
+  margin: 40px 0;
 }
 
 .section-wrapper div {
-	margin: 0 50px;
-	float: left;
+  margin: 0 7px;
+  float: left;
 }
 
 .section-wrapper label {
@@ -469,74 +477,74 @@ yy {
 
 /* hide input */
 .section-wrapper input.radio:empty {
-	margin-left: -999px;
+  margin-left: -999px;
   display: none;
 }
 
 /* style label */
 .section-wrapper input.radio:empty ~ label {
-	position: relative;
-	float: left;
-	line-height: 2.5em;
-	text-indent: 3.25em;
-	margin-top: 2em;
-	cursor: pointer;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
+  position: relative;
+  float: left;
+  line-height: 2.5em;
+  text-indent: 3.25em;
+  margin-top: 2em;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 input.radio:empty ~ label:before {
-	position: absolute;
-	display: block;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	content: '';
-	width: 2.5em;
-	background: #D1D3D4;
-	border-radius: 3px 0 0 3px;
+  position: absolute;
+  display: block;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  content: '';
+  width: 2.5em;
+  background: #D1D3D4;
+  border-radius: 3px 0 0 3px;
 }
 
 /* toggle hover */
 .section-wrapper input.radio:hover:not(:checked) ~ label:before {
-	content:'\2714';
-	text-indent: .9em;
-	color: #C2C2C2;
+  content:'\2714';
+  text-indent: .9em;
+  color: #C2C2C2;
 }
 
 .section-wrapper input.radio:hover:not(:checked) ~ label {
-	color: #888;
+  color: #888;
 }
 
 /* toggle on */
 .section-wrapper input.radio:checked ~ label:before {
-	content:'\2714';
-	text-indent: .9em;
-	color: #9CE2AE;
-	background-color: #4DCB6D;
+  content:'\2714';
+  text-indent: .9em;
+  color: #9CE2AE;
+  background-color: #4DCB6D;
 }
 
 .section-wrapper input.radio:checked ~ label {
-	color: white;
+  color: white;
 }
 
 /* radio focus */
 .section-wrapper input.radio:focus ~ label:before {
-	box-shadow: 0 0 0 3px #999;
+  box-shadow: 0 0 0 3px #999;
 }
 
 
 /* Mood Tag */
 
 #mTagWrapper.form {
-	margin: 40px 0;
+  margin: 40px 0;
 }
 
 #mTagWrapper div {
-	margin: 0 50px;
-	float: left;
+  margin: 0 10px;
+  float: left;
 }
 
 #mTagWrapper label {
@@ -548,68 +556,68 @@ input.radio:empty ~ label:before {
 
 /* hide input */
 #mTagWrapper input.radio:empty {
-	margin-left: -999px;
-	display: none;
+  margin-left: -999px;
+  display: none;
 }
 
 /* style label */
 #mTagWrapper input.radio:empty ~ label {
-	left: 70%;
-	position: relative;
-	float: left;
-	line-height: 2.5em;
-	text-indent: 3.25em;
-	margin-top: 2em;
-	cursor: pointer;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
+  left: 70%;
+  position: relative;
+  float: left;
+  line-height: 2.5em;
+  text-indent: 3.25em;
+  margin-top: 2em;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 input.radio:empty ~ label:before {
-	position: absolute;
-	display: block;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	content: '';
-	width: 2.5em;
-	background: #D1D3D4;
-	border-radius: 3px 0 0 3px;
+  position: absolute;
+  display: block;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  content: '';
+  width: 2.5em;
+  background: #D1D3D4;
+  border-radius: 3px 0 0 3px;
 }
 
 /* toggle hover */
 
 #mTagWrapper input.radio:hover:not(:checked) ~ label:before {
-	content:'\2714';
-	text-indent: .9em;
-	color: #C2C2C2;
+  content:'\2714';
+  text-indent: .9em;
+  color: #C2C2C2;
 }
 
 #mTagWrapper input.radio:hover:not(:checked) ~ label {
-	color: #888;
+  color: #888;
 }
 
 
 /* toggle on */
 
 #mTagWrapper input.radio:checked ~ label:before {
-	content:'\2714';
-	text-indent: .9em;0
-	color: #9CE2AE;
-	background-color: #4DCB6D;
+  content:'\2714';
+  text-indent: .9em;0
+  color: #9CE2AE;
+  background-color: #4DCB6D;
 }
 
 #mTagWrapper input.radio:checked ~ label {
-	color: white;
+  color: white;
 }
 
 
 /* radio focus */
 
 #mTagWrapper input.radio:focus ~ label:before {
-	box-shadow: 0 0 0 3px #999;
+  box-shadow: 0 0 0 3px #999;
 }
 
 
@@ -804,28 +812,28 @@ input.radio:empty ~ label:before {
 
 /** Panel Title **/
 #view-playlist-panel {
-	color: white;
-	font-family: 'Segoe UI', Frutiger, 
-	'Frutiger Linotype', 'Dejavu Sans', 
-	'Helvetica Neue', Arial, sans-serif;
-	font-size: 24px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: 500;
-	line-height: 26px;
+  color: white;
+  font-family: 'Segoe UI', Frutiger, 
+  'Frutiger Linotype', 'Dejavu Sans', 
+  'Helvetica Neue', Arial, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 500;
+  line-height: 26px;
 }
 
 .cbutton {
-	position: absolute;
-  	top:20px;
-  	left: 10%;
+/*  position: absolute;
+    top:20px;
+    left: 10%;*/
     /* background-color: #4CAF50; */
     border: none;
     color: white;
     font-family: 'Segoe UI', Frutiger, 
-	'Frutiger Linotype', 'Dejavu Sans', 
-	'Helvetica Neue', Arial, sans-serif;
-	
+  'Frutiger Linotype', 'Dejavu Sans', 
+  'Helvetica Neue', Arial, sans-serif;
+  
     padding: 8px 20px 44px 44px;
     text-align: center;
     text-decoration: none;
@@ -834,7 +842,7 @@ input.radio:empty ~ label:before {
     margin: 4px 2px;
     cursor: pointer;
     width: 350px;
-  	height: 50px;
+    height: 50px;
     overflow: hidden;
     font-size: 1.3em;
     font-weight: bold;
@@ -843,86 +851,81 @@ input.radio:empty ~ label:before {
 }
 
 .custbutton {
-	position: absolute;
-  	top:1000px;
-  	left: 650px ;
+/*  position: absolute;
+    top:750px;
+    left: 325px ;*/
     /* background-color: #4CAF50; */
     border: none;
     color: white;
     font-family: 'Segoe UI', Frutiger, 
-	'Frutiger Linotype', 'Dejavu Sans', 
-	'Helvetica Neue', Arial, sans-serif;
-	
+  'Frutiger Linotype', 'Dejavu Sans', 
+  'Helvetica Neue', Arial, sans-serif;
+  
     padding: 8px 20px 44px 44px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 30px;
+    /*font-size: 30px;*/
     margin: 4px 2px;
     cursor: pointer;
     width: 450px;
-  	height: 75px;
+    height: 75px;
     overflow: hidden;
     font-size: 2.5em;
     font-weight: bold;
-    padding: 8px 8px 8px 8px;
-    text-align: center;
 }
 
 .othercbutton {
-	position: absolute;
-  	top:20px;
-  	left: 15%;
+/*  position: absolute;
+    top:20px;
+    left: 15%;*/
     /* background-color: #4CAF50; */
     border: none;
     color: white;
     font-family: 'Segoe UI', Frutiger, 
-	'Frutiger Linotype', 'Dejavu Sans', 
-	'Helvetica Neue', Arial, sans-serif;
-	
+  'Frutiger Linotype', 'Dejavu Sans', 
+  'Helvetica Neue', Arial, sans-serif;
+  
     padding: 8px 20px 44px 44px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 30px;
+    /*font-size: 30px;*/
     margin: 4px 2px;
     cursor: pointer;
-    width: 350px;
-  	height: 50px;
+    width: 450px;
+    height: 75px;
     overflow: hidden;
-    font-size: 1.3em;
-    font-weight: bold;
-    padding: 8px 8px 8px 8px;
-    text-align: center;
+    font-size: 2.5em;
 }
 
 .scustomizeTitle { 
-	color: white; 
-	font-family: 'Helvetica Neue', sans-serif; 
-	font-size: 55px; 
-	font-weight: bold; 
-	letter-spacing: -1px; 
-	line-height: 1; 
-	text-align: center;
-	
-	}
-	
+  color: white; 
+  font-family: 'Helvetica Neue', sans-serif; 
+  font-size: 55px; 
+  font-weight: bold; 
+  letter-spacing: -1px; 
+  line-height: 1; 
+  text-align: center;
+  
+  }
+  
 .rangeSliderTitle { 
-	color: white; 
-	font-size: 30px; 
-	font-family: 'Segoe UI', Frutiger, 
-	'Frutiger Linotype', 'Dejavu Sans', 
-	'Helvetica Neue', Arial, sans-serif;
-	margin-top: 30px;
-	font-size: 15px; 
-	font-weight: bold; 
-	letter-spacing: -1px; 
-	line-height: 1; 
-	text-align: center;
-	
-	}
-	
-	
+  color: white; 
+  font-size: 30px; 
+  font-family: 'Segoe UI', Frutiger, 
+  'Frutiger Linotype', 'Dejavu Sans', 
+  'Helvetica Neue', Arial, sans-serif;
+  margin-top: 30px;
+  font-size: 15px; 
+  font-weight: bold; 
+  letter-spacing: -1px; 
+  line-height: 1; 
+  text-align: center;
+  
+  }
+  
+  
 /** Edit Event CSS **/
 .smart-green {
   margin-left:auto;
@@ -1032,8 +1035,25 @@ input.radio:empty ~ label:before {
     /*box-shadow: none;*/
     background-color: white;
     /*-webkit-appearance: none;*/
+    size: 5;
 }
 
 .select-style select:focus {
     outline: none;
 }
+
+/** text box **/
+.boxed-text {
+  width: 55%;
+  background-color: #9DC45F;
+  color: white;
+  font-family: 'Helvetica Neue', sans-serif; 
+  font-size: 30px; 
+  font-weight: bold; 
+  letter-spacing: -1px; 
+  line-height: 1; 
+  text-align: center;
+  margin-left: 225px;
+}
+
+

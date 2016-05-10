@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.gson.JsonArray;
@@ -23,6 +24,13 @@ public class PlaylistGenerator {
   // Returns a list of track URIs
   public VibePlaylist makePlaylist(Settings s, int length, Api api,
       User curentUser, String accessToken) {
+
+    // Error check
+    if (s == null || length < 0 || api == null || curentUser == null
+        || accessToken == null) {
+      return null;
+    }
+
     List<String> genres = s.getGenres();
     float mood = s.getMood();
     int hotness = s.getHotness();
@@ -42,7 +50,6 @@ public class PlaylistGenerator {
     }
     // Add last one
     genreString = genreString + genres.get(genres.size() - 1);
-    // System.out.println(genreString);
 
     // Connection to recommendations
     String recString = "https://api.spotify.com/v1/recommendations?target_energy="
@@ -58,12 +65,11 @@ public class PlaylistGenerator {
     try {
       connection = new URL(recString).openConnection();
     } catch (MalformedURLException e1) {
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
+      System.out.println("ERROR: Malformed URL");
+      return null;
     } catch (IOException e1) {
-      // TODO Auto-generated catch block
-      System.out.println(e1.getMessage());
-      e1.printStackTrace();
+      System.out.println("ERROR: IO Exception");
+      return null;
     }
     connection.setRequestProperty("Host", "api.spotify.com");
     connection.setRequestProperty("Accept", "application/json");
@@ -74,7 +80,8 @@ public class PlaylistGenerator {
     try {
       response = connection.getInputStream();
     } catch (IOException e) {
-      e.printStackTrace();
+      System.out.println("ERROR: IO Exception");
+      return null;
     }
     java.util.Scanner scanner = new java.util.Scanner(response)
         .useDelimiter("\\A");
@@ -91,6 +98,9 @@ public class PlaylistGenerator {
       trackList.add(trackString);
     }
 
+    // Before returning, shuffle the track order to give variety to the
+    // playlists
+    Collections.shuffle(trackList);
     VibePlaylist vp = new VibePlaylist(trackList, s);
     return vp;
   }

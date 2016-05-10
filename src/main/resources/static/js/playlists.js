@@ -8,9 +8,12 @@ var editDiv;
 var customizeDiv;
 var panel;
 var eventModal;
+var playlistDiv;
 var eventToTimeout = new Map();
 var playlist = $("#playlist");
 var port = window.location.port;
+// var ProgressBar = require('progressbar.js');
+
 
 
 
@@ -18,6 +21,11 @@ if (window.location.pathname === "/playlists") {
 	var home = "http://localhost:" + port + "/vibe";
 	var uri = new URI(window.location.href);
 	var urlParams = uri.search(true);
+	editDiv = $("#editDiv");
+	customizeDiv = $("#customizePlaylistForm");
+	panel = $("#view-playlist-panel");
+	playlistDiv = $(".playlistDiv");
+
 	if (urlParams.error === "access_denied") {
 		// Send the user back to the login page
 		window.location.href = home;
@@ -29,9 +37,6 @@ if (window.location.pathname === "/playlists") {
 
 
 	otherContent.hide();
-	editDiv = $("#editDiv");
-	customizeDiv = $("#customizePlaylistForm");
-	panel = $("#view-playlist-panel");
 
 	// First, set the logout link 
 	$("#logoutLink").attr('href', home);
@@ -60,21 +65,47 @@ if (window.location.pathname === "/playlists") {
 
 /* Handles adding an event */
 $("#AddNewEvent").click(function() {
-	console.log("Adding new event...");
 	addEvent();
 }); // end add new click handler
 
 
-/*
- * When the user clicks on an event, initiate the dropdown
- * and display the name of the event in the main content panel section
- */
+
+
 
 $(document).on('click', '.anEvent', function() {
+	console.log($(this).attr('id'));
+
+	$("div.bar").removeClass("hiddenDiv");
 	currentEventID = this.id;
-	console.log("Curr: " + currentEventID);
 	createDropdown(currentEventID);
+	var eventObject = getEvent(currentEventID);
+	console.log("Current event: " + eventObject.name);
+
+
+//	if (eventObject.playlistURI == null) {
+		// Retrieve the playlist URI from the backend and show it
+		showPlaylist(currentEventID);			
+//	} 
+//	else {
+//		 playlist.attr('src', "https://embed.spotify.com/?uri=" + eventObject.playlistURI);
+//		// bar.animate(1.0); // start loading bar
+////		$("div.bar").addClass("hiddenDiv");
+//		playlist.fadeIn("slow");
+//		$("#hidePlaylist").fadeIn("slow");
+//	}
 }); // end click on event handler
+
+// Makes sure that if elements in the dropdown are clicked, the 
+// handler that shows the playlist does not occur
+ $(document).on('click', '.dropdownOption', function(e) {
+ 	console.log("stopping propagation");
+	e.stopPropagation();
+});
+
+
+$(document).on('click', '#hidePlaylist', function() {
+	hidePlaylist();
+});
 
 
 /////////////////////////////////////
@@ -129,9 +160,10 @@ function CalendarEvent(event) {
 
 
 
-/////////////////////////////////////
-// Function Declarations
-////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+// FUNCTION DECLARATIONS
+////////////////////////////////////////////////////////////////////////
+
 function compareEvents(eventA, eventB) {
 	if (eventA == null || eventB == null) {
 		return -1;
@@ -163,6 +195,7 @@ function renderCalendar(event){
 	var targetID = "dropdown_" + event.id;
 
 	var htmlCode = htmlDropdown(targetID, timePeriod, event);
+	// $("ul.collapse").css('list-style-type', 'none');
 
 	var $eventHTML = $("<li>").attr({
 		id: event.id,
@@ -170,12 +203,45 @@ function renderCalendar(event){
 	});
 
 	$eventHTML.append(htmlCode);
+	
+
+	// $dropdown = $("<ul>", {
+	// 	id: targetID,
+	// 	class: "collapse"
+	// }).append("<li id='customizePlaylist'>" +
+	// 			"<a>Customize Playlist</a>" +
+	// 		"</li>" +
+	// 		"<li id='editEvent'>" +
+	// 			"<a>Edit Event</a>" +
+	// 		"</li>" +
+	// 		"<li id='deleteEvent'>" +
+	// 			"<a>Delete Event</a>" +
+	// 		"</li>");
+
+	// // "<ul id='" + targetID + "' class='collapse no-list-style'>" +
+	// 		// "<li id='viewPlaylist'>" +
+	// 		// 	"<a>View Playlist" + "</a>" +
+	// 		// "</li>" +
+	// 		// "<li id='customizePlaylist'>" +
+	// 		// 	"<a>Customize Playlist</a>" +
+	// 		// "</li>" +
+	// 		// "<li id='editEvent'>" +
+	// 		// 	"<a>Edit Event</a>" +
+	// 		// "</li>" +
+	// 		// "<li id='deleteEvent'>" +
+	// 		// 	"<a>Delete Event</a>" +
+	// 		// "</li>" +
+	// 	// "</ul>";
+	// $dropdown.insertAfter($eventHTML);
+	// console.log($dropdown.parent());
 
 	// Find all li tags and dynamically remove the bullet points
-	$(".collapse").find("li").css('list-style-type', 'none');;
+	// $("ul.collapse").css('list-style-type', 'none');
+	// $("ul.collapse li").css('cursor', 'pointer');
+
 
 	// Fix cursor
-	eventTimeline.find("li").css('cursor', 'pointer');
+	// eventTimeline.find("li").css('cursor', 'pointer');
 	var appended = false;
 
 	for(var i = 0; i < eventsArray.length; i++){
@@ -315,22 +381,22 @@ function addEvent() {
 function htmlDropdown(dataTargetID, timePeriod, cEvent) {
 	var htmlStr = 
 	"<a href='javascript:;' data-toggle='collapse' data-target='#" + dataTargetID + "'>" +
-		"<i class='fa fa-fw fa-arrows-v'></i> " +
+		"<i class='fa fa-fw fa-arrows-v' color='white'></i> " +
 		// event.start.hour + ":" +  event.start.minute 
 		"<span class='eventDesc'>" + cEvent.moment.format("h:mm") + " " + timePeriod 
 		+ " | " + cEvent.name + " </span>" +
-		"<i class='fa fa-fw fa-caret-down'></i></a>" +
-		"<ul id='" + dataTargetID + "' class='collapse'>" +
-			"<li id='viewPlaylist'>" +
-				"<a>View Playlist" + "</a>" +
-			"</li>" +
-			"<li id='customizePlaylist'>" +
+		"<i class='fa fa-fw fa-caret-down'></i>" +
+		"<ul id='" + dataTargetID + "' class='collapse no-list-style'>" +
+			// "<li id='viewPlaylist'>" +
+			// 	"<a>View Playlist" + "</a>" +
+			// "</li>" +
+			"<li id='customizePlaylist' class='dropdownOption'>" +
 				"<a>Customize Playlist</a>" +
 			"</li>" +
-			"<li id='editEvent'>" +
+			"<li id='editEvent' class='dropdownOption'>" +
 				"<a>Edit Event</a>" +
 			"</li>" +
-			"<li id='deleteEvent'>" +
+			"<li id='deleteEvent' class='dropdownOption'>" +
 				"<a>Delete Event</a>" +
 			"</li>" +
 		"</ul>" +
@@ -432,7 +498,17 @@ function populateUserPlaylists() {
 				class: "plName",
 				value: currentPlaylist.name
 			}).append(currentPlaylist.name);
+			$plElt.css('overflow-y', 'scroll');
 			$dropdown.append($plElt);
 		}
 	});
+}
+
+
+function hidePlaylist() {
+//	$(".playlistDiv").fadeOut("fast");
+	playlist.removeClass("loading");
+    $(".bar").hide();
+	playlist.fadeOut("fast");	
+    $("#hidePlaylist").fadeOut("fast");
 }

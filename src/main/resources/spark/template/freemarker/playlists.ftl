@@ -1,6 +1,6 @@
 <#assign content>
 
-<div class = "other-bg">
+<div class="other-bg img-responsive">
 
 <div id="wrapper">
 	<!-- Sidebar -->
@@ -9,7 +9,7 @@
 	        <li class="sidebar-brand" id="date">
 	            <a href="#"><p id="date"></p></a>
 	        </li>
-	        
+
 	        <hr>
 	        <form id='eventForm' method="POST" action="/newEvent">
 	            <label for='name' >Event Name: </label>
@@ -18,19 +18,18 @@
 
 	            <label for='startTime' >Start Time:</label> 
 	            <input type='text' id='startTime' name='startTime' maxlength="5" class="form-textbox-time-start"/> 
-	            &nbsp <input type="radio" id='startAM' name="time-selection-start" value="am-start">am
-	            &nbsp <input type="radio" id='startPM' name="time-selection-start" value="pm-start" checked>pm
+	            <input type="radio" id='startAM' name="time-selection-start" value="am-start">am
+	            <input type="radio" id='startPM' name="time-selection-start" value="pm-start" checked>pm
 	            <br/><br/>
 
 	            <label for='endTime' >End Time:</label> 
 	            <input type='text' id='endTime' name='endTime' maxlength="5" class="form-textbox-time-end"/>
-	            &nbsp <input type="radio" id='endAM' name="time-selection-end" value="am-end">am
-	            &nbsp <input type="radio" id='endPM' name="time-selection-end" value="pm-end" checked>pm
+	            <input type="radio" id='endAM' name="time-selection-end" value="am-end">am
+	            <input type="radio" id='endPM' name="time-selection-end" value="pm-end" checked>pm
 	            <br/><br/>
 
-	            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
+	            <!-- &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  -->
 	            <input type='button' name='AddNewEvent' value='Add New Event' id="AddNewEvent" class="btn btn-success"/>
-   		       <!-- <button name='AddNewEvent' value='Add New Event' id="AddNewEvent" class="btn btn-success">Add New Event</button> -->
 
 	        </form>
 	        <hr>
@@ -67,6 +66,33 @@
 	<!-- end modal -->
 
 
+	<!-- Playlist Association Modal -->
+	<div class="modal fade" id="new-playlist-modal" role="dialog">
+		<!-- Modal dialog -->
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title" id="playlist-alert"></h4>
+				</div>
+
+				<div class="modal-body">
+					<p id="modal-msg-playlist"></p>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary modalbtn" id="yesBtn" data-dismiss="modal">Yes</button>
+					<button type="button" class="btn btn-warning modalbtn" id="noBtn" data-dismiss="modal">No</button>
+				</div>
+			</div>
+			<!-- end modal content -->
+		</div>
+		<!-- end modal dialog -->
+	</div>
+	<!-- end modal -->
+
+
 	<!-- Displays helpful messages -->
     <div class="otherContent"></div>
 
@@ -76,7 +102,7 @@
 	    <div class="container-fluid">
 		    <ul class="nav navbar-right top-nav">
 		        <li class="dropdown">
-		            <a href="#" class="dropdown-toggle" id="displayname" data-toggle="dropdown"><i class="fa fa-user"></i><span class="caret"></span>Logged in as </a>
+		            <a href="#" class="dropdown-toggle" id="displayname" data-toggle="dropdown"><i class="fa fa-user"></i><span class="caret"></span> Logged in as </a>
 		            <ul class="dropdown-menu">
 		                <li>
 		                    <a href="" id="logoutLink"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
@@ -92,8 +118,7 @@
 				</div>
 		    </div>
 
-		    <!-- Edit Event Form -->
-				
+		    <!-- Edit Event Form -->				
 			<div class="hiddenDiv row" id="editDiv">    
 			<p> <br> </br> </p> <!-- add some space -->
 				<form id='editEventForm' form method="POST" action="/editEvent" class='smart-green'>
@@ -120,6 +145,7 @@
 			       <input type='button' name='QuitEditEvent' value='Exit Edit Event' id="ExitEditEvent" class="btn btn-success"/>
 				</form>
 			</div>
+			<!-- end Edit event div -->
 				    
 				    
 			<div class="row">
@@ -141,32 +167,33 @@
 						</div>
 
 						<div class="col-md-6">
-							<input type="button" class="btn btn-success othercbutton" value="Generate Custom Playlist" id="generateCustom">
+							<input type="button" class="btn btn-success cbutton" value="Generate Custom Playlist" id="generateCustom">
 						</div>
 					</div>
 
 					<!-- Select Playlist Dropdown -->
 					<form id="selectPlaylistForm" method="POST" action="/selectExistingPlaylist" class="hiddenDiv">
+						<h2 class="boxed-text">Pick one of your own playlists!</h2>
 						<div class="select-style">
 							<select id="playlistDropdown">
 								<!-- Will be filled up with options -->
 							</select>
 						</div>
 
-						<input type="button" class="btn btn-success cbutton" value="Use one of your own!" id="existingSubmit">
+						<input type="button" class="btn btn-success cbutton" value="Submit one of your own!" id="existingSubmit">
 					</form>
 
 
 					<!-- Customize Form -->
-					<p> <br> </br> </p> <!-- add some space -->
+					<p> </p> <!-- add some space -->
 					<form id='customizePlaylistForm' method="POST" action="/customizePlaylist" class="hiddenDiv">
 						<!-- Choosing a Playlist from Existing Spotify Playlist for Event -->						
 						
 						<!-- Event Tags -->
 						<div id="eTagWrapper" class="row section-wrapper">
-							<h2 class="sub-desc">Select an Event Tag</h2>
+							<h2 class="boxed-text">Select an Event Tag</h2>
 							<div>
-								<input type="radio" name="eTradio" id="eTradio1" class="radio" value="Eat/Social" />
+								<input type="radio" name="eTradio" id="eTradio1" class="radio" value="Eat/Social" checked/>
 								<label for="eTradio1">Eat/Social</label>
 							</div>
 
@@ -196,11 +223,11 @@
 						
 						<!-- Mood Selection -->
 						<div id="mTagWrapper" class="row section-wrapper">
-						<p> <br> </br> </p> <!-- add some space -->
-							<h2 class="sub-desc">Select an Event Mood</h2>
+						<p> </p> <!-- add some space -->
+							<h2 class="boxed-text">Select an Event Mood</h2>
 
 							<div>
-								<input type="radio" name="mSradio" id="mSradio1" class="radio" value="Happy" />
+								<input type="radio" name="mSradio" id="mSradio1" class="radio" value="Happy" checked/>
 								<label for="mSradio1">Happy</label>
 							</div>
 
@@ -331,7 +358,7 @@
 								<dd>
 								    <div class="plmutliSelect">
 								        <ul>
-								            <!-- add in li elements for each playlist you have -->
+								             add in li elements for each playlist you have -->
 								<!--         </ul>
 								    </div>
 								</dd>
@@ -343,8 +370,14 @@
 
 				
 
-				<div>
-					<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>
+				<div class="row">
+					<div class="text-center playlistDiv">
+						<button class="btn btn-primary hiddenDiv" id="hidePlaylist">Hide Playlist</button>
+						<div class="bar hiddenDiv">
+							<i class="sphere"></i>
+						</div>
+						<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>
+			    	</div>
 			    </div>
 			</div>
 

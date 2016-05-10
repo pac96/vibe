@@ -1,8 +1,14 @@
 html, body {
-  color: black;
   height: 100%;
   width: 100%;
-  
+}
+
+.mainPage {
+    background: url("/images/vibe-background.jpg") no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 
 h1 {
@@ -16,38 +22,76 @@ h1 span {
   text-transform: none;
 }
 
-.home-bg {
-	background-image:url("/images/vibe-homepage.jpg");
+/*.home-bg {*/
+	/*background-image:url("/images/vibe-homepage.jpg");
   	background-size:125%, 100%, auto;
  	background-repeat: no-repeat;
   	background-position: center;
   	background-color: transparent;
   	width: 100%;
   	height: 100%;
-  	z-index: -1;
+  	z-index: -1;*/
+/*}*/
+
+.home-bg {
+  background: url("/images/vibe-homepage.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
 }
 
+.no-list-style {
+  list-style-type: none;
+}
+
+.anEvent {
+  cursor: pointer;
+}
+
+.dropdownOption {
+  
+}
+
+
+
 .other-bg {
-	background-image:url("/images/vibe-background.jpg");
+/*	background-image:url("/images/vibe-background.jpg");
   	background-size:125%, 150%, auto;
  	background-repeat: no-repeat;
   	background-position: center;
   	background-color: transparent;
   	width: 100%;
   	height: 100%;
-  	z-index: -1;
+  	z-index: -1;*/
+  background: url("/images/vibe-background.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  width: 100%;
+  height: 100%;  
+  /*border: 2px solid red;*/
 }
 
 .spotify {
   text-align: center;
 }
 
+.under {
+  position: absolute;
+}
+
+.playlistDiv {
+  margin-top: 50px;
+}
 
 #displayname {
   text-decoration: none;
   font-weight: bold;
   color: black;
-  border-bottom: 2px solid black;
   text-align: right;
 }
 
@@ -106,7 +150,7 @@ p.contentMsg {
 iframe {
   width: 1000px;
   height: 600px;
-  margin: none;
+  margin: auto;
   border: none;
 }
 
@@ -132,9 +176,9 @@ p#modal-msg {
 
 }
 .sign-in-button {
-	position: absolute;
+/*	position: absolute;
 	top: 690px;
-	left: 515px;
+	left: 515px;*/
 	background:#5CCD00;
 	background:-moz-linear-gradient(top,#5CCD00 0%,#4AA400 100%);
 	background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#5CCD00),color-stop(100%,#4AA400));
@@ -151,4 +195,11 @@ p#modal-msg {
 	-moz-border-radius:5px;
 	-webkit-border-radius:5px;
 	border:1px solid #459A00;
+}
+
+.vcenter {
+  position: absolute;
+  top: 80%;
+  left:49%;
+  transform: translate(-49%,-80%);
 }

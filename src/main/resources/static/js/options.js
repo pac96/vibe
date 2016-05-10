@@ -1,37 +1,3 @@
-// "View Playlist" option
-$(document).on('click', '#viewPlaylist', (function() {
-	var dropdownID = $(this).parent().attr('id');
-	currentEventID = dropdownID.split("_")[1];
-
-	var eventObject = getEvent(currentEventID);
-	console.log("Current event: " + eventObject.name);
-
-	if (eventObject.playlistURI == null) {
-		// Retrieve the playlist URI from the backend and show it
-		showPlaylist(currentEventID);			
-	} else {
-		playlist.attr('src', "https://embed.spotify.com/?uri=" + eventObject.playlistURI);
-		playlist.show();
-	}
-    
-	
-	// show name of event at top of page 
-	var eventName = $('#name').val();
-	var startTime = $('#startTime').val();
-	var endTime = $('#endTime').val();
-	var eventDIV = document.getElementById('view-playlist-panel');
-	//eventDIV.innerHTML = currentEvent.name + ' | ' + currentEvent.start.hour + ' - ' + currentEvent.end.hour;
-	//console.log(eventName);
-	$('#view-playlist-panel').show();
-	
-	//hide unneded divs
-	$("#customizeDiv").hide();
-	editDiv.hide();
-	// playlist.hide();
-
-}));
-
-
 // "Customize Playlist" option
 $(document).on('click', '#customizePlaylist', (function() {
 	var dropdownID = $(this).parent().attr('id');
@@ -47,7 +13,7 @@ $(document).on('click', '#customizePlaylist', (function() {
 
 // Load customization options
 $(document).on('click', '#generateCustom', function() {
-	$("#customOptions").hide();
+	// $("#customOptions").hide();
 	$("#selectPlaylistForm").hide();
 	$("#customizePlaylistForm").show();
 });
@@ -74,6 +40,10 @@ $(document).on('click', '#useOwnPlaylist', function() {
 
 // "Edit Event" option
 $(document).on('click', '#editEvent', (function() {
+	    // hide unneeded divs
+    customizeDiv.hide();
+    hidePlaylist();
+
 	var dropdownID = $(this).parent().attr('id');
 	currentEventID = dropdownID.split("_")[1];
 	// Show the edit event form
@@ -94,12 +64,11 @@ $("#EditAddNewEvent").click(function() {
 // "Delete Event" option
 $(document).on('click', '#deleteEvent', (function() {
 	var dropdownID = $(this).parent().attr('id');
+	console.log("Dropdown ID: " + dropdownID);
 	currentEventID = dropdownID.split("_")[1];
+
     deleteEvent(currentEventID);
 
-    // hide unneeded divs
-    editDiv.hide();
-    customizeDiv.hide();
     $('#view-playlist-panel').hide();
  }));
 
@@ -168,8 +137,6 @@ function showPlaylist(eventID) {
 		}
 	}    
 
-
-
     var postParams = {
     	eventID: eventID, 
     	eventName: name
@@ -179,9 +146,14 @@ function showPlaylist(eventID) {
         console.log("Playlist @ " + link);
         uri = link;
         playlist = $("#playlist");
+        var eventObject = getEvent(eventID);
 		// Set the source of the playlist to be the input URI
 		playlist.attr('src', "https://embed.spotify.com/?uri=" + uri);
-		playlist.show();
+		eventObject.playlistURI = uri;
+		console.log("Backend uri");
+		playlist.fadeIn("slow");
+		$("div.bar").fadeOut("fast");
+		$("#hidePlaylist").fadeIn("slow");
     }); 
 }
 
@@ -200,14 +172,16 @@ function editCalendarEvent(editedEvent){
 	}
 
 	if (editedEvent) {
-		var dataTargetID = "dropdown-" + currentEventID;
+		var dataTargetID = "dropdown_" + currentEventID;
 		var newHTML = htmlDropdown(dataTargetID, timePeriod, editedEvent);
 		
 		var eventLI = $('#' + currentEventID);
 
 		// Replaces the html of the old event with the info from the new one
 		eventLI.html(newHTML);
+
 	    editDiv.hide();
+
 	}	
 }
 
@@ -216,6 +190,7 @@ function editCalendarEvent(editedEvent){
  * @param  {String} id - id of the event you want to delete
  */
 function deleteEvent(id) {
+	console.log("Right before we send it back... " + id);
 	var postParam = {eventID: id};
 	
 	// The backend responds with a string: 
@@ -227,6 +202,17 @@ function deleteEvent(id) {
 		if (response != "SUCCESS") {
 			// do some stuff
 			alert(response);
+			var $msg = $("<p>", {
+				class: "contentMsg", 
+				id: "error"
+			});
+
+			$msg.append("There was an error trying to delete your event.");
+			otherContent.html($msg);
+		    otherContent.fadeIn('slow');
+		    setTimeout(function() {
+			    otherContent.fadeOut('slow');
+		    }, 3000);
 		} else {
 			$("#" + id).remove();
 			// The same as <p class='contentMsg' id='successMsg'>Deletion successful!</p>
@@ -246,16 +232,18 @@ function deleteEvent(id) {
 		    for (var i = 0; i < eventsArray.length; i++) {
     			if (eventsArray[i].id === id) {
     				if (playlist.src === eventsArray[i].playlistURI) {
-    					playlist.attr('src', "");
-    					playlist.hide();
+    					playlist.attr('src', null);
+    					hidePlaylist();
     				}
     				eventsArray.splice(i,1);
+    				break;
     			}
     		}
 
     		for (var j = 0; j < occurrenceArray.length; j++) {
     			if (occurrenceArray[j].id === id) {
     				occurrenceArray.splice(j,1);
+    				break;
     			}
     		}
 
@@ -266,10 +254,14 @@ function deleteEvent(id) {
     		// SO THE POPUP DOES NOT APPEAR
 
 			nextEventPopup();
+
+			// hide unneeded divs
+		    editDiv.hide();
+		    customizeDiv.hide();
+		    hidePlaylist();
+		    playlist.attr('src', null);
 		}
 	});
-
-
 }
 
 
@@ -285,136 +277,148 @@ function requestEdit(eventID) {
 		    return elem.value.replace( /\r?\n/g, "\r\n" );
 		  }
 		};
+		var keepOldPlaylist = true;
 
-		var editableEvent;
-		var eventName = $('#editEventName').val();
-		var startTime = $('#editStartTime').val();
-		var endTime = $('#editEndTime').val();
-		var startAP;
-		var endAP;
 
-		// Check to see if start time is AM or PM
-		if ($('#editStartAM').is(':checked')) {
-			startAP = true;
-		} else {
-			startAP = false;
-		}
-		
-		// Check to see if end time is AM or PM
-		if ($('#editEndAM').is(':checked')) {
-			endAP = true;
-		} else {
-			endAP = false;
-		}
+		// Ask the user if they want their playlist to be associated differently
+		$("#playlist-alert").text("MAJOR KEY");
+		$("#modal-msg-playlist").html("By default, the playlist associated with your old event will be kept. "
+			+ "Do you want us to generate a new playlist based on your event name?");
+		// 2. Show the popup box
+		$("#new-playlist-modal").modal('show');
 
-		// Set up the event format and time format
-		eventFormat = /^[a-zA-Z]+$/;
-		timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-		
-		if(eventName == null || startTime == null ||
-		 endTime == null || startAP == null || endAP == null) {
-			alert("One or more event fields are empty");
-		} else if(eventName == '' && !eventName.match(eventFormat)) {
-			alert("Invalid Event Name: " + eventName);
-		} else if(startTime == '' && !startTime.match(timeFormat)) {
-	    	alert("Invalid Start Time: " + startTime);
-	    } else if(endTime == '' && !startTime.match(timeFormat)) {
-	    	alert("Invalid End Time: " + endTime);
-	    } else {
-	    	var postParameters = {
-				start : startTime ,
-				end : endTime ,
-				startAMPM : startAP ,
-				endAMPM : endAP,
-				name : eventName,
-				id : eventID
-	    	};
-	    	
-	    	$.post("/editEvent", postParameters, function(response) {
-	    		// 1. send stuff to back end and store in responseObject
-	    		var responseObject = JSON.parse(response);
-	    		console.log(responseObject["success"]);
-	    		if (responseObject["success"] === true) {
-		    		// 2. Get calendar event from the calendar array
-		    		editableEvent = new CalendarEvent(responseObject["event"]);
-		    		console.log("response object");
-		    		console.log(editableEvent);
-		    		console.log(responseObject["event"]);
-		    		// 3. Remove the old event from the eventsArray
-		    		for (var i = 0; i < eventsArray.length; i++) {
-		    			if (eventsArray[i].id === eventID) {
-		    				eventsArray.splice(i,1);
-		    			}
+		// If the user wants to auto generate a playlist based on the name, set
+		// the flag to true
+		$(document).on('click', '.modalbtn', function() {
+			// $(document).on('click', '#yesBtn', function() {
+			// keepOldPlaylist = false;
+			// });	
+			if ($(this).attr('id') == "yesBtn") {
+				keepOldPlaylist = false;
+			}
+
+			var editableEvent;
+			var eventName = $('#editEventName').val();
+			var startTime = $('#editStartTime').val();
+			var endTime = $('#editEndTime').val();
+			var startAP;
+			var endAP;
+
+			// Check to see if start time is AM or PM
+			if ($('#editStartAM').is(':checked')) {
+				startAP = true;
+			} else {
+				startAP = false;
+			}
+			
+			// Check to see if end time is AM or PM
+			if ($('#editEndAM').is(':checked')) {
+				endAP = true;
+			} else {
+				endAP = false;
+			}
+
+			// Set up the event format and time format
+			eventFormat = /^[a-zA-Z]+$/;
+			timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+			
+			if(eventName == null || startTime == null ||
+			 endTime == null || startAP == null || endAP == null) {
+				alert("One or more event fields are empty");
+			} else if(eventName == '' && !eventName.match(eventFormat)) {
+				alert("Invalid Event Name: " + eventName);
+			} else if(startTime == '' && !startTime.match(timeFormat)) {
+		    	alert("Invalid Start Time: " + startTime);
+		    } else if(endTime == '' && !startTime.match(timeFormat)) {
+		    	alert("Invalid End Time: " + endTime);
+		    } else {
+		    	console.log("New start: " + startTime);
+		    	console.log("New end: " + endTime);
+		    	console.log("New startAMPM: " + startAP);
+		    	console.log("New endAMPM: " + endAP);
+		    	console.log("New name: " + eventName);
+		    	console.log("ID: " + eventID);
+		    	console.log("Keep old playlist: " + keepOldPlaylist);
+
+		    	
+		    	var postParameters = {
+					start : startTime ,
+					end : endTime ,
+					startAMPM : startAP ,
+					endAMPM : endAP,
+					name : eventName,
+					id : eventID,
+					keepOldPlaylist: keepOldPlaylist
+		    	};
+		    	
+		    	$.post("/editEvent", postParameters, function(response) {
+		    		// 1. send stuff to back end and store in responseObject
+		    		var responseObject = JSON.parse(response);
+		    		console.log(responseObject["success"]);
+		    		
+		    		if (responseObject["success"] === true) {
+			    		// 2. Get calendar event from the calendar array
+			    		editableEvent = new CalendarEvent(responseObject["event"]);
+			    		console.log("response object");
+			    		console.log(editableEvent);
+			    		console.log(responseObject["event"]);
+			    		// 3. Remove the old event from the eventsArray
+			    		for (var i = 0; i < eventsArray.length; i++) {
+			    			if (eventsArray[i].id === eventID) {
+			    				eventsArray.splice(i,1);
+			    			}
+			    		}
+
+			    		// 3a. Remove the old event from the occurrenceArray
+			    		for (var j = 0; j < occurrenceArray.length; j++) {
+			    			if (occurrenceArray[j].id === eventID) {
+			    				occurrenceArray.splice(j,1);
+			    			}
+			    		}
+			    		
+			    		// 4. Add new calendar event to user's list
+			    		eventsArray.push(editableEvent);
+			    		occurrenceArray.push(editableEvent);
+
+			    		
+			    		// 5. sort the list of events
+			    		eventsArray.sort(compareEvents);
+			    		occurrenceArray.sort(compareEvents);
+			    		
+			    		// 6. Find out when the next event is and set the popup
+			    		editCalendarEvent(editableEvent);
+			    		
+				    	nextEventPopup();			
+		    			
+		    			var $msg = $("<p>", {
+							class: "contentMsg", 
+							id: "successMsg"
+						});
+
+						$msg.append("Event edit successful!");
+						otherContent.html($msg);
+					    otherContent.fadeIn('slow');
+
+					    setTimeout(function() {
+						    otherContent.fadeOut('slow');
+					    }, 2000);
+		    		} else {
+		    			var $msg = $("<p>", {
+							class: "contentMsg", 
+							id: "errorMsg"
+						});
+
+						$msg.append("Edit event failed, check that the time is formatted properly");
+						otherContent.html($msg);
+					    otherContent.fadeIn('slow');
+
+					    setTimeout(function() {
+						    otherContent.fadeOut('slow');
+					    }, 3000);
 		    		}
-
-		    		// 3a. Remove the old event from the occurrenceArray
-		    		for (var j = 0; j < occurrenceArray.length; j++) {
-		    			if (occurrenceArray[j].id === eventID) {
-		    				occurrenceArray.splice(j,1);
-		    			}
-		    		}
-		    		
-		    		// 4. Add new calendar event to user's list
-		    		eventsArray.push(editableEvent);
-		    		occurrenceArray.push(editableEvent);
-
-		    		
-		    		// 5. sort the list of events
-		    		eventsArray.sort(compareEvents);
-		    		occurrenceArray.sort(compareEvents);
-		    		
-		    		// 6. Find out when the next event is and set the popup
-		    		editCalendarEvent(editableEvent);
-		    		
-			    	nextEventPopup();			
-	    			
-	    			var $msg = $("<p>", {
-						class: "contentMsg", 
-						id: "successMsg"
-					});
-
-					$msg.append("Event edit successful!");
-					otherContent.html($msg);
-				    otherContent.fadeIn('slow');
-
-				    setTimeout(function() {
-					    otherContent.fadeOut('slow');
-				    }, 2000);
-	    		} else {
-	    			var $msg = $("<p>", {
-						class: "contentMsg", 
-						id: "errorMsg"
-					});
-
-					$msg.append("Edit event failed, check that the time is formatted properly");
-					otherContent.html($msg);
-				    otherContent.fadeIn('slow');
-
-				    setTimeout(function() {
-					    otherContent.fadeOut('slow');
-				    }, 2000);
-	    		}
-
-	    		// 3a. Remove the old event from the occurrenceArray
-	    		for (var j = 0; j < occurrenceArray.length; j++) {
-	    			if (occurrenceArray[j].id === eventID) {
-	    				occurrenceArray.splice(j,1);
-	    			}
-	    		}
-	    		
-	    		// 4. Add new calendar event to user's list
-	    		eventsArray.push(editableEvent);
-	    		occurrenceArray.push(editableEvent);
-
-	    		// 5. sort the list of events
-	    		eventsArray.sort(compareEvents);
-	    		occurrenceArray.sort(compareEvents);
-	    		
-	    		// 6. Find out when the next event is and set the popup
-	    		editCalendarEvent(editableEvent);
-	    		
-	    	});
-		}
+		    	}); // end post
+			} // end else
+		}); // end onclick
 }
 
 /**
@@ -495,7 +499,7 @@ function customizePlaylist(eventID) {
 		console.log(playlistSelection);
 	}
 	
-	if (customize || playlistSelection !== "") {
+	if (customize) {
     	var postParameters = {
 			tag : eventTag ,
 			mood : eventMoodNum ,
@@ -516,13 +520,34 @@ function customizePlaylist(eventID) {
     		//    backend will generate a new playlist id for this event
     		//console.log(response);
     		var responseObject = JSON.parse(response);
-    		//console.log(responseObject);
+    		if (responseObject.success == "false") {
+    			console.log("Customization was not successful!");
+				var $msg = $("<p>", {
+					class: "contentMsg", 
+					id: "errorMsg"
+				});
 
-    		// 2. Make customization object from responseObject
-    		//var custom = new Customization(responseObject);
-    		
-    		
+				$msg.append(responseObject.error);
+				otherContent.html($msg);
+			    otherContent.fadeIn('slow');
 
+			    setTimeout(function() {
+				    otherContent.fadeOut('slow');
+			    }, 3000);
+    		} else {
+    			var $msg = $("<p>", {
+					class: "contentMsg", 
+					id: "successMsg"
+				});
+
+				$msg.append("Playlist customized!");
+				otherContent.html($msg);
+			    otherContent.fadeIn('slow');
+
+			    setTimeout(function() {
+				    otherContent.fadeOut('slow');
+			    }, 2000);
+    		}
     	});
     	// empty playlist selection and no custom options 
     	// or empty playlist selection and incomplete custom option selection
@@ -530,7 +555,7 @@ function customizePlaylist(eventID) {
 			(playlistSelection === "" && atLeastOneCustomOption)) {
 		var $msg = $("<p>", {
 			class: "contentMsg", 
-			id: "successMsg"
+			id: "errorMsg"
 		});
 
 		$msg.append("You must either customize or select Spotify playlists");
@@ -543,12 +568,12 @@ function customizePlaylist(eventID) {
 			id: "errorMsg"
 		});
 
-		$msg.append("Complete Your Customization or Select a Playlist");
-		otherContent.html($msg);
-	    otherContent.fadeIn('slow');
-	    setTimeout(function() {
-		    otherContent.fadeOut('slow');
-	    }, 2000);
+		// $msg.append("Complete Your Customization or Select a Playlist");
+		// otherContent.html($msg);
+	 //    otherContent.fadeIn('slow');
+	 //    setTimeout(function() {
+		//     otherContent.fadeOut('slow');
+	 //    }, 2000);
 	
 		// incomplete custom option selection and empty playlist selection
 		// or incomplete custom option selection and non-empty playlist selection
@@ -556,7 +581,7 @@ function customizePlaylist(eventID) {
 			(atLeastOneCustomOption && playlistSelection !== "")) {
 		var $msg = $("<p>", {
 			class: "contentMsg", 
-			id: "successMsg"
+			id: "errorMsg"
 		});
 
 		$msg.append("Fully complete customizations or select a playlist");
@@ -569,12 +594,12 @@ function customizePlaylist(eventID) {
 			id: "errorMsg"
 		});
 
-		$msg.append("Complete Your Customization or Select a Playlist");
-		otherContent.html($msg);
-	    otherContent.fadeIn('slow');
-	    setTimeout(function() {
-		    otherContent.fadeOut('slow');
-	    }, 2000);
+		// $msg.append("Complete Your Customization or Select a Playlist");
+		// otherContent.html($msg);
+	 //    otherContent.fadeIn('slow');
+	 //    setTimeout(function() {
+		//     otherContent.fadeOut('slow');
+	 //    }, 2000);
 	}
 }
 

@@ -30,7 +30,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.wrapper.spotify.Api;
 import com.wrapper.spotify.models.AuthorizationCodeCredentials;
 import com.wrapper.spotify.models.User;
@@ -333,6 +332,10 @@ public final class Main {
         e.printStackTrace();
       }
 
+      for (CalendarEvent e : events) {
+        VibeCache.getEventCache().put(e.getId(), e);
+      }
+
       return GSON.toJson(frontEndInfo);
     }
   }
@@ -371,13 +374,19 @@ public final class Main {
 
       Map<String, Object> frontEndInfo;
 
+      // Error check
+      if (start == null || end == null || amOrPm == null || endAmOrPm == null) {
+        System.out.println("ERROR: Bad info from the front end");
+        frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+            "error", "Error: Not all fields were filled in!");
+        return GSON.toJson(frontEndInfo);
+      }
+
       // (2): Check if the input times have the correct format
       if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)
-          && timeErrorHelper(start, end)
-          && startBeforeEnd(start, amOrPm, end, endAmOrPm)) {
+          && timeErrorHelper(start, end)) {
+        // && startBeforeEnd(start, amOrPm, end, endAmOrPm)) {
         // Need to check that nothing is > 12 or 59 and start is before end
-
-        System.out.println("The input maches the regex");
 
         // (3): Add the event to the database
         try {
@@ -385,22 +394,41 @@ public final class Main {
               eventName, currentUser.getId());
         } catch (SQLException e) {
           System.out.println("Error in adding event");
-          e.printStackTrace();
+          frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+              "error", "Error: Trouble creating event");
+          return GSON.toJson(frontEndInfo);
+        }
+
+        // Another error check
+        if (newEvent == null) {
+          System.out.println("ERROR: Problem creating event");
+          frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+              "error", "Error: Trouble creating event");
+          return GSON.toJson(frontEndInfo);
         }
 
         // Add event to the cache
-        VibeCache.getEventCache().put(newEvent.getId(), newEvent);
+        CalendarEvent cachedEvent = VibeCache.getEventCache().put(
+            newEvent.getId(), newEvent);
 
         // Generate the playlist associated with this event
-        hq.generateFromTag(newEvent, api, currentUser, accessToken);
+        VibePlaylist newP = hq.generateFromTag(newEvent, api, currentUser,
+            accessToken);
+        // Error check again
+        if (newP == null) {
+          System.out.println("ERROR: Problem generating playlist");
+          frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+              "error", "Trouble generating playlist");
+          return GSON.toJson(frontEndInfo);
+        }
 
+        // Success scenario
         frontEndInfo = ImmutableMap.of("event", newEvent, "success", true);
       } else {
-        System.out.println("The input does not match the regex");
-        frontEndInfo = ImmutableMap.of("event", "null", "success", false);
-        System.out.println("where is the error");
+        System.out.println("ERROR: Event time invalid");
+        frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+            "error", "Start or end time incorrectly formatted");
       }
-      System.out.println("about to return");
       return GSON.toJson(frontEndInfo);
 
     }
@@ -423,38 +451,9 @@ public final class Main {
     return true;
   }
 
-  // Start time before end time checker
-  public boolean startBeforeEnd(String start, boolean isAm, String end,
-      boolean isAm2) {
-    String[] startAr = start.split(":");
-    int startHour = Integer.parseInt(startAr[0]);
-    int startMin = Integer.parseInt(startAr[1]);
-    String[] endAr = end.split(":");
-    int endHour = Integer.parseInt(endAr[0]);
-    int endMin = Integer.parseInt(endAr[1]);
-    int startinMin = this.getTimeInMins(startHour, startMin, isAm);
-    int endinMin = this.getTimeInMins(endHour, endMin, isAm2);
-    return (endinMin - startinMin >= 0);
-  }
-
-  // returns the time in military minutes from midnight
-  public int getTimeInMins(int startH, int startM, boolean isAm) {
-    // If PM and not 12pm, add 12 hours
-    if ((!isAm && (startH != 12))) {
-      startH = startH + 12; // accounting for 24 hour time
-    }
-    // If 12AM, convert to 0
-    if (isAm && startH == 12) {
-      startH = 0;
-    }
-    int startinMins = startH * 60 + startM;
-    return startinMins;
-  }
-
   /**
    *
    * Handles retrieving a playlist for a specific event.
-   *
    * */
   private class GetPlaylistHandler implements Route {
     @Override
@@ -462,25 +461,58 @@ public final class Main {
       QueryParamsMap qm = req.queryMap();
       String returnURI = null;
 
+      System.out.println("Beginning to get playlist");
+
       // Retrieve the event ID and find the associated playlist
       String idString = qm.value("eventID");
+
+      // Error check
+      if (idString == null) {
+        System.out.println("ERROR: front end returned null");
+        return null;
+      }
       UUID eventID = UUID.fromString(idString);
       // Check to see if a prexisting playlist was associated with this event
       CalendarEvent thisEvent = VibeCache.getEventCache().get(eventID);
 
+      // Error check
+      if (thisEvent == null) {
+        System.out.println("ERROR: couldn't get event from cache");
+        return null;
+      }
+
       if (thisEvent.getPlayListURI().equals("")) {
-        System.out.println("no uri set");
+
+        System.out.println("No playlist set");
+
         VibePlaylist playlist = VibeCache.getPlaylistCache().get(eventID);
+
+        // Error check
+        if (playlist == null) {
+          System.out.println("ERROR: couldn't get playlist");
+          return null;
+        }
 
         String eventName = thisEvent.getName();
         returnURI = hq.convertForSpotify(playlist, eventName, api, currentUser);
+
+        // Error check
+        if (returnURI == null) {
+          System.out.println("ERROR: spotify conversion error");
+          return null;
+        }
+
         thisEvent.setPlayListURI(returnURI);
-        System.out.println("confirming uri set " + thisEvent.getPlayListURI());
         // This is the case where an existing URI is set
       } else {
-        System.out.println("uri was set");
+        System.out.println("playlist WAS set");
         returnURI = thisEvent.getPlayListURI();
-        System.out.println("return uri is " + returnURI);
+
+        // Error check
+        if (returnURI == null) {
+          System.out.println("ERROR: Playlist error");
+          return null;
+        }
       }
 
       return returnURI;
@@ -500,19 +532,22 @@ public final class Main {
 
       String eventID = qm.value("eventID");
 
+      // Error check
+      if (eventID == null) {
+        return "FAILURE";
+      }
+
       try {
         eventProcessor.deleteEvent(eventID, currentUser.getId());
       } catch (SQLException e) {
-        System.out.println("Error: delteEvent failed");
+        System.out.println("Error: deleteEvent failed");
         response = "FAILURE";
-        e.printStackTrace();
+        return response;
       }
 
-      // remove this event from the cache
+      // remove this event from the caches
       VibeCache.getEventCache().remove(UUID.fromString(eventID));
       VibeCache.getPlaylistCache().remove(UUID.fromString(eventID));
-
-      // TODO: catch an error and store the response if there's an issue
 
       return response;
     }
@@ -533,32 +568,68 @@ public final class Main {
       Boolean endAMOrPM = Boolean.parseBoolean(qm.value("endAMPM"));
       String eventName = qm.value("name");
       String eventID = qm.value("id");
+      Boolean keepPlaylist = Boolean.parseBoolean(qm.value("keepOldPlaylist"));
+
+      Map<String, Object> frontEndInfo;
+
+      // Error check
+      if (start == null || end == null || amOrPm == null || endAMOrPM == null
+          || eventName == null || eventID == null || keepPlaylist == null) {
+        System.out.println("ERROR: Bad info from the front end");
+        frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+            "error", "Error: Not all fields were filled in!");
+        return GSON.toJson(frontEndInfo);
+      }
 
       // If the edits are valid an event will be returned to the front-end
       // (1): Grab the event from the cache
       CalendarEvent oldEvent = VibeCache.getEventCache().get(
           UUID.fromString(eventID));
 
-      Map<String, Object> frontEndInfo;
-      // (2): Make modifications to the event i;f the times match the correct
+      // Error check
+      if (oldEvent == null) {
+        System.out.println("ERROR: couldn't get event associated with this id");
+        frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+            "error", "Error: Trouble accessing event");
+        return GSON.toJson(frontEndInfo);
+      }
+
+      // (2): Make modifications to the event if the times match the correct
       // format
       if (start.matches(TIMEREGEX) && end.matches(TIMEREGEX)
-          && startBeforeEnd(start, amOrPm, end, endAMOrPM)
           && timeErrorHelper(start, end)) {
-        System.out.println("The input matches");
+        // && startBeforeEnd(start, amOrPm, end, endAMOrPM)) {
+
         CalendarEvent editedEvent = eventProcessor.editEvent(start, amOrPm,
             end, endAMOrPM, eventName, oldEvent);
+        if (editedEvent == null) {
+          System.out.println("ERROR: couldn't edit event");
+          frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+              "error", "Error: Trouble accessing event");
+          return GSON.toJson(frontEndInfo);
+        }
 
         // (3): Generate the playlist associated with this event
 
         // Replace the event in the cache, keeping the playlist that was
         // associated
-        if (!oldEvent.getPlayListURI().equals("")) {
+        if (keepPlaylist && !oldEvent.getPlayListURI().equals("")) {
+          System.out.println("keeping old playlist");
           editedEvent.setPlayListURI(oldEvent.getPlayListURI());
         } else {
           // This case means a spotify playlist doesn't yet exist, in which case
           // create a new VibePlaylist for later conversion to spotify
-          hq.generateFromTag(editedEvent, api, currentUser, accessToken);
+          VibePlaylist p = hq.generateFromTag(editedEvent, api, currentUser,
+              accessToken);
+          if (p == null) {
+            System.out.println("ERROR: couldn't create playlist");
+            frontEndInfo = ImmutableMap.of("event", "null", "success", false,
+                "error", "Error: Couldn't create playlist");
+            return GSON.toJson(frontEndInfo);
+          }
+          // Clear the URI so on the next "view playlist" the new playlist
+          // appears
+          editedEvent.setPlayListURI("");
         }
 
         // Recache this edited event
@@ -567,12 +638,14 @@ public final class Main {
 
         // (4): Return the event along to true so front end can recognize that
         // edit was succesful
-        frontEndInfo = ImmutableMap.of("event", editedEvent, "success", true);
+        frontEndInfo = ImmutableMap.of("event", editedEvent, "success", true,
+            "error", "");
 
       } else {
-        frontEndInfo = ImmutableMap.of("event", oldEvent, "success", false);
+        frontEndInfo = ImmutableMap.of("event", oldEvent, "success", false,
+            "error", "Error: Start or end time incorrectly formatted");
       }
-
+      System.out.println("the edited event ID is " + eventID);
       return GSON.toJson(frontEndInfo);
     }
   }
@@ -590,42 +663,60 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
-      // Create a new event and add it to the database
-      // CalendarEvent newEvent = eventProcessor.editEvent(start, amOrPm, end,
-      // endAMOrPM, eventName);
 
+      System.out.println("in custom handler");
       // Playlist stuff
       String eventID = qm.value("eventID");
       String tag = qm.value("tag");
 
-      System.out.println("the tag is + " + tag);
       @SuppressWarnings("unchecked")
       List<String> genres = GSON.fromJson(qm.value("genres"), List.class);
       String energy = qm.value("energy");
-      System.out.println("main e is " + energy);
       String hotness = qm.value("popularity");
       String mood = qm.value("mood");
-      System.out.println("main mood " + mood);
 
-      System.out.println("the event ID + " + eventID);
+      // Error check
+      if (eventID == null || tag == null || energy == null || hotness == null
+          || mood == null || genres == null) {
+        System.out.println("ERROR: Bad info from front end");
+        return GSON.toJson(ImmutableMap.of("event", "null", "success", false,
+            "error", "Error: Not all fields were filled in!"));
+      }
+
       CalendarEvent thisEvent = VibeCache.getEventCache().get(
           UUID.fromString(eventID));
+
+      // Error check
+      if (thisEvent == null) {
+        System.out.println("ERROR: Problem accessing event");
+        return GSON.toJson(ImmutableMap.of("event", "null", "success", false,
+            "error", "Error: problem accessing event"));
+      }
 
       // Add these things to a list
       List<String> settingsList = Arrays.asList(tag, energy, hotness, mood);
 
       // Generate the playlist
-      hq.generateCustom(genres, settingsList, thisEvent, api, currentUser,
-          accessToken);
-      System.out.println("returned from generatecustom");
+      VibePlaylist p = hq.generateCustom(genres, settingsList, thisEvent, api,
+          currentUser, accessToken);
+      // Error check
+      if (p == null) {
+        System.out.println("ERROR: Problem creating playlist");
+        return GSON.toJson(ImmutableMap.of("event", "null", "success", false,
+            "error", "Error: No songs match selected parameters"));
+      }
+
+      // If this event previously had a playlistURI, remove it so this playlist
+      // will be created
+      thisEvent.setPlayListURI("");
 
       // These lines are only for testing
-      VibePlaylist p2 = VibeCache.getPlaylistCache().get(thisEvent.getId());
-      System.out.println("~~~THE TRACKS~~~");
-      System.out.println(p2.getTracks());
-
-      // TODO: I have no idea what this should return
-      return GSON.toJson(thisEvent);
+      // VibePlaylist p2 = VibeCache.getPlaylistCache().get(thisEvent.getId());
+      // System.out.println("~~~THE TRACKS~~~");
+      // System.out.println(p2.getTracks());
+      System.out.println("returning");
+      return GSON.toJson(ImmutableMap.of("event", thisEvent, "success", true,
+          "error", ""));
     }
   }
 
@@ -633,8 +724,10 @@ public final class Main {
     @Override
     public Object handle(Request req, Response res) {
       List<String[]> playlistNames = hq.getAllPlaylists(api, currentUser);
+      if (playlistNames == null) {
+        return null;
+      }
       JsonArray jarray = new JsonArray();
-      JsonParser jp = new JsonParser();
       for (String[] playlist : playlistNames) {
         JsonObject jobj = new JsonObject();
         jobj.addProperty("name", playlist[0]);
@@ -658,8 +751,8 @@ public final class Main {
       try {
         thisEvent = eventProcessor.getEventFromEventID(eventID);
       } catch (SQLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        System.out.println("ERROR: error processing event");
+        return null;
       }
       thisEvent.setPlayListURI(playlistURI);
       return playlistURI;

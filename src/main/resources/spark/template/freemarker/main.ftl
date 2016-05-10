@@ -12,6 +12,7 @@
     crossorigin="anonymous">
 
     <link rel="stylesheet" href="css/html5bp.css">
+    <link rel="stylesheet" href="css/loadingbar.css">
     <link rel="stylesheet" href="css/playlists.css">
     <link rel="stylesheet" href="css/main.css">
 
@@ -25,10 +26,10 @@
   <body>
     ${content}
 
-
     <script src="js/js.cookie.js"></script>
     <script src="js/URI.min.js"></script>
     <script src="js/moment.min.js"></script>
+    <script src="js/progressbar.js/dist/progressbar.min.js"></script>
     <script src="js/login.js"></script>
     <script src="js/playlists.js"></script>
     <script src="js/options.js"></script>

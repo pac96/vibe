@@ -86,8 +86,19 @@ $(document).on('click', 'li.anEvent', function() {
 	var eventObject = getEvent(currentEventID);
 	console.log("Current event: " + eventObject.name);
 
-	showPlaylist(currentEventID);			
-});
+
+//	if (eventObject.playlistURI == null) {
+		// Retrieve the playlist URI from the backend and show it
+		showPlaylist(currentEventID);			
+//	} 
+//	else {
+//		 playlist.attr('src', "https://embed.spotify.com/?uri=" + eventObject.playlistURI);
+//		// bar.animate(1.0); // start loading bar
+////		$("div.bar").addClass("hiddenDiv");
+//		playlist.fadeIn("slow");
+//		$("#hidePlaylist").fadeIn("slow");
+//	}
+}); // end click on event handler
 
 
 $(document).on('click', '#hidePlaylist', function() {
@@ -493,8 +504,13 @@ function populateUserPlaylists() {
 
 
 function hidePlaylist() {
+<<<<<<< HEAD
 	$(".playlistDiv").fadeOut("fast");
+=======
+//	$(".playlistDiv").fadeOut("fast");
+>>>>>>> 129746e029c8808db56e04009a946e34457a0e1f
 	playlist.removeClass("loading");
+    $(".bar").hide();
 	playlist.fadeOut("fast");	
     $("#hidePlaylist").fadeOut("fast");
 }

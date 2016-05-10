@@ -372,8 +372,10 @@
 				
 
 				<div class="row">
-					<button class="btn btn-primary hiddenDiv" id="hidePlaylist">Hide Playlist</button>
-					<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>
+					<div class="text-center playlistDiv">
+						<button class="btn btn-primary hiddenDiv" id="hidePlaylist">Hide Playlist</button>
+						<iframe id="playlist" frameborder="0" allowtransparency="true"></iframe>
+			    	</div>
 			    </div>
 			</div>
 

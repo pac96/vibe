@@ -476,7 +476,7 @@ public final class Main {
 
   /**
    *
-   * Handles retrieving a playlist for a specific event. <<<<<<< HEAD
+   * Handles retrieving a playlist for a specific event.
    * */
   private class GetPlaylistHandler implements Route {
     @Override
@@ -648,7 +648,6 @@ public final class Main {
     public Object handle(Request req, Response res) {
       QueryParamsMap qm = req.queryMap();
 
-      Map<String, Object> frontEndInfo;
       // Playlist stuff
       String eventID = qm.value("eventID");
       String tag = qm.value("tag");
@@ -661,9 +660,10 @@ public final class Main {
 
       // Error check
       if (eventID == null || tag == null || energy == null || hotness == null
-          || mood == null) {
+          || mood == null || genres == null) {
         System.out.println("ERROR: Bad info from front end");
-        return ImmutableMap.of("event", "null", "success", false);
+        return  GSON.toJson(ImmutableMap.of("event", "null", "success", false, 
+        		"error", "Error: Not all fields were filled in!"));
       }
 
       CalendarEvent thisEvent = VibeCache.getEventCache().get(
@@ -672,7 +672,8 @@ public final class Main {
       // Error check
       if (thisEvent == null) {
         System.out.println("ERROR: Problem accessing event");
-        return ImmutableMap.of("event", "null", "success", false);
+        return GSON.toJson(ImmutableMap.of("event", "null", "success", false,
+        		"error", "Error: problem accessing event"));
       }
 
       // Add these things to a list
@@ -687,12 +688,11 @@ public final class Main {
       thisEvent.setPlayListURI("");
 
       // These lines are only for testing
-      VibePlaylist p2 = VibeCache.getPlaylistCache().get(thisEvent.getId());
-      System.out.println("~~~THE TRACKS~~~");
-      System.out.println(p2.getTracks());
+//      VibePlaylist p2 = VibeCache.getPlaylistCache().get(thisEvent.getId());
+//      System.out.println("~~~THE TRACKS~~~");
+//      System.out.println(p2.getTracks());
 
-      // TODO: I have no idea what this should return
-      return GSON.toJson(thisEvent);
+      return  GSON.toJson(ImmutableMap.of("event", thisEvent, "success", true, "error", ""));
     }
   }
 

@@ -73,6 +73,9 @@ $(document).on('click', '#useOwnPlaylist', function() {
 
 // "Edit Event" option
 $(document).on('click', '#editEvent', (function() {
+	    // hide unneeded divs
+    customizeDiv.hide();
+
 	var dropdownID = $(this).parent().attr('id');
 	currentEventID = dropdownID.split("_")[1];
 	// Show the edit event form
@@ -95,12 +98,9 @@ $(document).on('click', '#deleteEvent', (function() {
 	var dropdownID = $(this).parent().attr('id');
 	console.log("Dropdown ID: " + dropdownID);
 	currentEventID = dropdownID.split("_")[1];
-	console.log("before deletEvent function" + currentEventID);
+
     deleteEvent(currentEventID);
 
-    // hide unneeded divs
-    editDiv.hide();
-    customizeDiv.hide();
     $('#view-playlist-panel').hide();
  }));
 
@@ -169,8 +169,6 @@ function showPlaylist(eventID) {
 		}
 	}    
 
-
-
     var postParams = {
     	eventID: eventID, 
     	eventName: name
@@ -180,9 +178,11 @@ function showPlaylist(eventID) {
         console.log("Playlist @ " + link);
         uri = link;
         playlist = $("#playlist");
+        var eventObject = getEvent(eventID);
 		// Set the source of the playlist to be the input URI
 		playlist.attr('src', "https://embed.spotify.com/?uri=" + uri);
-		playlist.show();
+		eventObject.playlistURI = uri;
+		playlist.fadeIn("slow");
     }); 
 }
 
@@ -208,7 +208,9 @@ function editCalendarEvent(editedEvent){
 
 		// Replaces the html of the old event with the info from the new one
 		eventLI.html(newHTML);
+
 	    editDiv.hide();
+
 	}	
 }
 
@@ -268,6 +270,12 @@ function deleteEvent(id) {
     		// SO THE POPUP DOES NOT APPEAR
 
 			nextEventPopup();
+
+			// hide unneeded divs
+		    editDiv.hide();
+		    customizeDiv.hide();
+		    playlist.hide();
+		    playlist.attr('src', null);
 		}
 	});
 
@@ -427,7 +435,7 @@ function requestEdit(eventID) {
 
 					    setTimeout(function() {
 						    otherContent.fadeOut('slow');
-					    }, 2000);
+					    }, 3000);
 		    		}
 		    	}); // end post
 			} // end else
@@ -512,7 +520,7 @@ function customizePlaylist(eventID) {
 		console.log(playlistSelection);
 	}
 	
-	if (customize || playlistSelection !== "") {
+	if (customize) {
     	var postParameters = {
 			tag : eventTag ,
 			mood : eventMoodNum ,
@@ -533,13 +541,34 @@ function customizePlaylist(eventID) {
     		//    backend will generate a new playlist id for this event
     		//console.log(response);
     		var responseObject = JSON.parse(response);
-    		//console.log(responseObject);
+    		if (responseObject.success == "false") {
+    			console.log("Customization was not successful!");
+				var $msg = $("<p>", {
+					class: "contentMsg", 
+					id: "errorMsg"
+				});
 
-    		// 2. Make customization object from responseObject
-    		//var custom = new Customization(responseObject);
-    		
-    		
+				$msg.append(responseObject.error);
+				otherContent.html($msg);
+			    otherContent.fadeIn('slow');
 
+			    setTimeout(function() {
+				    otherContent.fadeOut('slow');
+			    }, 3000);
+    		} else {
+    			var $msg = $("<p>", {
+					class: "contentMsg", 
+					id: "successMsg"
+				});
+
+				$msg.append("Playlist customized!");
+				otherContent.html($msg);
+			    otherContent.fadeIn('slow');
+
+			    setTimeout(function() {
+				    otherContent.fadeOut('slow');
+			    }, 2000);
+    		}
     	});
     	// empty playlist selection and no custom options 
     	// or empty playlist selection and incomplete custom option selection
@@ -547,7 +576,7 @@ function customizePlaylist(eventID) {
 			(playlistSelection === "" && atLeastOneCustomOption)) {
 		var $msg = $("<p>", {
 			class: "contentMsg", 
-			id: "successMsg"
+			id: "errorMsg"
 		});
 
 		$msg.append("You must either customize or select Spotify playlists");
@@ -560,12 +589,12 @@ function customizePlaylist(eventID) {
 			id: "errorMsg"
 		});
 
-		$msg.append("Complete Your Customization or Select a Playlist");
-		otherContent.html($msg);
-	    otherContent.fadeIn('slow');
-	    setTimeout(function() {
-		    otherContent.fadeOut('slow');
-	    }, 2000);
+		// $msg.append("Complete Your Customization or Select a Playlist");
+		// otherContent.html($msg);
+	 //    otherContent.fadeIn('slow');
+	 //    setTimeout(function() {
+		//     otherContent.fadeOut('slow');
+	 //    }, 2000);
 	
 		// incomplete custom option selection and empty playlist selection
 		// or incomplete custom option selection and non-empty playlist selection
@@ -573,7 +602,7 @@ function customizePlaylist(eventID) {
 			(atLeastOneCustomOption && playlistSelection !== "")) {
 		var $msg = $("<p>", {
 			class: "contentMsg", 
-			id: "successMsg"
+			id: "errorMsg"
 		});
 
 		$msg.append("Fully complete customizations or select a playlist");
@@ -586,12 +615,12 @@ function customizePlaylist(eventID) {
 			id: "errorMsg"
 		});
 
-		$msg.append("Complete Your Customization or Select a Playlist");
-		otherContent.html($msg);
-	    otherContent.fadeIn('slow');
-	    setTimeout(function() {
-		    otherContent.fadeOut('slow');
-	    }, 2000);
+		// $msg.append("Complete Your Customization or Select a Playlist");
+		// otherContent.html($msg);
+	 //    otherContent.fadeIn('slow');
+	 //    setTimeout(function() {
+		//     otherContent.fadeOut('slow');
+	 //    }, 2000);
 	}
 }
 

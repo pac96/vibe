@@ -8,6 +8,7 @@ var editDiv;
 var customizeDiv;
 var panel;
 var eventModal;
+var playlistDiv;
 var eventToTimeout = new Map();
 var playlist = $("#playlist");
 var port = window.location.port;
@@ -18,6 +19,11 @@ if (window.location.pathname === "/playlists") {
 	var home = "http://localhost:" + port + "/vibe";
 	var uri = new URI(window.location.href);
 	var urlParams = uri.search(true);
+	editDiv = $("#editDiv");
+	customizeDiv = $("#customizePlaylistForm");
+	panel = $("#view-playlist-panel");
+	playlistDiv = $(".playlistDiv");
+
 	if (urlParams.error === "access_denied") {
 		// Send the user back to the login page
 		window.location.href = home;
@@ -29,9 +35,6 @@ if (window.location.pathname === "/playlists") {
 
 
 	otherContent.hide();
-	editDiv = $("#editDiv");
-	customizeDiv = $("#customizePlaylistForm");
-	panel = $("#view-playlist-panel");
 
 	// First, set the logout link 
 	$("#logoutLink").attr('href', home);
@@ -71,13 +74,24 @@ $("#AddNewEvent").click(function() {
 
 $(document).on('click', '.anEvent', function() {
 	currentEventID = this.id;
-	console.log("Curr: " + currentEventID);
 	createDropdown(currentEventID);
+	var eventObject = getEvent(currentEventID);
+	console.log("Current event: " + eventObject.name);
+
+
+	if (eventObject.playlistURI == null) {
+		// Retrieve the playlist URI from the backend and show it
+		showPlaylist(currentEventID);			
+	} else {
+		// playlist.attr('src', "https://embed.spotify.com/?uri=" + eventObject.playlistURI);
+		playlist.fadeIn("slow");
+		$("#hidePlaylist").fadeIn("slow");
+	}
 }); // end click on event handler
 
 
 $(document).on('click', '#hidePlaylist', function() {
-	playlist.hide();
+	hidePlaylist();
 });
 
 
@@ -168,6 +182,7 @@ function renderCalendar(event){
 	var targetID = "dropdown_" + event.id;
 
 	var htmlCode = htmlDropdown(targetID, timePeriod, event);
+	// $("ul.collapse").css('list-style-type', 'none');
 
 	var $eventHTML = $("<li>").attr({
 		id: event.id,
@@ -177,10 +192,12 @@ function renderCalendar(event){
 	$eventHTML.append(htmlCode);
 
 	// Find all li tags and dynamically remove the bullet points
-	$(".collapse").find("li").css('list-style-type', 'none');;
+	// $("ul.collapse").css('list-style-type', 'none');
+	// $("ul.collapse li").css('cursor', 'pointer');
+
 
 	// Fix cursor
-	eventTimeline.find("li").css('cursor', 'pointer');
+	// eventTimeline.find("li").css('cursor', 'pointer');
 	var appended = false;
 
 	for(var i = 0; i < eventsArray.length; i++){
@@ -325,10 +342,10 @@ function htmlDropdown(dataTargetID, timePeriod, cEvent) {
 		"<span class='eventDesc'>" + cEvent.moment.format("h:mm") + " " + timePeriod 
 		+ " | " + cEvent.name + " </span>" +
 		"<i class='fa fa-fw fa-caret-down'></i></a>" +
-		"<ul id='" + dataTargetID + "' class='collapse'>" +
-			"<li id='viewPlaylist'>" +
-				"<a>View Playlist" + "</a>" +
-			"</li>" +
+		"<ul id='" + dataTargetID + "' class='collapse no-list-style'>" +
+			// "<li id='viewPlaylist'>" +
+			// 	"<a>View Playlist" + "</a>" +
+			// "</li>" +
 			"<li id='customizePlaylist'>" +
 				"<a>Customize Playlist</a>" +
 			"</li>" +
@@ -441,4 +458,10 @@ function populateUserPlaylists() {
 			$dropdown.append($plElt);
 		}
 	});
+}
+
+
+function hidePlaylist() {
+	playlist.fadeOut("fast");	
+    $("#hidePlaylist").fadeOut("fast");
 }

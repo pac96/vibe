@@ -67,6 +67,9 @@ h1 span {
   text-align: center;
 }
 
+.playlistDiv {
+  margin-top: 50px;
+}
 
 #displayname {
   text-decoration: none;
@@ -131,7 +134,7 @@ p.contentMsg {
 iframe {
   width: 1000px;
   height: 600px;
-  margin: none;
+  margin: auto;
   border: none;
 }
 

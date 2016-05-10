@@ -71,13 +71,8 @@ $("#AddNewEvent").click(function() {
 
 
 
-// Makes sure that if elements in the dropdown are clicked, the 
-// handler that shows the playlist does not occur
- $('#calendarEvents').find('.anEvent li').on('click', function(e) {
-	e.stopPropagation();
-});
 
-$(document).on('click', 'li.anEvent', function() {
+$(document).on('click', '.anEvent', function() {
 	console.log($(this).attr('id'));
 
 	$("div.bar").removeClass("hiddenDiv");
@@ -99,6 +94,13 @@ $(document).on('click', 'li.anEvent', function() {
 //		$("#hidePlaylist").fadeIn("slow");
 //	}
 }); // end click on event handler
+
+// Makes sure that if elements in the dropdown are clicked, the 
+// handler that shows the playlist does not occur
+ $(document).on('click', '.dropdownOption', function(e) {
+ 	console.log("stopping propagation");
+	e.stopPropagation();
+});
 
 
 $(document).on('click', '#hidePlaylist', function() {
@@ -388,13 +390,13 @@ function htmlDropdown(dataTargetID, timePeriod, cEvent) {
 			// "<li id='viewPlaylist'>" +
 			// 	"<a>View Playlist" + "</a>" +
 			// "</li>" +
-			"<li id='customizePlaylist'>" +
+			"<li id='customizePlaylist' class='dropdownOption'>" +
 				"<a>Customize Playlist</a>" +
 			"</li>" +
-			"<li id='editEvent'>" +
+			"<li id='editEvent' class='dropdownOption'>" +
 				"<a>Edit Event</a>" +
 			"</li>" +
-			"<li id='deleteEvent'>" +
+			"<li id='deleteEvent' class='dropdownOption'>" +
 				"<a>Delete Event</a>" +
 			"</li>" +
 		"</ul>" +
@@ -504,11 +506,7 @@ function populateUserPlaylists() {
 
 
 function hidePlaylist() {
-<<<<<<< HEAD
-	$(".playlistDiv").fadeOut("fast");
-=======
 //	$(".playlistDiv").fadeOut("fast");
->>>>>>> 129746e029c8808db56e04009a946e34457a0e1f
 	playlist.removeClass("loading");
     $(".bar").hide();
 	playlist.fadeOut("fast");	

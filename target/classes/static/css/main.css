@@ -51,6 +51,10 @@ h1 span {
   cursor: pointer;
 }
 
+.dropdownOption {
+  
+}
+
 
 
 .other-bg {
@@ -76,15 +80,9 @@ h1 span {
   text-align: center;
 }
 
-<<<<<<< HEAD
 .under {
   position: absolute;
 }
-=======
-/*.loading {
-  background: url("/images/loading.gif");
-}*/
->>>>>>> 129746e029c8808db56e04009a946e34457a0e1f
 
 .playlistDiv {
   margin-top: 50px;
